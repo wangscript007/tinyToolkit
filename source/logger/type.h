@@ -37,7 +37,7 @@ namespace logger
 	 * 日志操作
 	 *
 	 */
-	enum class API_TYPE LOG_OPTION_TYPE : uint8_t
+	enum class LOG_OPTION_TYPE : uint8_t
 	{
 		WRITE,
 		FLUSH,
@@ -49,7 +49,7 @@ namespace logger
 	 * 日志优先级
 	 *
 	 */
-	enum class API_TYPE LOG_PRIORITY_TYPE : uint8_t
+	enum class LOG_PRIORITY_TYPE : uint8_t
 	{
 		DEBUGS,
 		INFO,

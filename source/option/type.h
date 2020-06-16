@@ -32,7 +32,7 @@
 
 namespace option
 {
-	enum class API_TYPE OPTION_TYPE : uint8_t
+	enum class OPTION_TYPE : uint8_t
 	{
 		BOOL,
 		FLOAT,
