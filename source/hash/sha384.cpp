@@ -237,24 +237,24 @@ namespace hash
 	 */
 	void SHA384::Final(Context & context, uint8_t * digest)
 	{
-		#define UNPACK32(x, str)                      \
-		{                                             \
-			*((str) + 3) = (uint8_t) ((x)      );     \
-			*((str) + 2) = (uint8_t) ((x) >>  8);     \
-			*((str) + 1) = (uint8_t) ((x) >> 16);     \
-			*((str) + 0) = (uint8_t) ((x) >> 24);     \
+		#define UNPACK32(x, str)							\
+		{													\
+			*((str) + 3) = static_cast<uint8_t>((x)      );	\
+			*((str) + 2) = static_cast<uint8_t>((x) >>  8);	\
+			*((str) + 1) = static_cast<uint8_t>((x) >> 16);	\
+			*((str) + 0) = static_cast<uint8_t>((x) >> 24);	\
 		}
 
-		#define UNPACK64(x, str)                      \
-		{                                             \
-			*((str) + 7) = (uint8_t) ((x)      );     \
-			*((str) + 6) = (uint8_t) ((x) >>  8);     \
-			*((str) + 5) = (uint8_t) ((x) >> 16);     \
-			*((str) + 4) = (uint8_t) ((x) >> 24);     \
-			*((str) + 3) = (uint8_t) ((x) >> 32);     \
-			*((str) + 2) = (uint8_t) ((x) >> 40);     \
-			*((str) + 1) = (uint8_t) ((x) >> 48);     \
-			*((str) + 0) = (uint8_t) ((x) >> 56);     \
+		#define UNPACK64(x, str)							\
+		{													\
+			*((str) + 7) = static_cast<uint8_t>((x)      );	\
+			*((str) + 6) = static_cast<uint8_t>((x) >>  8);	\
+			*((str) + 5) = static_cast<uint8_t>((x) >> 16);	\
+			*((str) + 4) = static_cast<uint8_t>((x) >> 24);	\
+			*((str) + 3) = static_cast<uint8_t>((x) >> 32);	\
+			*((str) + 2) = static_cast<uint8_t>((x) >> 40);	\
+			*((str) + 1) = static_cast<uint8_t>((x) >> 48);	\
+			*((str) + 0) = static_cast<uint8_t>((x) >> 56);	\
 		}
 
 		uint32_t totalLength = (context.totalLength + context.blockLength) << 3;
@@ -335,16 +335,16 @@ namespace hash
 		#define SHFR(x, n) (x >> n)
 		#define ROTR(x, n) ((x >> n) | (x << ((sizeof(x) << 3) - n)))
 
-		#define PACK64(str, x)                        \
-		{                                             \
-			*(x) =	((uint64_t) *((str) + 7)      ) | \
-					((uint64_t) *((str) + 6) <<  8) | \
-					((uint64_t) *((str) + 5) << 16) | \
-					((uint64_t) *((str) + 4) << 24) | \
-					((uint64_t) *((str) + 3) << 32) | \
-					((uint64_t) *((str) + 2) << 40) | \
-					((uint64_t) *((str) + 1) << 48) | \
-					((uint64_t) *((str) + 0) << 56);  \
+		#define PACK64(str, x)										\
+		{															\
+			*(x) =	(static_cast<uint64_t>(*((str) + 7))      ) |	\
+					(static_cast<uint64_t>(*((str) + 6)) <<  8) |	\
+					(static_cast<uint64_t>(*((str) + 5)) << 16) |	\
+					(static_cast<uint64_t>(*((str) + 4)) << 24) |	\
+					(static_cast<uint64_t>(*((str) + 3)) << 32) |	\
+					(static_cast<uint64_t>(*((str) + 2)) << 40) |	\
+					(static_cast<uint64_t>(*((str) + 1)) << 48) |	\
+					(static_cast<uint64_t>(*((str) + 0)) << 56);	\
 		}
 
 		#define SHA384_F1(x) (ROTR(x, 28) ^ ROTR(x, 34) ^ ROTR(x, 39))

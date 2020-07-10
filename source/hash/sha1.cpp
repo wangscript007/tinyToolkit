@@ -241,7 +241,7 @@ namespace hash
 
 		for (uint32_t i = 0; i < DIGEST_SIZE; ++i)
 		{
-			digest[i] = context.hash[i >> 2] >> (8 * (3 - (i & 0x03)));
+			digest[i] = static_cast<uint8_t>(context.hash[i >> 2] >> (8 * (3 - (i & 0x03))));
 		}
 	}
 
@@ -411,14 +411,14 @@ namespace hash
 			}
 		}
 
-		context.messageBlock[56] = context.lengthHigh >> 24;
-		context.messageBlock[57] = context.lengthHigh >> 16;
-		context.messageBlock[58] = context.lengthHigh >> 8;
-		context.messageBlock[59] = context.lengthHigh;
-		context.messageBlock[60] = context.lengthLow >> 24;
-		context.messageBlock[61] = context.lengthLow >> 16;
-		context.messageBlock[62] = context.lengthLow >> 8;
-		context.messageBlock[63] = context.lengthLow;
+		context.messageBlock[56] = static_cast<uint8_t>(context.lengthHigh >> 24);
+		context.messageBlock[57] = static_cast<uint8_t>(context.lengthHigh >> 16);
+		context.messageBlock[58] = static_cast<uint8_t>(context.lengthHigh >> 8);
+		context.messageBlock[59] = static_cast<uint8_t>(context.lengthHigh);
+		context.messageBlock[60] = static_cast<uint8_t>(context.lengthLow >> 24);
+		context.messageBlock[61] = static_cast<uint8_t>(context.lengthLow >> 16);
+		context.messageBlock[62] = static_cast<uint8_t>(context.lengthLow >> 8);
+		context.messageBlock[63] = static_cast<uint8_t>(context.lengthLow);
 
 		Transform(context);
 	}

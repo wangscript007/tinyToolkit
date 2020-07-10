@@ -44,7 +44,7 @@ namespace util
 	{
 		static uint32_t value = 0x0001;
 
-		return *((uint8_t *)&value) == 0;
+		return *(reinterpret_cast<uint8_t *>(&value)) == 0;
 	}
 
 	/**
@@ -58,7 +58,7 @@ namespace util
 	{
 		static uint32_t value = 0x0001;
 
-		return *((uint8_t *)&value) == 1;
+		return *(reinterpret_cast<uint8_t *>(&value)) == 1;
 	}
 
 	/**

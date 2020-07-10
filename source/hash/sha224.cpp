@@ -237,12 +237,12 @@ namespace hash
 		 */
 	void SHA224::Final(Context & context, uint8_t * digest)
 	{
-		#define UNPACK32(x, str)                      \
-		{                                             \
-			*((str) + 3) = (uint8_t) ((x)      );     \
-			*((str) + 2) = (uint8_t) ((x) >>  8);     \
-			*((str) + 1) = (uint8_t) ((x) >> 16);     \
-			*((str) + 0) = (uint8_t) ((x) >> 24);     \
+		#define UNPACK32(x, str)							\
+		{													\
+			*((str) + 3) = static_cast<uint8_t>((x)      );	\
+			*((str) + 2) = static_cast<uint8_t>((x) >>  8);	\
+			*((str) + 1) = static_cast<uint8_t>((x) >> 16);	\
+			*((str) + 0) = static_cast<uint8_t>((x) >> 24);	\
 		}
 
 		uint32_t totalLength = (context.totalLength + context.blockLength) << 3;
@@ -323,12 +323,12 @@ namespace hash
 		#define SHFR(x, n) (x >> n)
 		#define ROTR(x, n) ((x >> n) | (x << ((sizeof(x) << 3) - n)))
 
-		#define PACK32(str, x)                        \
-		{                                             \
-			*(x) =	((uint32_t) *((str) + 3)      ) | \
-					((uint32_t) *((str) + 2) <<  8) | \
-					((uint32_t) *((str) + 1) << 16) | \
-					((uint32_t) *((str) + 0) << 24);  \
+		#define PACK32(str, x)										\
+		{															\
+			*(x) =	(static_cast<uint32_t>(*((str) + 3))      ) |	\
+					(static_cast<uint32_t>(*((str) + 2)) <<  8) |	\
+					(static_cast<uint32_t>(*((str) + 1)) << 16) |	\
+					(static_cast<uint32_t>(*((str) + 0)) << 24);	\
 		}
 
 		#define SHA224_F1(x) (ROTR(x,  2) ^ ROTR(x, 13) ^ ROTR(x, 22))

@@ -77,9 +77,12 @@ IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 									-Wextra							# 打印一些额外的警告信息
 									-Wshadow						# 当一个局部变量遮盖住了另一个局部变量, 或者全局变量, 给出警告
 									-Woverflow						# 范围溢出, 给出警告
+									-Wconversion					# 对一些可能改变值的隐式转换, 给出警告
 									-Wcast-align					# 某个指针类型强制转换导致目标所需的地址对齐增加, 给出警告
 									-Wfatal-errors					# 出现错误的时候停止编译
+									-Wwrite-strings					# 把字符串常量赋值给non-const char *指针, 给出警告
 									-Wpointer-arith					# 对函数指针或者void *类型的指针进行算术操作, 给出警告
+									-Wold-style-cast				# 如果存在c风格类型转换，给出警告
 									-Wredundant-decls				# 如果在同一个可见域内某定义多次声明, 给出警告
 									-Wunreachable-code				# 如果编译器探测到永远不会执行到的代码, 给出警告
 									-Wreturn-local-addr				# 如果返回临时引用, 给出警告

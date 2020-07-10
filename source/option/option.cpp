@@ -258,7 +258,7 @@ namespace option
 
 				if (width > 0)
 				{
-					stream << std::setw(width)
+					stream << std::setw(static_cast<int32_t>(width))
 					       << std::right
 					       << " ";
 				}
