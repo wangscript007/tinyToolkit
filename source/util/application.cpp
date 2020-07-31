@@ -139,21 +139,24 @@ namespace util
 	 */
 	uint64_t Application::ThreadID()
 	{
-		uint64_t tid = 0;
+		static thread_local uint64_t tid = 0;
 
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
+		if (tid == 0)
+		{
+		#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-		tid = ::GetCurrentThreadId();
+			tid = ::GetCurrentThreadId();
 
-	#elif PLATFORM_TYPE == PLATFORM_LINUX
+		#elif PLATFORM_TYPE == PLATFORM_LINUX
 
-		tid = static_cast<uint64_t>(::syscall(SYS_gettid));
+			tid = static_cast<uint64_t>(::syscall(SYS_gettid));
 
-	#elif PLATFORM_TYPE == PLATFORM_APPLE
+		#elif PLATFORM_TYPE == PLATFORM_APPLE
 
-		::pthread_threadid_np(nullptr, &tid);
+			::pthread_threadid_np(nullptr, &tid);
 
-	#endif
+		#endif
+		}
 
 		return tid;
 	}

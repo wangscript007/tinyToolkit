@@ -297,7 +297,7 @@ namespace option
 
 		if (ptr)
 		{
-			auto pre = ptr - name;
+			auto pre = static_cast<std::size_t>(ptr - name);
 			auto sub = len - pre - 1;
 
 			_longName.append(name, pre);

@@ -306,10 +306,10 @@ namespace hash
 
 		for (int32_t t = 0; t < 16; t++)
 		{
-			W[t]  = context.messageBlock[t * 4 + 0] << 24;
-			W[t] |= context.messageBlock[t * 4 + 1] << 16;
-			W[t] |= context.messageBlock[t * 4 + 2] << 8;
-			W[t] |= context.messageBlock[t * 4 + 3];
+			W[t]  = static_cast<uint32_t>(context.messageBlock[t * 4 + 0] << 24);
+			W[t] |= static_cast<uint32_t>(context.messageBlock[t * 4 + 1] << 16);
+			W[t] |= static_cast<uint32_t>(context.messageBlock[t * 4 + 2] << 8);
+			W[t] |= static_cast<uint32_t>(context.messageBlock[t * 4 + 3]);
 		}
 
 		for (int32_t t = 16; t < 80; t++)

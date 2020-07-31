@@ -36,9 +36,9 @@ namespace crypto
 	 * @return 16进制字符
 	 *
 	 */
-	static uint8_t AsHex(uint8_t tag)
+	static char AsHex(uint8_t tag)
 	{
-		return static_cast<uint8_t>(tag > 9 ? tag - 10 + 'A': tag + '0');
+		return static_cast<char>(tag > 9 ? tag - 10 + 'A': tag + '0');
 	}
 
 	/**
@@ -161,7 +161,7 @@ namespace crypto
 
 			if (::isalnum(byte))
 			{
-				value += byte;
+				value += static_cast<char>(byte);
 			}
 			else if (byte == ' ')
 			{
@@ -170,7 +170,7 @@ namespace crypto
 			else if (byte == '-' || byte == '_' || byte == '.' || byte == '!' ||
 			         byte == '~' || byte == '*' || byte == '(' || byte == ')')
 			{
-				value += byte;
+				value += static_cast<char>(byte);
 			}
 			else
 			{
@@ -314,7 +314,7 @@ namespace crypto
 			}
 			else
 			{
-				value.push_back(content[i]);
+				value.push_back(static_cast<char>(content[i]));
 			}
 		}
 

@@ -405,7 +405,7 @@ namespace timer
 	 */
 	void Timer::Executes()
 	{
-		auto index = _tickTime & NEAR_MASK;
+		auto index = static_cast<std::size_t>(_tickTime.load()) & NEAR_MASK;
 
 		if (index == 0)
 		{
@@ -470,37 +470,37 @@ namespace timer
 
 		if (offset < NEAR_SIZE) /// [0, 0x100)
 		{
-			auto index = expire & NEAR_MASK;
+			auto index = static_cast<std::size_t>(expire) & NEAR_MASK;
 
 			_nearList[index].push_back(event);
 		}
 		else if (offset < (1 << (NEAR_BITS + WHEEL_BITS)))  /// [0x100, 0x4000)
 		{
-			auto index = (expire >> NEAR_BITS) & WHEEL_MASK;
+			auto index = static_cast<std::size_t>(expire >> NEAR_BITS) & WHEEL_MASK;
 
 			_wheelList[0][index].push_back(event);
 		}
 		else if (offset < (1 << (NEAR_BITS + (2 * WHEEL_BITS)))) /// [0x4000, 0x100000)
 		{
-			auto index = (expire >> (NEAR_BITS + WHEEL_BITS)) & WHEEL_MASK;
+			auto index = static_cast<std::size_t>(expire >> (NEAR_BITS + WHEEL_BITS)) & WHEEL_MASK;
 
 			_wheelList[1][index].push_back(event);
 		}
 		else if (offset < (1 << (NEAR_BITS + (3 * WHEEL_BITS)))) /// [0x100000, 0x4000000)
 		{
-			auto index = (expire >> (NEAR_BITS + (2 * WHEEL_BITS))) & WHEEL_MASK;
+			auto index = static_cast<std::size_t>(expire >> (NEAR_BITS + (2 * WHEEL_BITS))) & WHEEL_MASK;
 
 			_wheelList[2][index].push_back(event);
 		}
 		else if (static_cast<int64_t>(offset) < 0)
 		{
-			auto index = _tickTime & NEAR_MASK;
+			auto index = static_cast<std::size_t>(_tickTime) & NEAR_MASK;
 
 			_nearList[index].push_back(event);
 		}
 		else if (offset <= 0xffffffffUL)
 		{
-			auto index = (expire >> (NEAR_BITS + (3 * WHEEL_BITS))) & WHEEL_MASK;
+			auto index = static_cast<std::size_t>(expire >> (NEAR_BITS + (3 * WHEEL_BITS))) & WHEEL_MASK;
 
 			_wheelList[3][index].push_back(event);
 		}

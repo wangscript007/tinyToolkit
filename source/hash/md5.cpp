@@ -69,10 +69,10 @@ namespace hash
 
 		while (j < length)
 		{
-			output[i] = (input[j + 0] <<  0) |
-			            (input[j + 1] <<  8) |
-			            (input[j + 2] << 16) |
-			            (input[j + 3] << 24);
+			output[i] = static_cast<uint32_t>((input[j + 0] <<  0) |
+			                                  (input[j + 1] <<  8) |
+			                                  (input[j + 2] << 16) |
+			                                  (input[j + 3] << 24));
 
 			i += 1;
 			j += 4;

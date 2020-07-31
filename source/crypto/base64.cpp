@@ -310,7 +310,7 @@ namespace crypto
 
 		std::string value{ };
 
-		while ((ch = *content++) != '\0' && i <= length)
+		while ((ch = static_cast<char>(*content++)) != '\0' && i <= length)
 		{
 			pos = i % 4;
 

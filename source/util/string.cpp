@@ -535,22 +535,22 @@ namespace util
 	 */
 	std::string String::BeautifyJson(const std::string & content)
 	{
-		auto tmp = 0;
-		auto tag = static_cast<int32_t>(0);
-		auto count = static_cast<int32_t>(0);
-		auto length = static_cast<int32_t>(content.size());
+		std::size_t tmp = 0;
+		std::size_t tag = 0;
+		std::size_t count = 0;
+		std::size_t length = content.size();
 
 		std::string str{ };
 
-		static auto AppendIndent = [](std::string & value, int32_t indentCount)
+		static auto AppendIndent = [](std::string & value, std::size_t indentCount)
 		{
-			for (int32_t i = 0; i < indentCount; ++i)
+			for (std::size_t i = 0; i < indentCount; ++i)
 			{
 				value += '\t';
 			}
 		};
 
-		for (int32_t i = 0; i < length; ++i)
+		for (std::size_t i = 0; i < length; ++i)
 		{
 			auto & key = content[i];
 
@@ -575,7 +575,7 @@ namespace util
 				{
 					tmp = i;
 
-					while ((tmp - 1) >= 0)
+					while (tmp >= 1)
 					{
 						--tmp;
 
@@ -608,7 +608,7 @@ namespace util
 				{
 					tmp = i;
 
-					while ((tmp - 1) >= 0)
+					while (tmp >= 1)
 					{
 						--tmp;
 
@@ -654,7 +654,7 @@ namespace util
 
 			if (key == '\"')
 			{
-				if ((i - 1) > 0)
+				if (i > 1)
 				{
 					if (content[i - 1] != '\\')
 					{
@@ -889,7 +889,7 @@ namespace util
 		{
 			char buffer[3] = { content[i], content[i + 1], '\0' };
 
-			str.push_back(static_cast<uint8_t>(::strtol(buffer, nullptr, 16)));
+			str.push_back(static_cast<char>(::strtol(buffer, nullptr, 16)));
 		}
 
 		return str;
