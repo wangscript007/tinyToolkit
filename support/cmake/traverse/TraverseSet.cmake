@@ -20,7 +20,7 @@ MACRO(TRAVERSE_SET)
 		#
 		# 判断是否为第一个参数
 		#
-		IF (NOT (${param} STREQUAL ${ARGV0}))
+		IF(NOT (${param} STREQUAL ${ARGV0}))
 
 			#
 			# 包含设置

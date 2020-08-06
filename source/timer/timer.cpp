@@ -141,6 +141,20 @@ namespace timer
 
 	/**
 	 *
+	 * 单例对象
+	 *
+	 * @return 单例对象
+	 *
+	 */
+	Timer & Timer::Instance()
+	{
+		static Timer instance{ };
+
+		return instance;
+	}
+
+	/**
+	 *
 	 * 关闭
 	 *
 	 */

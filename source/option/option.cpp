@@ -33,6 +33,20 @@ namespace option
 {
 	/**
 	 *
+	 * 单例对象
+	 *
+	 * @return 单例对象
+	 *
+	 */
+	Option & Option::Instance()
+	{
+		static Option instance{ };
+
+		return instance;
+	}
+
+	/**
+	 *
 	 * 解析
 	 *
 	 * @param argc 选项个数

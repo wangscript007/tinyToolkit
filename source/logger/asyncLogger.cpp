@@ -159,6 +159,20 @@ namespace logger
 
 	/**
 	 *
+	 * 单例对象
+	 *
+	 * @return 单例对象
+	 *
+	 */
+	AsyncLogger & AsyncLogger::Instance()
+	{
+		static AsyncLogger instance{ };
+
+		return instance;
+	}
+
+	/**
+	 *
 	 * 等待
 	 *
 	 */

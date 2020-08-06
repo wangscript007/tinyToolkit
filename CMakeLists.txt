@@ -5,16 +5,29 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.5 FATAL_ERROR)
 
 
 #
+# 版本号
+#
+SET(LIB_VERSION 0.0.3)
+
+
+#
 # 项目名
 #
-PROJECT(tinyToolkit VERSION 1.0.0)
+PROJECT(tinyToolkit VERSION ${LIB_VERSION})
+
+
+#
+# 输出信息
+#
+MESSAGE(STATUS "Version: ${LIB_VERSION}")
+MESSAGE(STATUS "Install: ${CMAKE_INSTALL_PREFIX}")
 
 
 #
 # cmake模块
 #
-SET(CMAKE_MODULE_PATH	${CMAKE_SOURCE_DIR}/cmake/check
-						${CMAKE_SOURCE_DIR}/cmake/traverse)
+SET(CMAKE_MODULE_PATH	${CMAKE_SOURCE_DIR}/support/cmake/check
+						${CMAKE_SOURCE_DIR}/support/cmake/traverse)
 
 
 #
@@ -37,7 +50,7 @@ INCLUDE(CheckPlatform)
 INCLUDE(CheckCompiler)
 INCLUDE(CheckBuildType)
 INCLUDE(CheckGlobalType)
-INCLUDE(CheckInstallPrefix)
+INCLUDE(CheckThirdparty)
 
 
 #

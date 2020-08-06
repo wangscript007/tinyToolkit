@@ -106,6 +106,20 @@ namespace logger
 
 	/**
 	 *
+	 * 单例对象
+	 *
+	 * @return 单例对象
+	 *
+	 */
+	SyncLogger & SyncLogger::Instance()
+	{
+		static SyncLogger instance{ };
+
+		return instance;
+	}
+
+	/**
+	 *
 	 * 等待
 	 *
 	 */

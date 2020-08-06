@@ -59,6 +59,15 @@ namespace logger
 
 		/**
 		 *
+		 * 单例对象
+		 *
+		 * @return 单例对象
+		 *
+		 */
+		static SyncLogger & Instance();
+
+		/**
+		 *
 		 * 等待
 		 *
 		 */

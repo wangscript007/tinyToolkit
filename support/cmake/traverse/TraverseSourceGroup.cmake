@@ -40,7 +40,7 @@ MACRO(RECURSE_DIRECTORY_SOURCE_FILE_GROUP)
 		#
 		# 设置组名
 		#
-		IF (rootGroup)
+		IF(rootGroup)
 
 			#
 			# 设置根组名
@@ -133,7 +133,7 @@ MACRO(TRAVERSE_DIRECTORY_SOURCE_FILE_GROUP)
 		#
 		# 设置组名
 		#
-		IF (rootGroup)
+		IF(rootGroup)
 
 			#
 			# 设置根组名
