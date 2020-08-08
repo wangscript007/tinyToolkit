@@ -39,7 +39,7 @@ namespace logger
 	 */
 	enum class LOG_OPTION_TYPE : uint8_t
 	{
-		WRITE,
+		WRITING,
 		FLUSH,
 		TERMINATE,
 	};

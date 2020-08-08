@@ -127,7 +127,7 @@ namespace logger
 						_queue.pop();
 					}
 
-					if (context.option == LOG_OPTION_TYPE::WRITE)
+					if (context.option == LOG_OPTION_TYPE::WRITING)
 					{
 						for (auto && iter : _sinks)
 						{

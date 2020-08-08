@@ -85,6 +85,7 @@ IF(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 									-Wpointer-arith					# 对函数指针或者void *类型的指针进行算术操作, 给出警告
 									-Wold-style-cast				# 如果存在c风格类型转换，给出警告
 									-Wredundant-decls				# 如果在同一个可见域内某定义多次声明, 给出警告
+									-Wno-unused-result				# 如果存在未使用的返回值, 忽略警告
 									-Wunreachable-code				# 如果编译器探测到永远不会执行到的代码, 给出警告
 									-Wreturn-local-addr				# 如果返回临时引用, 给出警告
 									-Woverloaded-virtual			# 如果函数的声明隐藏住了基类的虚函数, 给出警告

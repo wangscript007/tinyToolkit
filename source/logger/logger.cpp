@@ -54,7 +54,7 @@ namespace logger
 		Context context{ };
 
 		context.name = _name;
-		context.option = LOG_OPTION_TYPE::WRITE;
+		context.option = LOG_OPTION_TYPE::WRITING;
 		context.content = content;
 		context.priority = priority;
 
