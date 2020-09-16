@@ -9,26 +9,18 @@
 
 #include "system.h"
 
-
 #if PLATFORM_TYPE == PLATFORM_WINDOWS
 #
 #  include <windows.h>
 #
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <climits>
-#
-#  include <pwd.h>
-#  include <unistd.h>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <climits>
+#else
 #
 #  include <pwd.h>
 #  include <unistd.h>
 #
 #endif
+
+#include <climits>
 
 
 namespace util

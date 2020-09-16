@@ -9,7 +9,6 @@
 
 #include "stackTrace.h"
 
-
 #if PLATFORM_TYPE == PLATFORM_WINDOWS
 #
 #  include <windows.h>
@@ -17,13 +16,7 @@
 #
 #  pragma comment( lib, "dbghelp.lib")
 #
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <unistd.h>
-#  include <cxxabi.h>
-#  include <execinfo.h>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
+#elif PLATFORM_TYPE != PLATFORM_MIPS
 #
 #  include <memory>
 #
@@ -96,7 +89,7 @@ namespace debug
 		return { };
 	}
 
-#else
+#elif PLATFORM_TYPE != PLATFORM_MIPS
 
 	/**
 	 *
@@ -178,7 +171,6 @@ namespace debug
 	 */
 	std::string StackTrace::Content()
 	{
-		std::string temp{ };
 		std::string content{ };
 
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
@@ -203,7 +195,7 @@ namespace debug
 
 		for (WORD i = 0; i < size; ++i)
 		{
-			temp = ParseSymbol(hProcess, (DWORD64)(stack[i]));
+			auto temp = ParseSymbol(hProcess, (DWORD64)(stack[i]));
 
 			if (temp.empty())
 			{
@@ -215,7 +207,7 @@ namespace debug
 			content += LINE_EOL;
 		}
 
-	#else
+	#elif PLATFORM_TYPE != PLATFORM_MIPS
 
 		void * stack[1024]{ };
 
@@ -239,7 +231,7 @@ namespace debug
 
 		for (int32_t i = 0; i < size; ++i)
 		{
-			temp = ParseSymbol(symbols.get()[i]);
+			auto temp = ParseSymbol(symbols.get()[i]);
 
 			if (temp.empty())
 			{

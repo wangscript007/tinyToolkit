@@ -9,20 +9,7 @@
 
 #include "dailyFileSink.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <climits>
-#
-#endif
+#include <climits>
 
 
 namespace logger
@@ -34,7 +21,7 @@ namespace logger
 	 * @return 秒数时间戳
 	 *
 	 */
-	static std::time_t Seconds()
+	static int64_t Seconds()
 	{
 		return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	}
@@ -50,7 +37,7 @@ namespace logger
 	 * @return 天数时间戳
 	 *
 	 */
-	static std::time_t OffsetTime(int32_t hour, int32_t minutes, int32_t seconds)
+	static int64_t OffsetTime(int32_t hour, int32_t minutes, int32_t seconds)
 	{
 		if (hour < 0 || hour > 23)
 		{
@@ -69,15 +56,15 @@ namespace logger
 
 		std::tm now{ };
 
-		std::time_t current = Seconds();
+		int64_t current = Seconds();
 
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-		::localtime_s(&now, &current);
+		::localtime_s(&now, reinterpret_cast<std::time_t *>(&current));
 
 	#else
 
-		::localtime_r(&current, &now);
+		::localtime_r(reinterpret_cast<std::time_t *>(&current), &now);
 
 	#endif
 
@@ -106,15 +93,15 @@ namespace logger
 
 		std::tm now{ };
 
-		std::time_t current = Seconds() + (8 * 3600);
+		int64_t current = Seconds() + (8 * 3600);
 
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-		::gmtime_s(&now, &current);
+		::gmtime_s(&now, reinterpret_cast<std::time_t *>(&current));
 
 	#else
 
-		::gmtime_r(&current, &now);
+		::gmtime_r(reinterpret_cast<std::time_t *>(&current), &now);
 
 	#endif
 

@@ -14,26 +14,9 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <ctime>
-#  include <string>
-#  include <chrono>
-#
-#  include <winsock.h>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <string>
-#  include <chrono>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <string>
-#  include <chrono>
-#
-#endif
+#include <ctime>
+#include <string>
+#include <chrono>
 
 
 namespace util
@@ -48,7 +31,7 @@ namespace util
 		 * @return 时区
 		 *
 		 */
-		static std::time_t Timezone();
+		static int64_t Timezone();
 
 		/**
 		 *
@@ -57,7 +40,7 @@ namespace util
 		 * @return 小时时间戳
 		 *
 		 */
-		static std::time_t Hours();
+		static int64_t Hours();
 
 		/**
 		 *
@@ -66,7 +49,7 @@ namespace util
 		 * @return 分钟时间戳
 		 *
 		 */
-		static std::time_t Minutes();
+		static int64_t Minutes();
 
 		/**
 		 *
@@ -75,7 +58,7 @@ namespace util
 		 * @return 秒数时间戳
 		 *
 		 */
-		static std::time_t Seconds();
+		static int64_t Seconds();
 
 		/**
 		 *
@@ -84,7 +67,7 @@ namespace util
 		 * @return 毫秒时间戳
 		 *
 		 */
-		static std::time_t Milliseconds();
+		static int64_t Milliseconds();
 
 		/**
 		 *
@@ -93,7 +76,7 @@ namespace util
 		 * @return 微秒时间戳
 		 *
 		 */
-		static std::time_t Microseconds();
+		static int64_t Microseconds();
 
 		/**
 		 *
@@ -102,7 +85,7 @@ namespace util
 		 * @return 纳秒时间戳
 		 *
 		 */
-		static std::time_t Nanoseconds();
+		static int64_t Nanoseconds();
 
 		/**
 		 *
@@ -116,7 +99,7 @@ namespace util
 		 * @return 秒数时间戳
 		 *
 		 */
-		static std::time_t OffsetTime(int64_t day = 0, int32_t hour = 0, int32_t minutes = 0, int32_t seconds = 0);
+		static int64_t OffsetTime(int64_t day = 0, int32_t hour = 0, int32_t minutes = 0, int32_t seconds = 0);
 
 		/**
 		 *
@@ -128,7 +111,7 @@ namespace util
 		 * @return 秒数时间戳
 		 *
 		 */
-		static std::time_t FromString(const char * date, const char * format = "%4d-%02d-%02d %02d:%02d:%02d");
+		static int64_t FromString(const char * date, const char * format = "%4d-%02d-%02d %02d:%02d:%02d");
 
 		/**
 		 *
@@ -141,7 +124,7 @@ namespace util
 		 * @return 时间字符串
 		 *
 		 */
-		static std::string Format(std::time_t seconds, std::time_t timeZone, const char * format = "%4d-%02d-%02d %02d:%02d:%02d");
+		static std::string Format(int64_t seconds, int64_t timeZone, const char * format = "%4d-%02d-%02d %02d:%02d:%02d");
 
 		/**
 		 *
@@ -183,29 +166,7 @@ namespace util
 		 * @return 时间点
 		 *
 		 */
-		static std::chrono::system_clock::time_point TimePoint(std::time_t time);
-
-		/**
-		 *
-		 * 时间点
-		 *
-		 * @param time 时间结构体
-		 *
-		 * @return 时间点
-		 *
-		 */
-		static std::chrono::system_clock::time_point TimePoint(const struct timeval & time);
-
-		/**
-		 *
-		 * 时间点
-		 *
-		 * @param time 时间结构体
-		 *
-		 * @return 时间点
-		 *
-		 */
-		static std::chrono::system_clock::time_point TimePoint(const struct timespec & time);
+		static std::chrono::system_clock::time_point TimePoint(int64_t time);
 	};
 }
 

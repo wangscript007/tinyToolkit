@@ -9,24 +9,10 @@
 
 #include "option.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <sstream>
-#  include <iomanip>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <sstream>
-#  include <iomanip>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <cstring>
-#  include <iomanip>
-#  include <algorithm>
-#
-#endif
+#include <cstring>
+#include <iomanip>
+#include <sstream>
+#include <algorithm>
 
 
 namespace option

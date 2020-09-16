@@ -14,20 +14,7 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <cstdint>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <cstdint>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <cstdint>
-#
-#endif
+#include <cstdint>
 
 
 namespace util

@@ -63,7 +63,7 @@ static void Task()
 
 		while (task->TriggerCount() != 5)
 		{
-			std::this_thread::yield();
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 
 		timer.Pause(task);
@@ -110,7 +110,7 @@ static void Function()
 
 		while (count != 0)
 		{
-			std::this_thread::yield();
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 
 		count = -1;
@@ -119,7 +119,7 @@ static void Function()
 
 		while (count != 10)
 		{
-			std::this_thread::yield();
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 	}
 	catch (std::exception & e)

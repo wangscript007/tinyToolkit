@@ -9,20 +9,7 @@
 
 #include "file.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <stdexcept>
-#
-#endif
+#include <stdexcept>
 
 
 namespace logger

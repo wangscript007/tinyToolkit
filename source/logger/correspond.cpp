@@ -9,21 +9,8 @@
 
 #include "correspond.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <map>
-#  include <stdexcept>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <map>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <map>
-#
-#endif
+#include <map>
+#include <stdexcept>
 
 
 namespace logger

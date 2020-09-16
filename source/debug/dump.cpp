@@ -9,10 +9,8 @@
 
 #include "dump.h"
 
-
 #if PLATFORM_TYPE == PLATFORM_WINDOWS
 #
-#  include <ctime>
 #  include <chrono>
 #  include <string>
 #  include <memory>
@@ -22,14 +20,6 @@
 #  include <DbgHelp.h>
 #
 #  pragma comment( lib, "dbghelp.lib")
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#
 #
 #endif
 
@@ -122,7 +112,7 @@ namespace debug
 	{
 		std::tm now{ };
 
-		std::time_t current = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count() + (8 * 3600);
+		int64_t current = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count() + (8 * 3600);
 
 		::gmtime_s(&now, &current);
 

@@ -13,23 +13,8 @@
 
 #include "type.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <chrono>
-#  include <string>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <chrono>
-#  include <string>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <chrono>
-#  include <string>
-#
-#endif
+#include <chrono>
+#include <string>
 
 
 namespace logger

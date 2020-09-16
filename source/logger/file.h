@@ -14,20 +14,7 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <fstream>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <fstream>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <fstream>
-#
-#endif
+#include <fstream>
 
 
 namespace logger

@@ -14,23 +14,8 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <queue>
-#  include <condition_variable>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <queue>
-#  include <condition_variable>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <queue>
-#  include <condition_variable>
-#
-#endif
+#include <queue>
+#include <condition_variable>
 
 
 namespace container
@@ -186,6 +171,8 @@ namespace container
 		 */
 		bool Empty()
 		{
+			std::lock_guard<std::mutex> lock(_mutex);
+
 			return _queue.empty();
 		}
 
@@ -198,6 +185,8 @@ namespace container
 		 */
 		std::size_t Size()
 		{
+			std::lock_guard<std::mutex> lock(_mutex);
+
 			return _queue.size();
 		}
 

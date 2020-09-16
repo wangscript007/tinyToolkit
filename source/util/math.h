@@ -14,20 +14,7 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <type_traits>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <type_traits>
-#
-#endif
+#include <string>
 
 
 namespace util
@@ -39,7 +26,7 @@ namespace util
 		 *
 		 * 是否为奇数
 		 *
-		 * @param content 内容
+		 * @param content 数字
 		 *
 		 * @return 是否为奇数
 		 *

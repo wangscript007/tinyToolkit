@@ -13,20 +13,7 @@
 
 #include "description.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <unordered_map>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <unordered_map>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <unordered_map>
-#
-#endif
+#include <unordered_map>
 
 
 namespace option

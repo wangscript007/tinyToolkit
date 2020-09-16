@@ -14,21 +14,8 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <mutex>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <mutex>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <mutex>
-#  include <memory>
-#
-#endif
+#include <mutex>
+#include <memory>
 
 
 namespace util
@@ -49,10 +36,11 @@ namespace util
 		template <typename ... Args>
 		static TypeT & Instance(Args &&... args)
 		{
-			std::call_once(_onceFlag, [&]()
+			std::call_once(_onceFlag, [](Args &&... args_)
 			{
-				_instance.reset(new TypeT(std::forward<Args>(args)...));
-			});
+				_instance = std::unique_ptr<TypeT>(new TypeT(std::forward<Args>(args_)...));
+			},
+			std::forward<Args>(args)...);
 
 			return *_instance;
 		}
@@ -72,7 +60,7 @@ namespace util
 		 */
 		~Singleton() = default;
 
-	protected:
+	private:
 		static std::once_flag _onceFlag;
 
 		static std::unique_ptr<TypeT> _instance;
@@ -82,7 +70,7 @@ namespace util
 	std::once_flag Singleton<TypeT>::_onceFlag;
 
 	template <typename TypeT>
-	std::unique_ptr<TypeT> Singleton<TypeT>::_instance;
+	std::unique_ptr<TypeT> Singleton<TypeT>::_instance = nullptr;
 }
 
 

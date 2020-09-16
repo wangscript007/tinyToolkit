@@ -14,23 +14,8 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <ctime>
-#  include <cstdint>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <ctime>
-#  include <cstdint>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <ctime>
-#  include <cstdint>
-#
-#endif
+#include <ctime>
+#include <cstdint>
 
 
 namespace id
@@ -80,8 +65,8 @@ namespace id
 		int32_t _deviceID{ 0 };
 		int32_t _sequence{ 0 };
 
-		std::time_t _baseTimeStamp{ 0 };
-		std::time_t _lastTimeStamp{ 0 };
+		int64_t _baseTimeStamp{ 0 };
+		int64_t _lastTimeStamp{ 0 };
 	};
 }
 

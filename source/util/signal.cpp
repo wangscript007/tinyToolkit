@@ -9,20 +9,7 @@
 
 #include "signal.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <csignal>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <csignal>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <csignal>
-#
-#endif
+#include <csignal>
 
 
 namespace util

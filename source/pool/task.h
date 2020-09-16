@@ -14,24 +14,9 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <queue>
-#  include <future>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <queue>
-#  include <future>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <queue>
-#  include <future>
-#  include <functional>
-#
-#endif
+#include <queue>
+#include <future>
+#include <functional>
 
 
 namespace pool

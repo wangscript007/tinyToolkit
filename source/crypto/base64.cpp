@@ -9,21 +9,8 @@
 
 #include "base64.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <stdexcept>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <cstring>
-#  include <stdexcept>
-#
-#endif
+#include <cstring>
+#include <stdexcept>
 
 
 namespace crypto

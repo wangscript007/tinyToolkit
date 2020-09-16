@@ -13,20 +13,7 @@
 
 #include "value.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <vector>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <vector>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <vector>
-#
-#endif
+#include <vector>
 
 
 namespace option

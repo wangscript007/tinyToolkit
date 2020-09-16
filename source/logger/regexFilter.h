@@ -13,20 +13,7 @@
 
 #include "filter.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <regex>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <regex>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <regex>
-#
-#endif
+#include <regex>
 
 
 namespace logger

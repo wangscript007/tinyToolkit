@@ -129,6 +129,8 @@ namespace pool
 	 */
 	void TaskPool::Pause()
 	{
+		std::lock_guard<std::mutex> lock(_mutex);
+
 		_isPause = true;
 	}
 
@@ -139,6 +141,8 @@ namespace pool
 	 */
 	void TaskPool::Resume()
 	{
+		std::lock_guard<std::mutex> lock(_mutex);
+
 		_isPause = false;
 
 		_condition.notify_all();
@@ -153,6 +157,8 @@ namespace pool
 	 */
 	bool TaskPool::IsIdle()
 	{
+		std::lock_guard<std::mutex> lock(_mutex);
+
 		return _tasks.empty() && _idles == _threads.size();
 	}
 
@@ -165,6 +171,8 @@ namespace pool
 	 */
 	bool TaskPool::IsClose()
 	{
+		std::lock_guard<std::mutex> lock(_mutex);
+
 		return _isClose;
 	}
 
@@ -177,6 +185,8 @@ namespace pool
 	 */
 	bool TaskPool::IsPause()
 	{
+		std::lock_guard<std::mutex> lock(_mutex);
+
 		return _isPause;
 	}
 
@@ -189,6 +199,8 @@ namespace pool
 	 */
 	bool TaskPool::IsValid()
 	{
+		std::lock_guard<std::mutex> lock(_mutex);
+
 		return _isValid;
 	}
 
@@ -201,6 +213,8 @@ namespace pool
 	 */
 	std::size_t TaskPool::TaskSize()
 	{
+		std::lock_guard<std::mutex> lock(_mutex);
+
 		return _tasks.size();
 	}
 
@@ -213,6 +227,8 @@ namespace pool
 	 */
 	std::size_t TaskPool::ThreadSize()
 	{
+		std::lock_guard<std::mutex> lock(_mutex);
+
 		return _threads.size();
 	}
 }

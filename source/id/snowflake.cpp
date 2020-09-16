@@ -9,24 +9,9 @@
 
 #include "snowflake.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <chrono>
-#  include <string>
-#  include <stdexcept>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <chrono>
-#  include <string>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <chrono>
-#  include <stdexcept>
-#
-#endif
+#include <chrono>
+#include <string>
+#include <stdexcept>
 
 
 namespace id
@@ -40,10 +25,10 @@ namespace id
 	 * @return 当前时间戳
 	 *
 	 */
-	std::time_t NextMilliseconds(std::time_t lastTimestamp)
+	int64_t NextMilliseconds(int64_t lastTimestamp)
 	{
 		/// 这里需要用稳定时间, 防止系统时间变化
-		auto timeStamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+		int64_t timeStamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 
 		while (timeStamp <= lastTimestamp)
 		{
@@ -106,7 +91,7 @@ namespace id
 	 */
 	uint64_t Snowflake::Generate()
 	{
-		auto timeStamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+		int64_t timeStamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 
 		if (timeStamp < _lastTimeStamp)
 		{

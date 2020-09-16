@@ -9,20 +9,7 @@
 
 #include "unique.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <chrono>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <chrono>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <chrono>
-#
-#endif
+#include <chrono>
 
 
 namespace id

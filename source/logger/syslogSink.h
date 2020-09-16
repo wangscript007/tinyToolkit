@@ -13,18 +13,9 @@
 
 #include "sink.h"
 
-
 #if PLATFORM_TYPE == PLATFORM_WINDOWS
 #
 #  include <windows.h>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#
 #
 #endif
 

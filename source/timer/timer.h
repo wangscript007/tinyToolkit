@@ -13,30 +13,12 @@
 
 #include "event.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <mutex>
-#  include <atomic>
-#  include <functional>
-#  include <unordered_map>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <thread>
-#  include <vector>
-#  include <unordered_map>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <mutex>
-#  include <atomic>
-#  include <thread>
-#  include <vector>
-#  include <functional>
-#  include <unordered_map>
-#
-#endif
+#include <mutex>
+#include <atomic>
+#include <thread>
+#include <vector>
+#include <functional>
+#include <unordered_map>
 
 
 namespace timer
@@ -139,7 +121,7 @@ namespace timer
 		 * @return 是否启动成功
 		 *
 		 */
-		bool AddTask(const std::function<void()> & task, int64_t count, std::time_t interval);
+		bool AddTask(const std::function<void()> & task, int64_t count, int64_t interval);
 
 		/**
 		 *
@@ -152,7 +134,7 @@ namespace timer
 		 * @return 是否启动成功
 		 *
 		 */
-		bool AddTask(const std::shared_ptr<ITask> & task, int64_t count, std::time_t interval);
+		bool AddTask(const std::shared_ptr<ITask> & task, int64_t count, int64_t interval);
 
 		/**
 		 *
@@ -234,8 +216,8 @@ namespace timer
 
 		std::thread _thread{ };
 
-		std::atomic<std::time_t> _tickTime{ 0 };
-		std::atomic<std::time_t> _lastTime{ 0 };
+		std::atomic<int64_t> _tickTime{ 0 };
+		std::atomic<int64_t> _lastTime{ 0 };
 
 		std::vector<Event *> _nearList[NEAR_SIZE]{ };
 		std::vector<Event *> _wheelList[WHEEL_NUM][WHEEL_SIZE]{ };

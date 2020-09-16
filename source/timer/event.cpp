@@ -22,10 +22,10 @@ namespace timer
 	 * @param interval 间隔(毫秒)
 	 *
 	 */
-	Event::Event(std::shared_ptr<ITask> task, int64_t count, std::time_t expire, std::time_t interval) : _count(count),
-	                                                                                                     _expire(expire),
-	                                                                                                     _interval(interval),
-	                                                                                                     _task(std::move(task))
+	Event::Event(std::shared_ptr<ITask> task, int64_t count, int64_t expire, int64_t interval) : _count(count),
+																								 _expire(expire),
+																								 _interval(interval),
+																								 _task(std::move(task))
 	{
 		if (_task)
 		{
@@ -110,7 +110,7 @@ namespace timer
 	 * @param tick 时间戳
 	 *
 	 */
-	void Event::Pause(std::time_t tick)
+	void Event::Pause(int64_t tick)
 	{
 		if (!_isValid || _isPause)
 		{
@@ -134,7 +134,7 @@ namespace timer
 	 * @param tick 时间戳
 	 *
 	 */
-	void Event::Resume(std::time_t tick)
+	void Event::Resume(int64_t tick)
 	{
 		if (!_isValid || !_isPause)
 		{
@@ -158,7 +158,7 @@ namespace timer
 	 * @param tick 时间戳
 	 *
 	 */
-	void Event::RevisedExpire(std::time_t tick)
+	void Event::RevisedExpire(int64_t tick)
 	{
 		auto interval = _expire - tick;
 
@@ -199,7 +199,7 @@ namespace timer
 	 * @return 过期时间
 	 *
 	 */
-	std::time_t Event::Expire()
+	int64_t Event::Expire()
 	{
 		return _expire;
 	}

@@ -13,25 +13,10 @@
 
 #include "sink.h"
 
+#include <mutex>
+#include <unordered_map>
+
 #include <fmt/format.h>
-
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <mutex>
-#  include <unordered_map>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <mutex>
-#  include <unordered_map>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <mutex>
-#  include <unordered_map>
-#
-#endif
 
 
 namespace logger

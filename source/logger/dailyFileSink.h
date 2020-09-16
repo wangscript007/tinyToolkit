@@ -14,20 +14,7 @@
 #include "file.h"
 #include "sink.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <ctime>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#
-#
-#endif
+#include <ctime>
 
 
 namespace logger
@@ -102,7 +89,7 @@ namespace logger
 		int32_t _minute{ 0 };
 		int32_t _second{ 0 };
 
-		std::time_t _time{ 0 };
+		int64_t _time{ 0 };
 
 		std::string _path{ };
 	};

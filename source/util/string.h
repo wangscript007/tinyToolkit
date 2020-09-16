@@ -11,28 +11,13 @@
  */
 
 
-#include <fmt/format.h>
-
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
+#include <vector>
+#include <sstream>
 
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <vector>
-#  include <sstream>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <vector>
-#  include <sstream>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <vector>
-#  include <sstream>
-#
-#endif
+#include <fmt/format.h>
 
 
 namespace util
@@ -126,6 +111,19 @@ namespace util
 
 		/**
 		 *
+		 * 按值拆分内容
+		 *
+		 * @param content 内容
+		 * @param key 匹配值
+		 * @param keepEmpty 是否保留空串
+		 *
+		 * @return 内容集合
+		 *
+		 */
+		static std::vector<std::string> Split(const std::string & content, const std::string & key, bool keepEmpty = false);
+
+		/**
+		 *
 		 * 按行拆分内容
 		 *
 		 * @param content 内容
@@ -134,6 +132,18 @@ namespace util
 		 *
 		 */
 		static void SplitLines(const std::string & content, std::vector<std::string> & result, bool keepEnter = false);
+
+		/**
+		 *
+		 * 按行拆分内容
+		 *
+		 * @param content 内容
+		 * @param keepEnter 是否保留换行符
+		 *
+		 * @return 内容集合
+		 *
+		 */
+		static std::vector<std::string> SplitLines(const std::string & content, bool keepEnter = false);
 
 		/**
 		 *

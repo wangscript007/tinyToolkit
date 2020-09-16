@@ -9,27 +9,12 @@
 
 #include "filesystem.h"
 
-
 #if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <fstream>
-#  include <functional>
 #
 #  include <io.h>
 #  include <direct.h>
 #
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <fstream>
-#
-#  include <unistd.h>
-#  include <dirent.h>
-#
-#  include <sys/stat.h>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <fstream>
+#else
 #
 #  include <unistd.h>
 #  include <dirent.h>
@@ -37,6 +22,10 @@
 #  include <sys/stat.h>
 #
 #endif
+
+#include <cstring>
+#include <fstream>
+#include <functional>
 
 
 namespace util
@@ -294,6 +283,67 @@ namespace util
 
 	/**
 	 *
+	 * 读取文件
+	 *
+	 * @param path 路径
+	 * @param result 结果
+	 * @param keepEmpty 是否保留空行
+	 *
+	 * @return 是否读取成功
+	 *
+	 */
+	bool Filesystem::ReadFile(const std::string & path, std::vector<std::string> & result, bool keepEmpty)
+	{
+		if (!Exists(path))
+		{
+			return false;
+		}
+
+		std::ifstream ifs(path, std::ios::binary);
+
+		if (!ifs.is_open())
+		{
+			return false;
+		}
+
+		std::string content{ };
+
+		while (!ifs.eof())
+		{
+			std::getline(ifs, content);
+
+			if (keepEmpty || !content.empty())
+			{
+				result.push_back(content);
+			}
+		}
+
+		ifs.close();
+
+		return true;
+	}
+
+	/**
+	 *
+	 * 读取文件
+	 *
+	 * @param path 路径
+	 * @param keepEmpty 是否保留空行
+	 *
+	 * @return 内容集合
+	 *
+	 */
+	std::vector<std::string> Filesystem::ReadFile(const std::string & path, bool keepEmpty)
+	{
+		std::vector<std::string> result{ };
+
+		ReadFile(path, result, keepEmpty);
+
+		return result;
+	}
+
+	/**
+	 *
 	 * 写入文件
 	 *
 	 * @param path 路径
@@ -339,6 +389,408 @@ namespace util
 		ofs.close();
 
 		return true;
+	}
+
+	/**
+	 *
+	 * 遍历文件
+	 *
+	 * @param path 路径
+	 * @param result 结果
+	 * @param subdirectory 是否遍历子目录
+	 *
+	 * @return 是否遍历成功
+	 *
+	 */
+	bool Filesystem::TraverseFile(const std::string & path, std::vector<std::string> & result, bool subdirectory)
+	{
+		if (!Exists(path))
+		{
+			return false;
+		}
+
+	#if PLATFORM_TYPE == PLATFORM_WINDOWS
+
+		std::string dir{ };
+
+		if (path[path.size() - 1] == PATH_SEP[0])
+		{
+			dir.append(path);
+			dir.append("*.*");
+		}
+		else
+		{
+			dir.append(path);
+			dir.append(PATH_SEP);
+			dir.append("*.*");
+		}
+
+		WIN32_FIND_DATA finder{ };
+
+		std::unique_ptr<typename std::remove_pointer<HANDLE>::type, std::function<void(HANDLE)>> hFind
+		(
+			::FindFirstFile(dir.c_str(), &finder),
+
+			[](HANDLE handle)
+			{
+				if (handle && handle != INVALID_HANDLE_VALUE)
+				{
+					::FindClose(handle);
+				}
+			}
+		);
+
+		if (hFind == nullptr || hFind.get() == INVALID_HANDLE_VALUE)
+		{
+			return false;
+		}
+
+		do
+		{
+			if (::strcmp(finder.cFileName, ".") == 0 || ::strcmp(finder.cFileName, "..") == 0)
+			{
+				continue;
+			}
+
+			std::string value{ };
+
+			if (path[path.size() - 1] == PATH_SEP[0])
+			{
+				if (path != ".")
+				{
+					value.append(path);
+				}
+
+				value.append(finder.cFileName);
+			}
+			else
+			{
+				if (path != ".")
+				{
+					value.append(path);
+					value.append(PATH_SEP);
+				}
+
+				value.append(finder.cFileName);
+			}
+
+			if (finder.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				if (subdirectory)
+				{
+					if (!TraverseFile(value, result, subdirectory))
+					{
+						return false;
+					}
+				}
+			}
+			else
+			{
+				result.push_back(value);
+			}
+		}
+		while (::FindNextFile(hFind.get(), &finder));
+
+	#else
+
+		std::unique_ptr<DIR, std::function<void(DIR *)>> dir
+		(
+			::opendir(path.c_str()),
+
+			[](DIR * handle)
+			{
+				if (handle)
+				{
+					::closedir(handle);
+				}
+			}
+		);
+
+		if (dir == nullptr)
+		{
+			return false;
+		}
+
+		struct dirent * finder = ::readdir(dir.get());
+
+		if (finder == nullptr)
+		{
+			return false;
+		}
+
+		do
+		{
+			if (::strcmp(finder->d_name, ".") == 0 || ::strcmp(finder->d_name, "..") == 0)
+			{
+				continue;
+			}
+
+			std::string value{ };
+
+			if (path[path.size() - 1] == PATH_SEP[0])
+			{
+				if (path != ".")
+				{
+					value.append(path);
+				}
+
+				value.append(finder->d_name);
+			}
+			else
+			{
+				if (path != ".")
+				{
+					value.append(path);
+					value.append(PATH_SEP);
+				}
+
+				value.append(finder->d_name);
+			}
+
+			if (IsDirectory(value))
+			{
+				if (subdirectory)
+				{
+					if (!TraverseFile(value, result, subdirectory))
+					{
+						return false;
+					}
+				}
+			}
+			else
+			{
+				result.push_back(value);
+			}
+		}
+		while ((finder = ::readdir(dir.get())));
+
+	#endif
+
+		return true;
+	}
+
+	/**
+	 *
+	 * 遍历文件
+	 *
+	 * @param path 路径
+	 * @param subdirectory 是否遍历子目录
+	 *
+	 * @return 文件集合
+	 *
+	 */
+	std::vector<std::string> Filesystem::TraverseFile(const std::string & path, bool subdirectory)
+	{
+		std::vector<std::string> result{ };
+
+		TraverseFile(path, result, subdirectory);
+
+		return result;
+	}
+
+	/**
+	 *
+	 * 遍历文件
+	 *
+	 * @param path 路径
+	 * @param result 结果
+	 * @param rule 规则
+	 * @param subdirectory 是否遍历子目录
+	 *
+	 * @return 是否遍历成功
+	 *
+	 */
+	bool Filesystem::TraverseFile(const std::string & path, std::vector<std::string> & result, const std::regex & rule, bool subdirectory)
+	{
+		if (!Exists(path))
+		{
+			return false;
+		}
+
+	#if PLATFORM_TYPE == PLATFORM_WINDOWS
+
+		std::string dir{ };
+
+		if (path[path.size() - 1] == PATH_SEP[0])
+		{
+			dir.append(path);
+			dir.append("*.*");
+		}
+		else
+		{
+			dir.append(path);
+			dir.append(PATH_SEP);
+			dir.append("*.*");
+		}
+
+		WIN32_FIND_DATA finder{ };
+
+		std::unique_ptr<typename std::remove_pointer<HANDLE>::type, std::function<void(HANDLE)>> hFind
+		(
+			::FindFirstFile(dir.c_str(), &finder),
+
+			[](HANDLE handle)
+			{
+				if (handle && handle != INVALID_HANDLE_VALUE)
+				{
+					::FindClose(handle);
+				}
+			}
+		);
+
+		if (hFind == nullptr || hFind.get() == INVALID_HANDLE_VALUE)
+		{
+			return false;
+		}
+
+		do
+		{
+			if (::strcmp(finder.cFileName, ".") == 0 || ::strcmp(finder.cFileName, "..") == 0)
+			{
+				continue;
+			}
+
+			std::string value{ };
+
+			if (path[path.size() - 1] == PATH_SEP[0])
+			{
+				if (path != ".")
+				{
+					value.append(path);
+				}
+
+				value.append(finder.cFileName);
+			}
+			else
+			{
+				if (path != ".")
+				{
+					value.append(path);
+					value.append(PATH_SEP);
+				}
+
+				value.append(finder.cFileName);
+			}
+
+			if (finder.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				if (subdirectory)
+				{
+					if (!TraverseFile(value, result, rule, subdirectory))
+					{
+						return false;
+					}
+				}
+			}
+			else
+			{
+				if (std::regex_match(value, rule))
+				{
+					result.push_back(value);
+				}
+			}
+		}
+		while (::FindNextFile(hFind.get(), &finder));
+
+	#else
+
+		std::unique_ptr<DIR, std::function<void(DIR *)>> dir
+		(
+			::opendir(path.c_str()),
+
+			[](DIR * handle)
+			{
+				if (handle)
+				{
+					::closedir(handle);
+				}
+			}
+		);
+
+		if (dir == nullptr)
+		{
+			return false;
+		}
+
+		struct dirent * finder = ::readdir(dir.get());
+
+		if (finder == nullptr)
+		{
+			return false;
+		}
+
+		do
+		{
+			if (::strcmp(finder->d_name, ".") == 0 || ::strcmp(finder->d_name, "..") == 0)
+			{
+				continue;
+			}
+
+			std::string value{ };
+
+			if (path[path.size() - 1] == PATH_SEP[0])
+			{
+				if (path != ".")
+				{
+					value.append(path);
+				}
+
+				value.append(finder->d_name);
+			}
+			else
+			{
+				if (path != ".")
+				{
+					value.append(path);
+					value.append(PATH_SEP);
+				}
+
+				value.append(finder->d_name);
+			}
+
+			if (IsDirectory(value))
+			{
+				if (subdirectory)
+				{
+					if (!TraverseFile(value, result, rule, subdirectory))
+					{
+						return false;
+					}
+				}
+			}
+			else
+			{
+				if (std::regex_match(value, rule))
+				{
+					result.push_back(value);
+				}
+			}
+		}
+		while ((finder = ::readdir(dir.get())));
+
+	#endif
+
+		return true;
+	}
+
+	/**
+	 *
+	 * 遍历文件
+	 *
+	 * @param path 路径
+	 * @param rule 规则
+	 * @param subdirectory 是否遍历子目录
+	 *
+	 * @return 文件集合
+	 *
+	 */
+	std::vector<std::string> Filesystem::TraverseFile(const std::string & path, const std::regex & rule, bool subdirectory)
+	{
+		std::vector<std::string> result{ };
+
+		TraverseFile(path, result, rule, subdirectory);
+
+		return result;
 	}
 
 	/**
@@ -412,44 +864,424 @@ namespace util
 
 	/**
 	 *
-	 * 读取文件
+	 * 遍历目录
 	 *
 	 * @param path 路径
 	 * @param result 结果
-	 * @param keepEmpty 是否保留空行
+	 * @param subdirectory 是否遍历子目录
 	 *
-	 * @return 是否读取成功
+	 * @return 是否遍历成功
 	 *
 	 */
-	bool Filesystem::ReadFile(const std::string & path, std::vector<std::string> & result, bool keepEmpty)
+	bool Filesystem::TraverseDirectory(const std::string & path, std::vector<std::string> & result, bool subdirectory)
 	{
 		if (!Exists(path))
 		{
 			return false;
 		}
 
-		std::ifstream ifs(path, std::ios::binary);
+	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-		if (!ifs.is_open())
+		std::string dir{ };
+
+		if (path[path.size() - 1] == PATH_SEP[0])
+		{
+			dir.append(path);
+			dir.append("*.*");
+		}
+		else
+		{
+			dir.append(path);
+			dir.append(PATH_SEP);
+			dir.append("*.*");
+		}
+
+		WIN32_FIND_DATA finder{ };
+
+		std::unique_ptr<typename std::remove_pointer<HANDLE>::type, std::function<void(HANDLE)>> hFind
+		(
+			::FindFirstFile(dir.c_str(), &finder),
+
+			[](HANDLE handle)
+			{
+				if (handle && handle != INVALID_HANDLE_VALUE)
+				{
+					::FindClose(handle);
+				}
+			}
+		);
+
+		if (hFind == nullptr || hFind.get() == INVALID_HANDLE_VALUE)
 		{
 			return false;
 		}
 
-		std::string content{ };
-
-		while (!ifs.eof())
+		do
 		{
-			std::getline(ifs, content);
-
-			if (keepEmpty || !content.empty())
+			if (::strcmp(finder.cFileName, ".") == 0 || ::strcmp(finder.cFileName, "..") == 0)
 			{
-				result.push_back(content);
+				continue;
+			}
+
+			std::string value{ };
+
+			if (path[path.size() - 1] == PATH_SEP[0])
+			{
+				if (path != ".")
+				{
+					value.append(path);
+				}
+
+				value.append(finder.cFileName);
+			}
+			else
+			{
+				if (path != ".")
+				{
+					value.append(path);
+					value.append(PATH_SEP);
+				}
+
+				value.append(finder.cFileName);
+			}
+
+			if (finder.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				result.push_back(value);
+
+				if (subdirectory)
+				{
+					if (!TraverseDirectory(value, result, subdirectory))
+					{
+						return false;
+					}
+				}
 			}
 		}
+		while (::FindNextFile(hFind.get(), &finder));
 
-		ifs.close();
+	#else
+
+		std::unique_ptr<DIR, std::function<void(DIR *)>> dir
+		(
+			::opendir(path.c_str()),
+
+			[](DIR * handle)
+			{
+				if (handle)
+				{
+					::closedir(handle);
+				}
+			}
+		);
+
+		if (dir == nullptr)
+		{
+			return false;
+		}
+
+		struct dirent * finder = ::readdir(dir.get());
+
+		if (finder == nullptr)
+		{
+			return false;
+		}
+
+		do
+		{
+			if (::strcmp(finder->d_name, ".") == 0 || ::strcmp(finder->d_name, "..") == 0)
+			{
+				continue;
+			}
+
+			std::string value{ };
+
+			if (path[path.size() - 1] == PATH_SEP[0])
+			{
+				if (path != ".")
+				{
+					value.append(path);
+				}
+
+				value.append(finder->d_name);
+			}
+			else
+			{
+				if (path != ".")
+				{
+					value.append(path);
+					value.append(PATH_SEP);
+				}
+
+				value.append(finder->d_name);
+			}
+
+			if (IsDirectory(value))
+			{
+				result.push_back(value);
+
+				if (subdirectory)
+				{
+					if (!TraverseDirectory(value, result, subdirectory))
+					{
+						return false;
+					}
+				}
+			}
+		}
+		while ((finder = ::readdir(dir.get())));
+
+	#endif
 
 		return true;
+	}
+
+	/**
+	 *
+	 * 遍历目录
+	 *
+	 * @param path 路径
+	 * @param subdirectory 是否遍历子目录
+	 *
+	 * @return 目录集合
+	 *
+	 */
+	std::vector<std::string> Filesystem::TraverseDirectory(const std::string & path,  bool subdirectory)
+	{
+		std::vector<std::string> result{ };
+
+		TraverseDirectory(path, result, subdirectory);
+
+		return result;
+	}
+
+	/**
+	 *
+	 * 遍历目录
+	 *
+	 * @param path 路径
+	 * @param result 结果
+	 * @param rule 规则
+	 * @param subdirectory 是否遍历子目录
+	 *
+	 * @return 是否遍历成功
+	 *
+	 */
+	bool Filesystem::TraverseDirectory(const std::string & path, std::vector<std::string> & result, const std::regex & rule, bool subdirectory)
+	{
+		if (!Exists(path))
+		{
+			return false;
+		}
+
+	#if PLATFORM_TYPE == PLATFORM_WINDOWS
+
+		std::string dir{ };
+
+		if (path[path.size() - 1] == PATH_SEP[0])
+		{
+			dir.append(path);
+			dir.append("*.*");
+		}
+		else
+		{
+			dir.append(path);
+			dir.append(PATH_SEP);
+			dir.append("*.*");
+		}
+
+		WIN32_FIND_DATA finder{ };
+
+		std::unique_ptr<typename std::remove_pointer<HANDLE>::type, std::function<void(HANDLE)>> hFind
+		(
+			::FindFirstFile(dir.c_str(), &finder),
+
+			[](HANDLE handle)
+			{
+				if (handle && handle != INVALID_HANDLE_VALUE)
+				{
+					::FindClose(handle);
+				}
+			}
+		);
+
+		if (hFind == nullptr || hFind.get() == INVALID_HANDLE_VALUE)
+		{
+			return false;
+		}
+
+		do
+		{
+			if (::strcmp(finder.cFileName, ".") == 0 || ::strcmp(finder.cFileName, "..") == 0)
+			{
+				continue;
+			}
+
+			std::string value{ };
+
+			if (path[path.size() - 1] == PATH_SEP[0])
+			{
+				if (path != ".")
+				{
+					value.append(path);
+				}
+
+				value.append(finder.cFileName);
+			}
+			else
+			{
+				if (path != ".")
+				{
+					value.append(path);
+					value.append(PATH_SEP);
+				}
+
+				value.append(finder.cFileName);
+			}
+
+			if (finder.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				if (std::regex_match(value, rule))
+				{
+					result.push_back(value);
+				}
+
+				if (subdirectory)
+				{
+					if (!TraverseDirectory(value, result, rule, subdirectory))
+					{
+						return false;
+					}
+				}
+			}
+		}
+		while (::FindNextFile(hFind.get(), &finder));
+
+	#else
+
+		std::unique_ptr<DIR, std::function<void(DIR *)>> dir
+		(
+			::opendir(path.c_str()),
+
+			[](DIR * handle)
+			{
+				if (handle)
+				{
+					::closedir(handle);
+				}
+			}
+		);
+
+		if (dir == nullptr)
+		{
+			return false;
+		}
+
+		struct dirent * finder = ::readdir(dir.get());
+
+		if (finder == nullptr)
+		{
+			return false;
+		}
+
+		do
+		{
+			if (::strcmp(finder->d_name, ".") == 0 || ::strcmp(finder->d_name, "..") == 0)
+			{
+				continue;
+			}
+
+			std::string value{ };
+
+			if (path[path.size() - 1] == PATH_SEP[0])
+			{
+				if (path != ".")
+				{
+					value.append(path);
+				}
+
+				value.append(finder->d_name);
+			}
+			else
+			{
+				if (path != ".")
+				{
+					value.append(path);
+					value.append(PATH_SEP);
+				}
+
+				value.append(finder->d_name);
+			}
+
+			if (IsDirectory(value))
+			{
+				if (std::regex_match(value, rule))
+				{
+					result.push_back(value);
+				}
+
+				if (subdirectory)
+				{
+					if (!TraverseDirectory(value, result, rule, subdirectory))
+					{
+						return false;
+					}
+				}
+			}
+		}
+		while ((finder = ::readdir(dir.get())));
+
+	#endif
+
+		return true;
+	}
+
+	/**
+	 *
+	 * 遍历目录
+	 *
+	 * @param path 路径
+	 * @param rule 规则
+	 * @param subdirectory 是否遍历子目录
+	 *
+	 * @return 目录集合
+	 *
+	 */
+	std::vector<std::string> Filesystem::TraverseDirectory(const std::string & path, const std::regex & rule, bool subdirectory)
+	{
+		std::vector<std::string> result{ };
+
+		TraverseDirectory(path, result, rule, subdirectory);
+
+		return result;
+	}
+
+	/**
+	 *
+	 * 上次访问时间
+	 *
+	 * @param path 路径
+	 *
+	 * @return 上次访问时间
+	 *
+	 */
+	int64_t Filesystem::LastTime(const std::string & path)
+	{
+		if (!Exists(path))
+		{
+			return 0;
+		}
+
+		struct stat status
+		{
+		};
+
+		if (::stat(path.c_str(), &status) == -1)
+		{
+			return 0;
+		}
+
+		return status.st_mtime;
 	}
 
 	/**
@@ -480,32 +1312,6 @@ namespace util
 		ifs.close();
 
 		return size;
-	}
-
-	/**
-	 *
-	 * 上次访问时间
-	 *
-	 * @param path 路径
-	 *
-	 * @return 上次访问时间
-	 *
-	 */
-	std::time_t Filesystem::LastTime(const std::string & path)
-	{
-		if (!Exists(path))
-		{
-			return 0;
-		}
-
-		struct stat status{ };
-
-		if (::stat(path.c_str(), &status) == -1)
-		{
-			return 0;
-		}
-
-		return status.st_mtime;
 	}
 
 	/**
@@ -715,723 +1521,5 @@ namespace util
 	#endif
 
 		return directory;
-	}
-
-	/**
-	 *
-	 * 遍历文件
-	 *
-	 * @param path 路径
-	 * @param result 结果
-	 * @param subdirectory 是否遍历子目录
-	 *
-	 * @return 是否遍历成功
-	 *
-	 */
-	bool Filesystem::TraverseFile(const std::string & path, std::vector<std::string> & result, bool subdirectory)
-	{
-		if (!Exists(path))
-		{
-			return false;
-		}
-
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
-
-		std::string dir{ };
-
-		if (path[path.size() - 1] == PATH_SEP[0])
-		{
-			dir.append(path);
-			dir.append("*.*");
-		}
-		else
-		{
-			dir.append(path);
-			dir.append(PATH_SEP);
-			dir.append("*.*");
-		}
-
-		WIN32_FIND_DATA finder{ };
-
-		std::unique_ptr<typename std::remove_pointer<HANDLE>::type, std::function<void(HANDLE)>> hFind
-		(
-			::FindFirstFile(dir.c_str(), &finder),
-
-			[](HANDLE handle)
-			{
-				if (handle && handle != INVALID_HANDLE_VALUE)
-				{
-					::FindClose(handle);
-				}
-			}
-		);
-
-		if (hFind == nullptr || hFind.get() == INVALID_HANDLE_VALUE)
-		{
-			return false;
-		}
-
-		do
-		{
-			if (::strcmp(finder.cFileName, ".") == 0 || ::strcmp(finder.cFileName, "..") == 0)
-			{
-				continue;
-			}
-
-			std::string value{ };
-
-			if (path[path.size() - 1] == PATH_SEP[0])
-			{
-				if (path != ".")
-				{
-					value.append(path);
-				}
-
-				value.append(finder.cFileName);
-			}
-			else
-			{
-				if (path != ".")
-				{
-					value.append(path);
-					value.append(PATH_SEP);
-				}
-
-				value.append(finder.cFileName);
-			}
-
-			if (finder.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			{
-				if (subdirectory)
-				{
-					if (!TraverseFile(value, result, subdirectory))
-					{
-						return false;
-					}
-				}
-			}
-			else
-			{
-				result.push_back(value);
-			}
-		}
-		while (::FindNextFile(hFind.get(), &finder));
-
-	#else
-
-		std::unique_ptr<DIR, std::function<void(DIR *)>> dir
-		(
-			::opendir(path.c_str()),
-
-			[](DIR * handle)
-			{
-				if (handle)
-				{
-					::closedir(handle);
-				}
-			}
-		);
-
-		if (dir == nullptr)
-		{
-			return false;
-		}
-
-		struct dirent * finder = ::readdir(dir.get());
-
-		if (finder == nullptr)
-		{
-			return false;
-		}
-
-		do
-		{
-			if (::strcmp(finder->d_name, ".") == 0 || ::strcmp(finder->d_name, "..") == 0)
-			{
-				continue;
-			}
-
-			std::string value{ };
-
-			if (path[path.size() - 1] == PATH_SEP[0])
-			{
-				if (path != ".")
-				{
-					value.append(path);
-				}
-
-				value.append(finder->d_name);
-			}
-			else
-			{
-				if (path != ".")
-				{
-					value.append(path);
-					value.append(PATH_SEP);
-				}
-
-				value.append(finder->d_name);
-			}
-
-			if (IsDirectory(value))
-			{
-				if (subdirectory)
-				{
-					if (!TraverseFile(value, result, subdirectory))
-					{
-						return false;
-					}
-				}
-			}
-			else
-			{
-				result.push_back(value);
-			}
-		}
-		while ((finder = ::readdir(dir.get())));
-
-	#endif
-
-		return true;
-	}
-
-	/**
-	 *
-	 * 遍历文件
-	 *
-	 * @param path 路径
-	 * @param result 结果
-	 * @param rule 规则
-	 * @param subdirectory 是否遍历子目录
-	 *
-	 * @return 是否遍历成功
-	 *
-	 */
-	bool Filesystem::TraverseFile(const std::string & path, std::vector<std::string> & result, const std::regex & rule, bool subdirectory)
-	{
-		if (!Exists(path))
-		{
-			return false;
-		}
-
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
-
-		std::string dir{ };
-
-		if (path[path.size() - 1] == PATH_SEP[0])
-		{
-			dir.append(path);
-			dir.append("*.*");
-		}
-		else
-		{
-			dir.append(path);
-			dir.append(PATH_SEP);
-			dir.append("*.*");
-		}
-
-		WIN32_FIND_DATA finder{ };
-
-		std::unique_ptr<typename std::remove_pointer<HANDLE>::type, std::function<void(HANDLE)>> hFind
-		(
-			::FindFirstFile(dir.c_str(), &finder),
-
-			[](HANDLE handle)
-			{
-				if (handle && handle != INVALID_HANDLE_VALUE)
-				{
-					::FindClose(handle);
-				}
-			}
-		);
-
-		if (hFind == nullptr || hFind.get() == INVALID_HANDLE_VALUE)
-		{
-			return false;
-		}
-
-		do
-		{
-			if (::strcmp(finder.cFileName, ".") == 0 || ::strcmp(finder.cFileName, "..") == 0)
-			{
-				continue;
-			}
-
-			std::string value{ };
-
-			if (path[path.size() - 1] == PATH_SEP[0])
-			{
-				if (path != ".")
-				{
-					value.append(path);
-				}
-
-				value.append(finder.cFileName);
-			}
-			else
-			{
-				if (path != ".")
-				{
-					value.append(path);
-					value.append(PATH_SEP);
-				}
-
-				value.append(finder.cFileName);
-			}
-
-			if (finder.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			{
-				if (subdirectory)
-				{
-					if (!TraverseFile(value, result, rule, subdirectory))
-					{
-						return false;
-					}
-				}
-			}
-			else
-			{
-				if (std::regex_match(value, rule))
-				{
-					result.push_back(value);
-				}
-			}
-		}
-		while (::FindNextFile(hFind.get(), &finder));
-
-	#else
-
-		std::unique_ptr<DIR, std::function<void(DIR *)>> dir
-		(
-			::opendir(path.c_str()),
-
-			[](DIR * handle)
-			{
-				if (handle)
-				{
-					::closedir(handle);
-				}
-			}
-		);
-
-		if (dir == nullptr)
-		{
-			return false;
-		}
-
-		struct dirent * finder = ::readdir(dir.get());
-
-		if (finder == nullptr)
-		{
-			return false;
-		}
-
-		do
-		{
-			if (::strcmp(finder->d_name, ".") == 0 || ::strcmp(finder->d_name, "..") == 0)
-			{
-				continue;
-			}
-
-			std::string value{ };
-
-			if (path[path.size() - 1] == PATH_SEP[0])
-			{
-				if (path != ".")
-				{
-					value.append(path);
-				}
-
-				value.append(finder->d_name);
-			}
-			else
-			{
-				if (path != ".")
-				{
-					value.append(path);
-					value.append(PATH_SEP);
-				}
-
-				value.append(finder->d_name);
-			}
-
-			if (IsDirectory(value))
-			{
-				if (subdirectory)
-				{
-					if (!TraverseFile(value, result, rule, subdirectory))
-					{
-						return false;
-					}
-				}
-			}
-			else
-			{
-				if (std::regex_match(value, rule))
-				{
-					result.push_back(value);
-				}
-			}
-		}
-		while ((finder = ::readdir(dir.get())));
-
-	#endif
-
-		return true;
-	}
-
-	/**
-	 *
-	 * 遍历目录
-	 *
-	 * @param path 路径
-	 * @param result 结果
-	 * @param subdirectory 是否遍历子目录
-	 *
-	 * @return 是否遍历成功
-	 *
-	 */
-	bool Filesystem::TraverseDirectory(const std::string & path, std::vector<std::string> & result, bool subdirectory)
-	{
-		if (!Exists(path))
-		{
-			return false;
-		}
-
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
-
-		std::string dir{ };
-
-		if (path[path.size() - 1] == PATH_SEP[0])
-		{
-			dir.append(path);
-			dir.append("*.*");
-		}
-		else
-		{
-			dir.append(path);
-			dir.append(PATH_SEP);
-			dir.append("*.*");
-		}
-
-		WIN32_FIND_DATA finder{ };
-
-		std::unique_ptr<typename std::remove_pointer<HANDLE>::type, std::function<void(HANDLE)>> hFind
-		(
-			::FindFirstFile(dir.c_str(), &finder),
-
-			[](HANDLE handle)
-			{
-				if (handle && handle != INVALID_HANDLE_VALUE)
-				{
-					::FindClose(handle);
-				}
-			}
-		);
-
-		if (hFind == nullptr || hFind.get() == INVALID_HANDLE_VALUE)
-		{
-			return false;
-		}
-
-		do
-		{
-			if (::strcmp(finder.cFileName, ".") == 0 || ::strcmp(finder.cFileName, "..") == 0)
-			{
-				continue;
-			}
-
-			std::string value{ };
-
-			if (path[path.size() - 1] == PATH_SEP[0])
-			{
-				if (path != ".")
-				{
-					value.append(path);
-				}
-
-				value.append(finder.cFileName);
-			}
-			else
-			{
-				if (path != ".")
-				{
-					value.append(path);
-					value.append(PATH_SEP);
-				}
-
-				value.append(finder.cFileName);
-			}
-
-			if (finder.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			{
-				result.push_back(value);
-
-				if (subdirectory)
-				{
-					if (!TraverseDirectory(value, result, subdirectory))
-					{
-						return false;
-					}
-				}
-			}
-		}
-		while (::FindNextFile(hFind.get(), &finder));
-
-	#else
-
-		std::unique_ptr<DIR, std::function<void(DIR *)>> dir
-		(
-			::opendir(path.c_str()),
-
-			[](DIR * handle)
-			{
-				if (handle)
-				{
-					::closedir(handle);
-				}
-			}
-		);
-
-		if (dir == nullptr)
-		{
-			return false;
-		}
-
-		struct dirent * finder = ::readdir(dir.get());
-
-		if (finder == nullptr)
-		{
-			return false;
-		}
-
-		do
-		{
-			if (::strcmp(finder->d_name, ".") == 0 || ::strcmp(finder->d_name, "..") == 0)
-			{
-				continue;
-			}
-
-			std::string value{ };
-
-			if (path[path.size() - 1] == PATH_SEP[0])
-			{
-				if (path != ".")
-				{
-					value.append(path);
-				}
-
-				value.append(finder->d_name);
-			}
-			else
-			{
-				if (path != ".")
-				{
-					value.append(path);
-					value.append(PATH_SEP);
-				}
-
-				value.append(finder->d_name);
-			}
-
-			if (IsDirectory(value))
-			{
-				result.push_back(value);
-
-				if (subdirectory)
-				{
-					if (!TraverseDirectory(value, result, subdirectory))
-					{
-						return false;
-					}
-				}
-			}
-		}
-		while ((finder = ::readdir(dir.get())));
-
-	#endif
-
-		return true;
-	}
-
-	/**
-	 *
-	 * 遍历目录
-	 *
-	 * @param path 路径
-	 * @param result 结果
-	 * @param rule 规则
-	 * @param subdirectory 是否遍历子目录
-	 *
-	 * @return 是否遍历成功
-	 *
-	 */
-	bool Filesystem::TraverseDirectory(const std::string & path, std::vector<std::string> & result, const std::regex & rule, bool subdirectory)
-	{
-		if (!Exists(path))
-		{
-			return false;
-		}
-
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
-
-		std::string dir{ };
-
-		if (path[path.size() - 1] == PATH_SEP[0])
-		{
-			dir.append(path);
-			dir.append("*.*");
-		}
-		else
-		{
-			dir.append(path);
-			dir.append(PATH_SEP);
-			dir.append("*.*");
-		}
-
-		WIN32_FIND_DATA finder{ };
-
-		std::unique_ptr<typename std::remove_pointer<HANDLE>::type, std::function<void(HANDLE)>> hFind
-		(
-			::FindFirstFile(dir.c_str(), &finder),
-
-			[](HANDLE handle)
-			{
-				if (handle && handle != INVALID_HANDLE_VALUE)
-				{
-					::FindClose(handle);
-				}
-			}
-		);
-
-		if (hFind == nullptr || hFind.get() == INVALID_HANDLE_VALUE)
-		{
-			return false;
-		}
-
-		do
-		{
-			if (::strcmp(finder.cFileName, ".") == 0 || ::strcmp(finder.cFileName, "..") == 0)
-			{
-				continue;
-			}
-
-			std::string value{ };
-
-			if (path[path.size() - 1] == PATH_SEP[0])
-			{
-				if (path != ".")
-				{
-					value.append(path);
-				}
-
-				value.append(finder.cFileName);
-			}
-			else
-			{
-				if (path != ".")
-				{
-					value.append(path);
-					value.append(PATH_SEP);
-				}
-
-				value.append(finder.cFileName);
-			}
-
-			if (finder.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			{
-				if (std::regex_match(value, rule))
-				{
-					result.push_back(value);
-				}
-
-				if (subdirectory)
-				{
-					if (!TraverseDirectory(value, result, rule, subdirectory))
-					{
-						return false;
-					}
-				}
-			}
-		}
-		while (::FindNextFile(hFind.get(), &finder));
-
-	#else
-
-		std::unique_ptr<DIR, std::function<void(DIR *)>> dir
-		(
-			::opendir(path.c_str()),
-
-			[](DIR * handle)
-			{
-				if (handle)
-				{
-					::closedir(handle);
-				}
-			}
-		);
-
-		if (dir == nullptr)
-		{
-			return false;
-		}
-
-		struct dirent * finder = ::readdir(dir.get());
-
-		if (finder == nullptr)
-		{
-			return false;
-		}
-
-		do
-		{
-			if (::strcmp(finder->d_name, ".") == 0 || ::strcmp(finder->d_name, "..") == 0)
-			{
-				continue;
-			}
-
-			std::string value{ };
-
-			if (path[path.size() - 1] == PATH_SEP[0])
-			{
-				if (path != ".")
-				{
-					value.append(path);
-				}
-
-				value.append(finder->d_name);
-			}
-			else
-			{
-				if (path != ".")
-				{
-					value.append(path);
-					value.append(PATH_SEP);
-				}
-
-				value.append(finder->d_name);
-			}
-
-			if (IsDirectory(value))
-			{
-				if (std::regex_match(value, rule))
-				{
-					result.push_back(value);
-				}
-
-				if (subdirectory)
-				{
-					if (!TraverseDirectory(value, result, rule, subdirectory))
-					{
-						return false;
-					}
-				}
-			}
-		}
-		while ((finder = ::readdir(dir.get())));
-
-	#endif
-
-		return true;
 	}
 }

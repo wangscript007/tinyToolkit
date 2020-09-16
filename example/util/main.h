@@ -11,11 +11,14 @@
  */
 
 
+#include <thread>
 #include <csignal>
 #include <iostream>
 
 #include "util/math.h"
 #include "util/time.h"
+#include "util/latch.h"
+#include "util/regex.h"
 #include "util/signal.h"
 #include "util/string.h"
 #include "util/system.h"

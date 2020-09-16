@@ -1,13 +1,13 @@
 #
 # cmake支持的最低版本
 #
-CMAKE_MINIMUM_REQUIRED(VERSION 3.5 FATAL_ERROR)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0 FATAL_ERROR)
 
 
 #
 # 版本号
 #
-SET(LIB_VERSION 0.0.3)
+SET(LIB_VERSION 0.0.4)
 
 
 #
@@ -50,7 +50,7 @@ INCLUDE(CheckPlatform)
 INCLUDE(CheckCompiler)
 INCLUDE(CheckBuildType)
 INCLUDE(CheckGlobalType)
-INCLUDE(CheckThirdparty)
+INCLUDE(CheckThirdParty)
 
 
 #

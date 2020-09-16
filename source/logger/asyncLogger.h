@@ -13,24 +13,10 @@
 
 #include "logger.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <ctime>
-#  include <queue>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <queue>
-#  include <thread>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <queue>
-#  include <thread>
-#  include <condition_variable>
-#
-#endif
+#include <ctime>
+#include <queue>
+#include <thread>
+#include <condition_variable>
 
 
 namespace logger
@@ -103,8 +89,8 @@ namespace logger
 	private:
 		std::tm _tm{ };
 
-		std::time_t _second{ 0 };
-		std::time_t _minutes{ 0 };
+		int64_t _second{ 0 };
+		int64_t _minutes{ 0 };
 
 		std::thread _thread{ };
 

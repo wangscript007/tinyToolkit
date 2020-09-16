@@ -13,20 +13,7 @@
 
 #include "context.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <memory>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <memory>
-#
-#endif
+#include <memory>
 
 
 namespace logger

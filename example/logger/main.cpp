@@ -25,19 +25,21 @@ static void SyncLog()
 		auto syslogSink = std::make_shared<logger::SyslogSink>("syslogSink");
 		auto consoleSink = std::make_shared<logger::ConsoleSink>("consoleFile");
 		auto dailyFileSink = std::make_shared<logger::DailyFileSink>("dailyFileSink", "syncDailyFileSink.log");
-		auto rotatingFileLogSink = std::make_shared<logger::RotatingFileSink>("rotatingFileSink", "syncRotatingFileSink.log", 100, 10);
+		auto rotatingFileLogSink = std::make_shared<logger::RotatingFileSink>("rotatingFileSink", "syncRotatingFileSink.log", 1000, 10);
 
 		auto simpleLayout = std::make_shared<logger::SimpleLayout>();
 		auto patternLayout = std::make_shared<logger::PatternLayout>("[%d.%A][%N][%P][%t] %V%n");
 
 		auto regexFilter = std::make_shared<logger::RegexFilter>(".*Critical.*");
 		auto priorityFilter = std::make_shared<logger::PriorityFilter>("DEBUG");
+		auto priorityBelowFilter = std::make_shared<logger::PriorityBelowFilter>("INFO");
+		auto priorityAboveFilter = std::make_shared<logger::PriorityAboveFilter>("NOTICE");
 
 		fileSink->SetLayout(simpleLayout)->AddFilter(priorityFilter);
-		syslogSink->SetLayout(simpleLayout)->AddFilter(priorityFilter);
+		syslogSink->SetLayout(simpleLayout)->AddFilter(priorityAboveFilter);
 		consoleSink->SetLayout(patternLayout)->AddFilter(regexFilter);
 		dailyFileSink->SetLayout(patternLayout)->AddFilter(regexFilter);
-		rotatingFileLogSink->SetLayout(simpleLayout)->AddFilter(priorityFilter);
+		rotatingFileLogSink->SetLayout(simpleLayout)->AddFilter(priorityBelowFilter);
 
 		logger->AddSink(fileSink);
 		logger->AddSink(syslogSink);
@@ -84,19 +86,21 @@ static void AsyncLog()
 		auto syslogSink = std::make_shared<logger::SyslogSink>("syslogSink");
 		auto consoleSink = std::make_shared<logger::ConsoleSink>("consoleFile");
 		auto dailyFileSink = std::make_shared<logger::DailyFileSink>("dailyFileSink", "asyncDailyFileSink.log");
-		auto rotatingFileLogSink = std::make_shared<logger::RotatingFileSink>("rotatingFileSink", "asyncRotatingFileSink.log", 100, 10);
+		auto rotatingFileLogSink = std::make_shared<logger::RotatingFileSink>("rotatingFileSink", "asyncRotatingFileSink.log", 1000, 10);
 
 		auto simpleLayout = std::make_shared<logger::SimpleLayout>();
 		auto patternLayout = std::make_shared<logger::PatternLayout>("[%d.%A][%N][%P][%t] %V%n");
 
 		auto regexFilter = std::make_shared<logger::RegexFilter>(".*Critical.*");
 		auto priorityFilter = std::make_shared<logger::PriorityFilter>("DEBUG");
+		auto priorityBelowFilter = std::make_shared<logger::PriorityBelowFilter>("INFO");
+		auto priorityAboveFilter = std::make_shared<logger::PriorityAboveFilter>("NOTICE");
 
 		fileSink->SetLayout(simpleLayout)->AddFilter(priorityFilter);
-		syslogSink->SetLayout(simpleLayout)->AddFilter(priorityFilter);
+		syslogSink->SetLayout(simpleLayout)->AddFilter(priorityAboveFilter);
 		consoleSink->SetLayout(patternLayout)->AddFilter(regexFilter);
 		dailyFileSink->SetLayout(patternLayout)->AddFilter(regexFilter);
-		rotatingFileLogSink->SetLayout(simpleLayout)->AddFilter(priorityFilter);
+		rotatingFileLogSink->SetLayout(simpleLayout)->AddFilter(priorityBelowFilter);
 
 		logger->AddSink(fileSink);
 		logger->AddSink(syslogSink);

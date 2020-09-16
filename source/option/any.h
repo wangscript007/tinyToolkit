@@ -14,20 +14,7 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <memory>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <memory>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <memory>
-#
-#endif
+#include <memory>
 
 
 namespace option
@@ -112,7 +99,7 @@ namespace option
 			}
 
 		public:
-			ValueTypeT _value{ };
+			ValueTypeT _value;
 		};
 
 	public:

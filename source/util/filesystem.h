@@ -14,21 +14,13 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
 #if PLATFORM_TYPE == PLATFORM_WINDOWS
 #
-#  include <regex>
 #  include <windows.h>
 #
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <regex>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <regex>
-#
 #endif
+
+#include <regex>
 
 
 namespace util
@@ -83,6 +75,31 @@ namespace util
 
 		/**
 		 *
+		 * 读取文件
+		 *
+		 * @param path 路径
+		 * @param result 结果
+		 * @param keepEmpty 是否保留空行
+		 *
+		 * @return 是否读取成功
+		 *
+		 */
+		static bool ReadFile(const std::string & path, std::vector<std::string> & result, bool keepEmpty = false);
+
+		/**
+		 *
+		 * 读取文件
+		 *
+		 * @param path 路径
+		 * @param keepEmpty 是否保留空行
+		 *
+		 * @return 内容集合
+		 *
+		 */
+		static std::vector<std::string> ReadFile(const std::string & path, bool keepEmpty = false);
+
+		/**
+		 *
 		 * 写入文件
 		 *
 		 * @param path 路径
@@ -103,6 +120,58 @@ namespace util
 		 *
 		 */
 		static bool CreateFile(const std::string & path);
+
+		/**
+		 *
+		 * 遍历文件
+		 *
+		 * @param path 路径
+		 * @param result 结果
+		 * @param subdirectory 是否遍历子目录
+		 *
+		 * @return 是否遍历成功
+		 *
+		 */
+		static bool TraverseFile(const std::string & path, std::vector<std::string> & result, bool subdirectory = false);
+
+		/**
+		 *
+		 * 遍历文件
+		 *
+		 * @param path 路径
+		 * @param subdirectory 是否遍历子目录
+		 *
+		 * @return 文件集合
+		 *
+		 */
+		static std::vector<std::string> TraverseFile(const std::string & path, bool subdirectory = false);
+
+		/**
+		 *
+		 * 遍历文件
+		 *
+		 * @param path 路径
+		 * @param result 结果
+		 * @param rule 规则
+		 * @param subdirectory 是否遍历子目录
+		 *
+		 * @return 是否遍历成功
+		 *
+		 */
+		static bool TraverseFile(const std::string & path, std::vector<std::string> & result, const std::regex & rule, bool subdirectory = false);
+
+		/**
+		 *
+		 * 遍历文件
+		 *
+		 * @param path 路径
+		 * @param rule 规则
+		 * @param subdirectory 是否遍历子目录
+		 *
+		 * @return 文件集合
+		 *
+		 */
+		static std::vector<std::string> TraverseFile(const std::string & path, const std::regex & rule, bool subdirectory = false);
 
 		/**
 		 *
@@ -128,16 +197,66 @@ namespace util
 
 		/**
 		 *
-		 * 读取文件
+		 * 遍历目录
 		 *
 		 * @param path 路径
 		 * @param result 结果
-		 * @param keepEmpty 是否保留空行
+		 * @param subdirectory 是否遍历子目录
 		 *
-		 * @return 是否读取成功
+		 * @return 是否遍历成功
 		 *
 		 */
-		static bool ReadFile(const std::string & path, std::vector<std::string> & result, bool keepEmpty = false);
+		static bool TraverseDirectory(const std::string & path, std::vector<std::string> & result, bool subdirectory = false);
+
+		/**
+		 *
+		 * 遍历目录
+		 *
+		 * @param path 路径
+		 * @param subdirectory 是否遍历子目录
+		 *
+		 * @return 目录集合
+		 *
+		 */
+		static std::vector<std::string> TraverseDirectory(const std::string & path,  bool subdirectory = false);
+
+		/**
+		 *
+		 * 遍历目录
+		 *
+		 * @param path 路径
+		 * @param result 结果
+		 * @param rule 规则
+		 * @param subdirectory 是否遍历子目录
+		 *
+		 * @return 是否遍历成功
+		 *
+		 */
+		static bool TraverseDirectory(const std::string & path, std::vector<std::string> & result, const std::regex & rule, bool subdirectory = false);
+
+		/**
+		 *
+		 * 遍历目录
+		 *
+		 * @param path 路径
+		 * @param rule 规则
+		 * @param subdirectory 是否遍历子目录
+		 *
+		 * @return 目录集合
+		 *
+		 */
+		static std::vector<std::string> TraverseDirectory(const std::string & path, const std::regex & rule, bool subdirectory = false);
+
+		/**
+		 *
+		 * 上次访问时间
+		 *
+		 * @param path 路径
+		 *
+		 * @return 上次访问时间
+		 *
+		 */
+		static int64_t LastTime(const std::string &path);
 
 		/**
 		 *
@@ -149,17 +268,6 @@ namespace util
 		 *
 		 */
 		static std::size_t Size(const std::string & path);
-
-		/**
-		 *
-		 * 上次访问时间
-		 *
-		 * @param path 路径
-		 *
-		 * @return 上次访问时间
-		 *
-		 */
-		static std::time_t LastTime(const std::string & path);
 
 		/**
 		 *
@@ -235,60 +343,6 @@ namespace util
 		 *
 		 */
 		static std::string Canonical(const std::string & path);
-
-		/**
-		 *
-		 * 遍历文件
-		 *
-		 * @param path 路径
-		 * @param result 结果
-		 * @param subdirectory 是否遍历子目录
-		 *
-		 * @return 是否遍历成功
-		 *
-		 */
-		static bool TraverseFile(const std::string & path, std::vector<std::string> & result, bool subdirectory = false);
-
-		/**
-		 *
-		 * 遍历文件
-		 *
-		 * @param path 路径
-		 * @param result 结果
-		 * @param rule 规则
-		 * @param subdirectory 是否遍历子目录
-		 *
-		 * @return 是否遍历成功
-		 *
-		 */
-		static bool TraverseFile(const std::string & path, std::vector<std::string> & result, const std::regex & rule, bool subdirectory = false);
-
-		/**
-		 *
-		 * 遍历目录
-		 *
-		 * @param path 路径
-		 * @param result 结果
-		 * @param subdirectory 是否遍历子目录
-		 *
-		 * @return 是否遍历成功
-		 *
-		 */
-		static bool TraverseDirectory(const std::string & path, std::vector<std::string> & result, bool subdirectory = false);
-
-		/**
-		 *
-		 * 遍历目录
-		 *
-		 * @param path 路径
-		 * @param result 结果
-		 * @param rule 规则
-		 * @param subdirectory 是否遍历子目录
-		 *
-		 * @return 是否遍历成功
-		 *
-		 */
-		static bool TraverseDirectory(const std::string & path, std::vector<std::string> & result, const std::regex & rule, bool subdirectory = false);
 	};
 }
 

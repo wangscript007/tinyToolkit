@@ -9,7 +9,6 @@
 
 #include "syncLogger.h"
 
-
 #if PLATFORM_TYPE == PLATFORM_WINDOWS
 #
 #  include <windows.h>
@@ -18,7 +17,7 @@
 #
 #  include <mach-o/dyld.h>
 #
-#elif PLATFORM_TYPE == PLATFORM_LINUX
+#else
 #
 #  include <climits>
 #
@@ -44,15 +43,15 @@ namespace logger
 
 		auto size = ::GetModuleFileName(nullptr, path, PATH_MAX);
 
-	#elif PLATFORM_TYPE == PLATFORM_LINUX
-
-		auto size = ::readlink("/proc/self/exe", path, PATH_MAX);
-
 	#elif PLATFORM_TYPE == PLATFORM_APPLE
 
 		uint32_t size = PATH_MAX;
 
 		::_NSGetExecutablePath(path, &size);
+
+	#else
+
+		auto size = ::readlink("/proc/self/exe", path, PATH_MAX);
 
 	#endif
 
@@ -190,7 +189,7 @@ namespace logger
 
 		context.timePoint = std::chrono::system_clock::now();
 
-		std::time_t second = std::chrono::duration_cast<std::chrono::seconds>(context.timePoint.time_since_epoch()).count();
+		int64_t second = std::chrono::duration_cast<std::chrono::seconds>(context.timePoint.time_since_epoch()).count();
 
 		if (second == _second)  /// 同一秒生成的日志
 		{
@@ -208,11 +207,11 @@ namespace logger
 
 		#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-			::localtime_s(&_tm, &second);
+			::localtime_s(&_tm, reinterpret_cast<std::time_t *>(&second));
 
 		#else
 
-			::localtime_r(&second, &_tm);
+			::localtime_r(reinterpret_cast<std::time_t *>(&second), &_tm);
 
 		#endif
 		}

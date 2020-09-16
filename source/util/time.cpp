@@ -9,21 +9,8 @@
 
 #include "time.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <stdexcept>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <climits>
-#  include <stdexcept>
-#
-#endif
+#include <climits>
+#include <stdexcept>
 
 
 namespace util
@@ -35,29 +22,29 @@ namespace util
 	 * @return 时区
 	 *
 	 */
-	std::time_t Time::Timezone()
+	int64_t Time::Timezone()
 	{
 		std::tm utc{ };
 		std::tm local{ };
 
-		std::time_t current{ Seconds() };
-		std::time_t timezone{ };
+		int64_t current{ 12 * 3600 };  /// 伦敦中午12点整, 全世界都在同一天
+		int64_t timezone{ };
 
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-		::gmtime_s(&utc, &current);
+		::gmtime_s(&utc, reinterpret_cast<std::time_t *>(&current));
 
-		::localtime_s(&local, &current);
+		::localtime_s(&local, reinterpret_cast<std::time_t *>(&current));
 
 	#else
 
-		::gmtime_r(&current, &utc);
+		::gmtime_r(reinterpret_cast<std::time_t *>(&current), &utc);
 
-		::localtime_r(&current, &local);
+		::localtime_r(reinterpret_cast<std::time_t *>(&current), &local);
 
 	#endif
 
-		timezone = static_cast<std::time_t>(local.tm_hour - utc.tm_hour);
+		timezone = static_cast<int64_t>(local.tm_hour - utc.tm_hour);
 
 		if (timezone < -12)
 		{
@@ -78,7 +65,7 @@ namespace util
 	 * @return 小时时间戳
 	 *
 	 */
-	std::time_t Time::Hours()
+	int64_t Time::Hours()
 	{
 		return std::chrono::duration_cast<std::chrono::hours>(TimePoint().time_since_epoch()).count();
 	}
@@ -90,7 +77,7 @@ namespace util
 	 * @return 分钟时间戳
 	 *
 	 */
-	std::time_t Time::Minutes()
+	int64_t Time::Minutes()
 	{
 		return std::chrono::duration_cast<std::chrono::minutes>(TimePoint().time_since_epoch()).count();
 	}
@@ -102,7 +89,7 @@ namespace util
 	 * @return 秒数时间戳
 	 *
 	 */
-	std::time_t Time::Seconds()
+	int64_t Time::Seconds()
 	{
 		return std::chrono::duration_cast<std::chrono::seconds>(TimePoint().time_since_epoch()).count();
 	}
@@ -114,7 +101,7 @@ namespace util
 	 * @return 毫秒时间戳
 	 *
 	 */
-	std::time_t Time::Milliseconds()
+	int64_t Time::Milliseconds()
 	{
 		return std::chrono::duration_cast<std::chrono::milliseconds>(TimePoint().time_since_epoch()).count();
 	}
@@ -126,7 +113,7 @@ namespace util
 	 * @return 微秒时间戳
 	 *
 	 */
-	std::time_t Time::Microseconds()
+	int64_t Time::Microseconds()
 	{
 		return std::chrono::duration_cast<std::chrono::microseconds>(TimePoint().time_since_epoch()).count();
 	}
@@ -138,7 +125,7 @@ namespace util
 	 * @return 纳秒时间戳
 	 *
 	 */
-	std::time_t Time::Nanoseconds()
+	int64_t Time::Nanoseconds()
 	{
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(TimePoint().time_since_epoch()).count();
 	}
@@ -155,7 +142,7 @@ namespace util
 	 * @return 秒数时间戳
 	 *
 	 */
-	std::time_t Time::OffsetTime(int64_t day, int32_t hour, int32_t minutes, int32_t seconds)
+	int64_t Time::OffsetTime(int64_t day, int32_t hour, int32_t minutes, int32_t seconds)
 	{
 		if (hour < 0 || hour > 23)
 		{
@@ -174,15 +161,15 @@ namespace util
 
 		std::tm now{ };
 
-		std::time_t current = Seconds();
+		int64_t current = Seconds();
 
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-		::localtime_s(&now, &current);
+		::localtime_s(&now, reinterpret_cast<std::time_t *>(&current));
 
 	#else
 
-		::localtime_r(&current, &now);
+		::localtime_r(reinterpret_cast<std::time_t *>(&current), &now);
 
 	#endif
 
@@ -203,7 +190,7 @@ namespace util
 	 * @return 秒数时间戳
 	 *
 	 */
-	std::time_t Time::FromString(const char * date, const char * format)
+	int64_t Time::FromString(const char * date, const char * format)
 	{
 		if (date == nullptr || format == nullptr)
 		{
@@ -239,7 +226,7 @@ namespace util
 	 * @return 时间字符串
 	 *
 	 */
-	std::string Time::Format(std::time_t seconds, std::time_t timeZone, const char * format)
+	std::string Time::Format(int64_t seconds, int64_t timeZone, const char * format)
 	{
 		if (format == nullptr)
 		{
@@ -248,15 +235,15 @@ namespace util
 
 		std::tm now{ };
 
-		std::time_t current = seconds + (timeZone * 3600);
+		int64_t current = seconds + (timeZone * 3600);
 
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-		::gmtime_s(&now, &current);
+		::gmtime_s(&now, reinterpret_cast<std::time_t *>(&current));
 
 	#else
 
-		::gmtime_r(&current, &now);
+		::gmtime_r(reinterpret_cast<std::time_t *>(&current), &now);
 
 	#endif
 
@@ -314,7 +301,7 @@ namespace util
 	 */
 	std::string Time::LocalTimeString(const char * pattern)
 	{
-		static time_t timezone = Timezone();
+		static int64_t timezone = Timezone();
 
 		return Format(Seconds(), timezone, pattern);
 	}
@@ -340,53 +327,13 @@ namespace util
 	 * @return 时间点
 	 *
 	 */
-	std::chrono::system_clock::time_point Time::TimePoint(std::time_t time)
+	std::chrono::system_clock::time_point Time::TimePoint(int64_t time)
 	{
 		return std::chrono::time_point_cast<std::chrono::system_clock::duration>
 		(
 			std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>
 			(
 				std::chrono::seconds(time)
-			)
-		);
-	}
-
-	/**
-	 *
-	 * 时间点
-	 *
-	 * @param time 时间结构体
-	 *
-	 * @return 时间点
-	 *
-	 */
-	std::chrono::system_clock::time_point Time::TimePoint(const struct timeval & time)
-	{
-		return std::chrono::time_point<std::chrono::system_clock, std::chrono::system_clock::duration>
-		(
-			std::chrono::duration_cast<std::chrono::system_clock::duration>
-			(
-				std::chrono::seconds(time.tv_sec) + std::chrono::microseconds(time.tv_usec)
-			)
-		);
-	}
-
-	/**
-	 *
-	 * 时间点
-	 *
-	 * @param time 时间结构体
-	 *
-	 * @return 时间点
-	 *
-	 */
-	std::chrono::system_clock::time_point Time::TimePoint(const struct timespec & time)
-	{
-		return std::chrono::time_point<std::chrono::system_clock, std::chrono::system_clock::duration>
-		(
-			std::chrono::duration_cast<std::chrono::system_clock::duration>
-			(
-				std::chrono::seconds(time.tv_sec) + std::chrono::nanoseconds(time.tv_nsec)
 			)
 		);
 	}

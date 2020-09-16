@@ -9,20 +9,7 @@
 
 #include "url.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <cstring>
-#
-#endif
+#include <cstring>
 
 
 namespace crypto

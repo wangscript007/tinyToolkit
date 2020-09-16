@@ -13,23 +13,8 @@
 
 #include "task.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <ctime>
-#  include <memory>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <ctime>
-#  include <memory>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <ctime>
-#  include <memory>
-#
-#endif
+#include <ctime>
+#include <memory>
 
 
 namespace timer
@@ -47,7 +32,7 @@ namespace timer
 		 * @param interval 间隔(毫秒)
 		 *
 		 */
-		Event(std::shared_ptr<ITask> task, int64_t count, std::time_t expire, std::time_t interval);
+		Event(std::shared_ptr<ITask> task, int64_t count, int64_t expire, int64_t interval);
 
 		/**
 		 *
@@ -77,7 +62,7 @@ namespace timer
 		 * @param tick 时间戳
 		 *
 		 */
-		void Pause(std::time_t tick);
+		void Pause(int64_t tick);
 
 		/**
 		 *
@@ -86,7 +71,7 @@ namespace timer
 		 * @param tick 时间戳
 		 *
 		 */
-		void Resume(std::time_t tick);
+		void Resume(int64_t tick);
 
 		/**
 		 *
@@ -95,7 +80,7 @@ namespace timer
 		 * @param tick 时间戳
 		 *
 		 */
-		void RevisedExpire(std::time_t tick);
+		void RevisedExpire(int64_t tick);
 
 		/**
 		 *
@@ -122,7 +107,7 @@ namespace timer
 		 * @return 过期时间
 		 *
 		 */
-		std::time_t Expire();
+		int64_t Expire();
 
 		/**
 		 *
@@ -138,10 +123,9 @@ namespace timer
 		bool _isPause{ false };
 
 		int64_t _count{ 0 };
-
-		std::time_t _expire{ 0 };
-		std::time_t _interval{ 0 };
-		std::time_t _pauseTick{ 0 };
+		int64_t _expire{ 0 };
+		int64_t _interval{ 0 };
+		int64_t _pauseTick{ 0 };
 
 		std::shared_ptr<ITask> _task{ };
 	};

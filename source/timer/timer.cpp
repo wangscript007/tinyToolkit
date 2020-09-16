@@ -9,20 +9,7 @@
 
 #include "timer.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <string>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#
-#
-#endif
+#include <string>
 
 
 namespace timer
@@ -215,6 +202,8 @@ namespace timer
 	 */
 	bool Timer::Exist(const std::shared_ptr<ITask> & task)
 	{
+		std::lock_guard<std::mutex> lock(_taskMutex);
+
 		return _taskList.find(task) != _taskList.end();
 	}
 
@@ -303,7 +292,7 @@ namespace timer
 	 * @return 是否启动成功
 	 *
 	 */
-	bool Timer::AddTask(const std::function<void()> & task, int64_t count, std::time_t interval)
+	bool Timer::AddTask(const std::function<void()> & task, int64_t count, int64_t interval)
 	{
 		if (count == 0)
 		{
@@ -324,19 +313,19 @@ namespace timer
 	 * @return 是否启动成功
 	 *
 	 */
-	bool Timer::AddTask(const std::shared_ptr<ITask> & task, int64_t count, std::time_t interval)
+	bool Timer::AddTask(const std::shared_ptr<ITask> & task, int64_t count, int64_t interval)
 	{
 		if (count == 0)
 		{
 			return false;
 		}
 
-		std::lock_guard<std::mutex> lock(_taskMutex);
-
 		if (Exist(task))
 		{
 			return false;
 		}
+
+		std::lock_guard<std::mutex> lock(_taskMutex);
 
 		auto event = new Event(task, count, interval + _tickTime, interval);
 
@@ -357,6 +346,8 @@ namespace timer
 	 */
 	std::size_t Timer::WorkTaskCount()
 	{
+		std::lock_guard<std::mutex> lock(_taskMutex);
+
 		return _workList.size();
 	}
 
@@ -369,6 +360,8 @@ namespace timer
 	 */
 	std::size_t Timer::PauseTaskCount()
 	{
+		std::lock_guard<std::mutex> lock(_taskMutex);
+
 		return _pauseList.size();
 	}
 
@@ -381,6 +374,8 @@ namespace timer
 	 */
 	std::size_t Timer::TotalTaskCount()
 	{
+		std::lock_guard<std::mutex> lock(_taskMutex);
+
 		return _taskList.size();
 	}
 
@@ -392,14 +387,14 @@ namespace timer
 	void Timer::Update()
 	{
 		/// 这里需要用稳定时间, 防止系统时间变化
-		std::time_t now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+		int64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 
 		if (now < _lastTime.load())
 		{
 			throw std::runtime_error("Time go backwards : " + std::to_string(now) + " < " + std::to_string(_lastTime.load()));
 		}
 
-		std::time_t ticks = now - _lastTime.load();
+		int64_t ticks = now - _lastTime.load();
 
 		if (ticks > 0)
 		{
@@ -478,7 +473,7 @@ namespace timer
 	{
 		std::lock_guard<std::mutex> lock(_eventMutex);
 
-		std::time_t expire = event->Expire();
+		int64_t expire = event->Expire();
 
 		auto offset = static_cast<uint64_t>(expire - _tickTime);
 

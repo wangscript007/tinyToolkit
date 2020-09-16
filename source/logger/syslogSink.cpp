@@ -9,24 +9,13 @@
 
 #include "syslogSink.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <map>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <map>
-#
-#  include <syslog.h>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <map>
+#if PLATFORM_TYPE != PLATFORM_WINDOWS
 #
 #  include <syslog.h>
 #
 #endif
+
+#include <map>
 
 
 namespace logger

@@ -41,17 +41,6 @@ static void Time()
 
 	try
 	{
-		std::time_t time1 = 1234509876;
-
-		struct timeval time2{ };
-		struct timespec time3{ };
-
-		time2.tv_sec = 1234567890;
-		time2.tv_usec = 0;
-
-		time3.tv_sec = 2345678901;
-		time3.tv_nsec = 0;
-
 		std::cout << "Timezone        : " << util::Time::Timezone() << std::endl;
 		std::cout << "Hours           : " << util::Time::Hours() << std::endl;
 		std::cout << "Minutes         : " << util::Time::Minutes() << std::endl;
@@ -69,9 +58,135 @@ static void Time()
 		std::cout << "LocalTimeString : " << util::Time::LocalTimeString() << std::endl;
 		std::cout << "LocalTimeString : " << util::Time::LocalTimeString("%4d_%02d_%02d_%02d_%02d_%02d") << std::endl;
 		std::cout << "TimePoint       : " << util::Time::TimePoint().time_since_epoch().count() << std::endl;
-		std::cout << "TimePoint       : " << util::Time::TimePoint(time1).time_since_epoch().count() << std::endl;
-		std::cout << "TimePoint       : " << util::Time::TimePoint(time2).time_since_epoch().count() << std::endl;
-		std::cout << "TimePoint       : " << util::Time::TimePoint(time3).time_since_epoch().count() << std::endl;
+		std::cout << "TimePoint       : " << util::Time::TimePoint(1234509876).time_since_epoch().count() << std::endl;
+	}
+	catch (std::exception & e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+}
+
+
+static void Latch()
+{
+	std::cout << std::endl;
+	std::cout << "**************************************************" << std::endl;
+	std::cout << "Ready run function [" << CURRENT_FUNC << "]" << std::endl;
+	std::cout << std::endl;
+
+	try
+	{
+		util::CountLatch latch(10);
+
+		std::thread waitThread([&]
+		{
+			latch.Wait();
+		});
+
+		std::thread consumeThread_1([&]
+		{
+			while (latch.RemainingCount())
+			{
+				latch.Down();
+
+				std::cout << "consumeThread_1 : " << latch.RemainingCount() << std::endl;
+
+				std::this_thread::sleep_for(std::chrono::seconds(1));
+			}
+		});
+
+		std::thread consumeThread_2([&]
+		{
+			while (latch.RemainingCount())
+			{
+				latch.Down();
+
+				std::cout << "consumeThread_2 : " << latch.RemainingCount() << std::endl;
+
+				std::this_thread::sleep_for(std::chrono::seconds(1));
+			}
+		});
+
+		waitThread.join();
+
+		consumeThread_1.join();
+		consumeThread_2.join();
+
+		std::cout << "watch done : " << latch.RemainingCount() << std::endl;
+	}
+	catch (std::exception & e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+}
+
+
+static void Regex()
+{
+	std::cout << std::endl;
+	std::cout << "**************************************************" << std::endl;
+	std::cout << "Ready run function [" << CURRENT_FUNC << "]" << std::endl;
+	std::cout << std::endl;
+
+	try
+	{
+		std::cout << "IsIP       : " << util::Regex::IsIP("192.168.2.0") << std::endl;
+		std::cout << "IsIP       : " << util::Regex::IsIP("192.168.2.255") << std::endl;
+		std::cout << "IsIP       : " << util::Regex::IsIP("192.168.2.256") << std::endl;
+
+		std::cout << "IsMac      : " << util::Regex::IsMac("aa:bb:cc:dd:ee") << std::endl;
+		std::cout << "IsMac      : " << util::Regex::IsMac("aa-bb-cc-dd-ee") << std::endl;
+		std::cout << "IsMac      : " << util::Regex::IsMac("aa:bb:cc:dd:ee:ff") << std::endl;
+		std::cout << "IsMac      : " << util::Regex::IsMac("aa-bb-cc-dd-ee-ff") << std::endl;
+		std::cout << "IsMac      : " << util::Regex::IsMac("aa:bb:cc:dd:ee:ff:") << std::endl;
+		std::cout << "IsMac      : " << util::Regex::IsMac("aa-bb-cc-dd-ee-ff-") << std::endl;
+
+		std::cout << "IsIPv4     : " << util::Regex::IsIPv4("192.168.2.0") << std::endl;
+		std::cout << "IsIPv4     : " << util::Regex::IsIPv4("192.168.2.255") << std::endl;
+		std::cout << "IsIPv4     : " << util::Regex::IsIPv4("192.168.2.256") << std::endl;
+
+		std::cout << "IsIPv6     : " << util::Regex::IsIPv6("2001::1319:8a2h:37") << std::endl;
+		std::cout << "IsIPv6     : " << util::Regex::IsIPv6("fdec:a63b:1db9::828") << std::endl;
+		std::cout << "IsIPv6     : " << util::Regex::IsIPv6("fe80::8c3d:dee5:19b:22b7%4") << std::endl;
+
+		std::cout << "IsMail     : " << util::Regex::IsMail("abc@xyz") << std::endl;
+		std::cout << "IsMail     : " << util::Regex::IsMail("abc@xyz.com") << std::endl;
+		std::cout << "IsMail     : " << util::Regex::IsMail("abc@xyz.com.cn") << std::endl;
+
+		std::cout << "IsDate     : " << util::Regex::IsDate("2019-2-28") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2019/2/28") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2019-2-29") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2019/2/29") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2020-2-28") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2020/2/28") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2020-2-29") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2020/2/29") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2019-02-28") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2019/02/28") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2019-02-29") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2019/02/29") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2020-02-28") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2020/02/28") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2020-02-29") << std::endl;
+		std::cout << "IsDate     : " << util::Regex::IsDate("2020/02/29") << std::endl;
+
+		std::cout << "IsTime     : " << util::Regex::IsTime("23:59:59") << std::endl;
+		std::cout << "IsTime     : " << util::Regex::IsTime("23:59:60") << std::endl;
+		std::cout << "IsTime     : " << util::Regex::IsTime("23:60:00") << std::endl;
+		std::cout << "IsTime     : " << util::Regex::IsTime("24:00:00") << std::endl;
+		std::cout << "IsTime     : " << util::Regex::IsTime("23:59:59.000") << std::endl;
+		std::cout << "IsTime     : " << util::Regex::IsTime("23:59:60.000") << std::endl;
+		std::cout << "IsTime     : " << util::Regex::IsTime("23:60:00.000") << std::endl;
+		std::cout << "IsTime     : " << util::Regex::IsTime("24:00:00.000") << std::endl;
+
+		std::cout << "IsDateTime : " << util::Regex::IsDateTime("2019-02-28 23:59:59") << std::endl;
+		std::cout << "IsDateTime : " << util::Regex::IsDateTime("2019/02/28 23:59:59") << std::endl;
+		std::cout << "IsDateTime : " << util::Regex::IsDateTime("2019-02-29 23:59:59") << std::endl;
+		std::cout << "IsDateTime : " << util::Regex::IsDateTime("2019/02/29 23:59:59") << std::endl;
+		std::cout << "IsDateTime : " << util::Regex::IsDateTime("2020-02-28 23:59:59") << std::endl;
+		std::cout << "IsDateTime : " << util::Regex::IsDateTime("2020/02/28 23:59:59") << std::endl;
+		std::cout << "IsDateTime : " << util::Regex::IsDateTime("2020-02-29 23:59:59") << std::endl;
+		std::cout << "IsDateTime : " << util::Regex::IsDateTime("2020/02/29 23:59:59") << std::endl;
 	}
 	catch (std::exception & e)
 	{
@@ -177,11 +292,7 @@ static void String()
 		{
 			std::cout << "---------- Split ----------" << std::endl;
 
-			std::vector<std::string> result{ };
-
-			util::String::Split(content, " ", result);
-
-			for (auto &iter : result)
+			for (auto && iter : util::String::Split(content, " "))
 			{
 				std::cout << iter << std::endl;
 			}
@@ -192,11 +303,7 @@ static void String()
 		{
 			std::cout << "---------- SplitLines ----------" << std::endl;
 
-			std::vector<std::string> result{ };
-
-			util::String::SplitLines(content, result);
-
-			for (auto &iter : result)
+			for (auto && iter : util::String::SplitLines(content))
 			{
 				std::cout << iter << std::endl;
 			}
@@ -243,18 +350,39 @@ static void Singleton()
 		class A
 		{
 		public:
-			explicit A(std::string name) : _name(std::move(name))
+			explicit A(std::size_t number) : _number(number)
 			{
-
+				(void)_number;
 			}
 
 		private:
-			std::string _name{ };
+			std::size_t _number{ 0 };
 		};
 
-		std::cout << "Address : " << std::addressof(util::Singleton<A>::Instance("A")) << std::endl;
-		std::cout << "Address : "  << std::addressof(util::Singleton<A>::Instance("B")) << std::endl;
-		std::cout << "Address : "  << std::addressof(util::Singleton<A>::Instance("C")) << std::endl;
+		std::thread t1([]()
+		{
+			std::cout << "[Thread 1] Singleton Address : " << std::addressof(util::Singleton<A>::Instance(1)) << std::endl;
+			std::cout << "[Thread 1] Singleton Address : " << std::addressof(util::Singleton<A>::Instance(2)) << std::endl;
+			std::cout << "[Thread 1] Singleton Address : " << std::addressof(util::Singleton<A>::Instance(3)) << std::endl;
+		});
+
+		std::thread t2([]()
+		{
+			std::cout << "[Thread 2] Singleton Address : " << std::addressof(util::Singleton<A>::Instance(1)) << std::endl;
+			std::cout << "[Thread 2] Singleton Address : " << std::addressof(util::Singleton<A>::Instance(2)) << std::endl;
+			std::cout << "[Thread 2] Singleton Address : " << std::addressof(util::Singleton<A>::Instance(3)) << std::endl;
+		});
+
+		std::thread t3([]()
+		{
+			std::cout << "[Thread 3] Singleton Address : " << std::addressof(util::Singleton<A>::Instance(1)) << std::endl;
+			std::cout << "[Thread 3] Singleton Address : " << std::addressof(util::Singleton<A>::Instance(2)) << std::endl;
+			std::cout << "[Thread 3] Singleton Address : " << std::addressof(util::Singleton<A>::Instance(3)) << std::endl;
+		});
+
+		t1.join();
+		t2.join();
+		t3.join();
 	}
 	catch (std::exception & e)
 	{
@@ -377,11 +505,7 @@ static void Filesystem()
 			{
 				std::cout << "---------- TraverseFile ----------" << std::endl;
 
-				std::vector<std::string> files{ };
-
-				util::Filesystem::TraverseFile(".", files);
-
-				for (auto &file : files)
+				for (auto && file : util::Filesystem::TraverseFile("."))
 				{
 					std::cout << "[" << file << "]" << std::endl;
 				}
@@ -394,11 +518,7 @@ static void Filesystem()
 			{
 				std::cout << "---------- TraverseFile ----------" << std::endl;
 
-				std::vector<std::string> files{ };
-
-				util::Filesystem::TraverseFile(".", files);
-
-				for (auto &file : files)
+				for (auto && file : util::Filesystem::TraverseFile("."))
 				{
 					std::cout << "[" << file << "]" << std::endl;
 				}
@@ -411,19 +531,11 @@ static void Filesystem()
 			{
 				std::cout << "---------- TraverseRegexFile ----------" << std::endl;
 
-				std::vector<std::string> files{ };
-
-				util::Filesystem::TraverseFile(".", files, std::regex(".*.txt"));
-
-				for (auto &file : files)
+				for (auto && file : util::Filesystem::TraverseFile(".", std::regex(".*.txt")))
 				{
 					std::cout << "[" << file << "]" << std::endl;
 
-					std::vector<std::string> lines{ };
-
-					util::Filesystem::ReadFile(file, lines);
-
-					for (auto &line : lines)
+					for (auto && line : util::Filesystem::ReadFile(file))
 					{
 						std::cout << line << std::endl;
 					}
@@ -437,19 +549,11 @@ static void Filesystem()
 			{
 				std::cout << "---------- TraverseRegexFile ----------" << std::endl;
 
-				std::vector<std::string> files{ };
-
-				util::Filesystem::TraverseFile(".", files, std::regex(".*.txt"));
-
-				for (auto &file : files)
+				for (auto && file : util::Filesystem::TraverseFile(".", std::regex(".*.txt")))
 				{
 					std::cout << "[" << file << "]" << std::endl;
 
-					std::vector<std::string> lines{ };
-
-					util::Filesystem::ReadFile(file, lines);
-
-					for (auto &line : lines)
+					for (auto && line : util::Filesystem::ReadFile(file))
 					{
 						std::cout << line << std::endl;
 					}
@@ -476,11 +580,7 @@ static void Filesystem()
 			{
 				std::cout << "---------- TraverseDirectory ----------" << std::endl;
 
-				std::vector<std::string> directories{ };
-
-				util::Filesystem::TraverseDirectory(".", directories, true);
-
-				for (auto &directory : directories)
+				for (auto && directory : util::Filesystem::TraverseDirectory(".", true))
 				{
 					std::cout << "[" << directory << "]" << std::endl;
 				}
@@ -493,11 +593,7 @@ static void Filesystem()
 			{
 				std::cout << "---------- TraverseDirectory ----------" << std::endl;
 
-				std::vector<std::string> directories{ };
-
-				util::Filesystem::TraverseDirectory(".", directories, true);
-
-				for (auto &directory : directories)
+				for (auto && directory : util::Filesystem::TraverseDirectory(".", true))
 				{
 					std::cout << "[" << directory << "]" << std::endl;
 				}
@@ -520,11 +616,7 @@ static void Filesystem()
 			{
 				std::cout << "---------- TraverseRegexDirectory ----------" << std::endl;
 
-				std::vector<std::string> directories{ };
-
-				util::Filesystem::TraverseDirectory(".", directories, std::regex(".*[a|b|c]+"), true);
-
-				for (auto &directory : directories)
+				for (auto && directory : util::Filesystem::TraverseDirectory(".", std::regex(".*[a|b|c]+"), true))
 				{
 					std::cout << "[" << directory << "]" << std::endl;
 				}
@@ -537,11 +629,7 @@ static void Filesystem()
 			{
 				std::cout << "---------- TraverseRegexDirectory ----------" << std::endl;
 
-				std::vector<std::string> directories{ };
-
-				util::Filesystem::TraverseDirectory(".", directories, std::regex(".*[a|b|c]+"), true);
-
-				for (auto &directory : directories)
+				for (auto && directory : util::Filesystem::TraverseDirectory(".", std::regex(".*[a|b|c]+"), true))
 				{
 					std::cout << "[" << directory << "]" << std::endl;
 				}
@@ -590,6 +678,8 @@ int main(int argc, char const * argv[])
 
 	Math();
 	Time();
+	Latch();
+	Regex();
 	Signal();
 	String();
 	System();

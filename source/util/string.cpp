@@ -22,7 +22,7 @@ namespace util
 	 */
 	void String::Lower(std::string & content, std::size_t offset)
 	{
-		std::transform(content.begin() + offset, content.end(), content.begin() + offset, ::tolower);
+		std::transform(content.begin() + static_cast<std::string::difference_type>(offset), content.end(), content.begin() + static_cast<std::string::difference_type>(offset), ::tolower);
 	}
 
 	/**
@@ -35,7 +35,7 @@ namespace util
 	 */
 	void String::Upper(std::string & content, std::size_t offset)
 	{
-		std::transform(content.begin() + offset, content.end(), content.begin() + offset, ::toupper);
+		std::transform(content.begin() + static_cast<std::string::difference_type>(offset), content.end(), content.begin() + static_cast<std::string::difference_type>(offset), ::toupper);
 	}
 
 	/**
@@ -113,13 +113,31 @@ namespace util
 				}
 			}
 
-			beg = end + key.size();
+			beg = end + static_cast<std::string::difference_type>(key.size());
 
 			if (beg == content.end())
 			{
 				break;
 			}
 		}
+	}
+
+	/**
+	 *
+	 * 按值拆分内容
+	 *
+	 * @param content 内容
+	 * @param key 匹配值
+	 * @param keepEmpty 是否保留空串
+	 *
+	 */
+	std::vector<std::string> String::Split(const std::string & content, const std::string & key, bool keepEmpty)
+	{
+		std::vector<std::string> result{ };
+
+		Split(content, key, result, keepEmpty);
+
+		return result;
 	}
 
 	/**
@@ -160,6 +178,23 @@ namespace util
 
 			j = i;
 		}
+	}
+
+	/**
+	 *
+	 * 按行拆分内容
+	 *
+	 * @param content 内容
+	 * @param keepEnter 是否保留换行符
+	 *
+	 */
+	std::vector<std::string> String::SplitLines(const std::string & content, bool keepEnter)
+	{
+		std::vector<std::string> result{ };
+
+		SplitLines(content, result, keepEnter);
+
+		return result;
 	}
 
 	/**

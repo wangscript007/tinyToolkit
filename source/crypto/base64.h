@@ -14,20 +14,7 @@
 #include "../common/macro.h"
 #include "../common/symbol.h"
 
-
-#if PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#  include <string>
-#
-#elif PLATFORM_TYPE == PLATFORM_APPLE
-#
-#  include <string>
-#
-#elif PLATFORM_TYPE == PLATFORM_LINUX
-#
-#  include <string>
-#
-#endif
+#include <string>
 
 
 namespace crypto

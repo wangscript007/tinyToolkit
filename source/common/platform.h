@@ -11,15 +11,15 @@
  */
 
 
-#define PLATFORM_LINUX		1
+#define PLATFORM_MIPS       1
 #define PLATFORM_APPLE		2
-#define PLATFORM_WINDOWS	3
+#define PLATFORM_LINUX		3
+#define PLATFORM_WINDOWS	4
 
 
-#if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 ) || defined( _WIN32_ ) || defined( __WIN32__ ) || \
-	defined( WIN64 ) || defined( _WIN64 ) || defined( __WIN64 ) || defined( _WIN64_ ) || defined( __WIN64__ )
+#if defined(__mips) || defined(__mips64) || defined(__mips__) || defined(__MIPS__)
 #
-#  define PLATFORM_TYPE PLATFORM_WINDOWS
+#  define PLATFORM_TYPE PLATFORM_MIPS
 #
 #elif defined( APPLE ) || defined( __APPLE ) || defined( __APPLE__ )
 #
@@ -28,6 +28,11 @@
 #elif defined( __linux__ )
 #
 #  define PLATFORM_TYPE PLATFORM_LINUX
+#
+#elif defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 ) || defined( _WIN32_ ) || defined( __WIN32__ ) || \
+	  defined( WIN64 ) || defined( _WIN64 ) || defined( __WIN64 ) || defined( _WIN64_ ) || defined( __WIN64__ )
+#
+#  define PLATFORM_TYPE PLATFORM_WINDOWS
 #
 #else
 #
