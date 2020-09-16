@@ -38,6 +38,8 @@
   * util  (实用工具)
     * math  数学处理
     * time  时间处理
+    * latch 闭锁处理
+    * regex 常用正则
     * signal  信号处理
     * string  内容处理
     * system  系统信息
