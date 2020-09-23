@@ -6,7 +6,7 @@ IF(NOT MINGW AND NOT WIN32 AND NOT ANDROID)
 	#
 	# 显示信息
 	#
-	MESSAGE(STATUS "Found fmt library")
+	MESSAGE(STATUS "Found fmtlib library")
 
 	#
 	# 判断路径
@@ -35,7 +35,7 @@ IF(NOT MINGW AND NOT WIN32 AND NOT ANDROID)
 		#
 		# 显示信息
 		#
-		MESSAGE(FATAL_ERROR "Cannot find library\r\nUse -DWITH_FMT specifies the library file directory\r\n")
+		MESSAGE(FATAL_ERROR "Cannot find fmtlib library\r\nUse -DWITH_FMT specifies the library file directory\r\n")
 
 	ENDIF()
 

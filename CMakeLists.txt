@@ -50,7 +50,7 @@ INCLUDE(CheckPlatform)
 INCLUDE(CheckCompiler)
 INCLUDE(CheckBuildType)
 INCLUDE(CheckGlobalType)
-INCLUDE(CheckThirdParty)
+INCLUDE(CheckThirdPartyLibrary)
 
 
 #
