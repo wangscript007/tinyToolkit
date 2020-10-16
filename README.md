@@ -17,6 +17,11 @@
     * unique  全局唯一序号生成器
     * snowflakes  分布式唯一序号生成器
 
+  * net
+    * tcpClient tcp客户端
+    * tcpServer tcp服务端
+    * tcpSession tcp会话
+
   * hash  (散列/哈希处理)
     * md5
     * sha1
