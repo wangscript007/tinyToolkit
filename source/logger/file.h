@@ -71,7 +71,7 @@ namespace logger
 		 * @return 是否已经打开
 		 *
 		 */
-		bool IsOpen();
+		bool IsOpen() const;
 
 		/**
 		 *
@@ -80,7 +80,7 @@ namespace logger
 		 * @return 大小
 		 *
 		 */
-		std::size_t Size();
+		std::size_t Size() const;
 
 		/**
 		 *

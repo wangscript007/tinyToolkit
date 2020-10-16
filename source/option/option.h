@@ -58,7 +58,7 @@ namespace option
 		 * @return 是否存在
 		 *
 		 */
-		bool Exits(const std::string & option);
+		bool Exits(const std::string & option) const;
 
 		/**
 		 *

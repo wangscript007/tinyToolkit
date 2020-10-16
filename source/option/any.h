@@ -156,7 +156,7 @@ namespace option
 		 *
 		 */
 		template<typename ValueTypeT>
-		bool Is()
+		bool Is() const
 		{
 			return _content->Type() == typeid(ValueTypeT);
 		}
@@ -168,7 +168,7 @@ namespace option
 		 * @return 是否有效
 		 *
 		 */
-		bool IsValid();
+		bool IsValid() const;
 
 		/**
 		 *

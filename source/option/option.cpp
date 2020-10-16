@@ -200,7 +200,7 @@ namespace option
 	 * @return 是否存在
 	 *
 	 */
-	bool Option::Exits(const std::string & option)
+	bool Option::Exits(const std::string & option) const
 	{
 		auto find = _options.find(option);
 

@@ -155,7 +155,7 @@ namespace pool
 	 * @return 是否为空闲状态
 	 *
 	 */
-	bool TaskPool::IsIdle()
+	bool TaskPool::IsIdle() const
 	{
 		std::lock_guard<std::mutex> lock(_mutex);
 
@@ -169,7 +169,7 @@ namespace pool
 	 * @return 是否为关闭状态
 	 *
 	 */
-	bool TaskPool::IsClose()
+	bool TaskPool::IsClose() const
 	{
 		std::lock_guard<std::mutex> lock(_mutex);
 
@@ -183,7 +183,7 @@ namespace pool
 	 * @return 是否为暂停状态
 	 *
 	 */
-	bool TaskPool::IsPause()
+	bool TaskPool::IsPause() const
 	{
 		std::lock_guard<std::mutex> lock(_mutex);
 
@@ -197,7 +197,7 @@ namespace pool
 	 * @return 是否有效
 	 *
 	 */
-	bool TaskPool::IsValid()
+	bool TaskPool::IsValid() const
 	{
 		std::lock_guard<std::mutex> lock(_mutex);
 
@@ -211,7 +211,7 @@ namespace pool
 	 * @return 任务个数
 	 *
 	 */
-	std::size_t TaskPool::TaskSize()
+	std::size_t TaskPool::TaskSize() const
 	{
 		std::lock_guard<std::mutex> lock(_mutex);
 
@@ -225,7 +225,7 @@ namespace pool
 	 * @return 线程个数
 	 *
 	 */
-	std::size_t TaskPool::ThreadSize()
+	std::size_t TaskPool::ThreadSize() const
 	{
 		std::lock_guard<std::mutex> lock(_mutex);
 

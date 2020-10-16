@@ -24,7 +24,7 @@ namespace hash
 		static const uint32_t BLOCK_SIZE = 64;
 		static const uint32_t DIGEST_SIZE = 32;
 
-		typedef struct
+		typedef struct Context
 		{
 			uint8_t block[2 * BLOCK_SIZE]{ 0 };
 
