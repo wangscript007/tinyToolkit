@@ -169,7 +169,7 @@ namespace container
 		 * @return 是否为空
 		 *
 		 */
-		bool Empty()
+		bool Empty() const
 		{
 			std::lock_guard<std::mutex> lock(_mutex);
 
@@ -183,7 +183,7 @@ namespace container
 		 * @return 队列大小
 		 *
 		 */
-		std::size_t Size()
+		std::size_t Size() const
 		{
 			std::lock_guard<std::mutex> lock(_mutex);
 
@@ -247,7 +247,7 @@ namespace container
 		}
 
 	private:
-		std::mutex _mutex{ };
+		mutable std::mutex _mutex{ };
 
 		std::queue<ValueTypeT> _queue{ };
 

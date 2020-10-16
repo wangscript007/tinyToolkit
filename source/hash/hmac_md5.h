@@ -21,7 +21,7 @@ namespace hash
 		static const uint32_t PAD_SIZE = 64;
 		static const uint32_t DIGEST_SIZE = 16;
 
-		typedef struct
+		typedef struct Context
 		{
 			uint8_t iPad[PAD_SIZE]{ 0 };
 			uint8_t oPad[PAD_SIZE]{ 0 };

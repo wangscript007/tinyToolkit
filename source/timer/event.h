@@ -89,7 +89,7 @@ namespace timer
 		 * @return 是否有效
 		 *
 		 */
-		bool IsValid();
+		bool IsValid() const;
 
 		/**
 		 *
@@ -98,7 +98,7 @@ namespace timer
 		 * @return 是否暂停
 		 *
 		 */
-		bool IsPause();
+		bool IsPause() const;
 
 		/**
 		 *
@@ -107,7 +107,7 @@ namespace timer
 		 * @return 过期时间
 		 *
 		 */
-		int64_t Expire();
+		int64_t Expire() const;
 
 		/**
 		 *

@@ -24,7 +24,7 @@ namespace hash
 		static const uint32_t BLOCK_SIZE = 32;
 		static const uint32_t DIGEST_SIZE = 20;
 
-		typedef struct
+		typedef struct Context
 		{
 			bool isCorrupted{ false };
 

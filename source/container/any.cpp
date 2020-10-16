@@ -53,7 +53,7 @@ namespace container
 	 * @return 是否有效
 	 *
 	 */
-	bool Any::IsValid()
+	bool Any::IsValid() const
 	{
 		return _content ? true : false;
 	}

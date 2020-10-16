@@ -66,7 +66,7 @@ namespace option
 		 * @return 是否有效
 		 *
 		 */
-		bool IsValid();
+		bool IsValid() const;
 
 		/**
 		 *
@@ -75,7 +75,7 @@ namespace option
 		 * @return 是否需要数据
 		 *
 		 */
-		bool IsRequired();
+		bool IsRequired() const;
 
 		/**
 		 *

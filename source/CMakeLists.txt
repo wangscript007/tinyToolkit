@@ -1,4 +1,10 @@
 #
+# 添加cmake自带的模块
+#
+INCLUDE(CheckFunctionExists)
+
+
+#
 # 项目名
 #
 IF(CMAKE_BUILD_TYPE STREQUAL Debug)
@@ -21,30 +27,37 @@ ENDIF()
 #
 IF(WIN32)
 
-	#
-	# 遍历递归当前目录定义源文件分组
-	#
 	RECURSE_CURRENT_DIRECTORY_SOURCE_FILE_GROUP()
 
 ENDIF()
 
 
 #
-# 库文件的生成目录
+# 设置库文件生成目录
 #
 IF(WIN32)
 
-	#
-	# 设置库文件生成目录
-	#
 	SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 ELSE()
 
-	#
-	# 设置库文件生成目录
-	#
 	SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+
+ENDIF()
+
+
+#
+# 检测平台支持的函数
+#
+CHECK_FUNCTION_EXISTS(accept4 HAVE_ACCEPT4)
+
+
+#
+# 添加编译定义
+#
+IF(NOT HAVE_ACCEPT4)
+
+	ADD_COMPILE_DEFINITIONS(NO_ACCEPT4)
 
 ENDIF()
 
@@ -53,7 +66,6 @@ ENDIF()
 # 遍历递归当前目录获取源文件
 #
 RECURSE_CURRENT_DIRECTORY_SOURCE_FILE(SOURCE_FILES)
-
 
 #
 # 链接源文件, 生成库文件

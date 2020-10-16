@@ -73,7 +73,7 @@ namespace timer
 		 * @return 任务次数
 		 *
 		 */
-		int64_t TotalCount();
+		int64_t TotalCount() const;
 
 		/**
 		 *
@@ -82,7 +82,7 @@ namespace timer
 		 * @return 触发次数
 		 *
 		 */
-		int64_t TriggerCount();
+		int64_t TriggerCount() const;
 
 	private:
 		int64_t _totalCount{ 0 };

@@ -66,7 +66,7 @@ namespace logger
 		 * @return 是否自动刷新
 		 *
 		 */
-		bool IsAutoFlush();
+		bool IsAutoFlush() const;
 
 		/**
 		 *

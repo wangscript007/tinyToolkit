@@ -31,7 +31,7 @@ namespace logger
 	 * @return 是否自动刷新
 	 *
 	 */
-	bool ISink::IsAutoFlush()
+	bool ISink::IsAutoFlush() const
 	{
 		return _isAutoFlush;
 	}

@@ -177,7 +177,7 @@ namespace option
 	 * @return 是否有效
 	 *
 	 */
-	bool DescriptionInfo::IsValid()
+	bool DescriptionInfo::IsValid() const
 	{
 		return _isValid;
 	}
@@ -189,7 +189,7 @@ namespace option
 	 * @return 是否需要数据
 	 *
 	 */
-	bool DescriptionInfo::IsRequired()
+	bool DescriptionInfo::IsRequired() const
 	{
 		return _value ? true : false;
 	}

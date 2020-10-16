@@ -86,7 +86,7 @@ namespace timer
 		 * @return 是否存在
 		 *
 		 */
-		bool Exist(const std::shared_ptr<ITask> & task);
+		bool Exist(const std::shared_ptr<ITask> & task) const;
 
 		/**
 		 *
@@ -143,7 +143,7 @@ namespace timer
 		 * @return 工作任务个数
 		 *
 		 */
-		std::size_t WorkTaskCount();
+		std::size_t WorkTaskCount() const;
 
 		/**
 		 *
@@ -152,7 +152,7 @@ namespace timer
 		 * @return 暂停任务个数
 		 *
 		 */
-		std::size_t PauseTaskCount();
+		std::size_t PauseTaskCount() const;
 
 		/**
 		 *
@@ -161,7 +161,7 @@ namespace timer
 		 * @return 定时任务个数
 		 *
 		 */
-		std::size_t TotalTaskCount();
+		std::size_t TotalTaskCount() const;
 
 	protected:
 		/**
@@ -211,8 +211,8 @@ namespace timer
 	private:
 		bool _status{ true };
 
-		std::mutex _taskMutex{ };
-		std::mutex _eventMutex{ };
+		mutable std::mutex _taskMutex{ };
+		mutable std::mutex _eventMutex{ };
 
 		std::thread _thread{ };
 

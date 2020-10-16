@@ -4,18 +4,23 @@
 
 # 依赖
 
-  * libfmt
+  * fmtlib
 
 # 安装
 
   * 如若自动编译，可运行script目录下各平台安装脚本 (脚本中会自动编译安装3rd/fmt库，如环境中已存在，可手动去除)
-  * 如若手动编译，需先安装libfmt库 (3rd目录有中提供，也可前往官网下载最新版)
+  * 如若手动编译，需先安装fmtlib库 (3rd目录有中提供，也可前往官网下载最新版)
 
 # 功能
 
   * id  (序号处理)
     * unique  全局唯一序号生成器
     * snowflakes  分布式唯一序号生成器
+
+  * net
+    * tcpClient tcp客户端
+    * tcpServer tcp服务端
+    * tcpSession tcp会话
 
   * hash  (散列/哈希处理)
     * md5
