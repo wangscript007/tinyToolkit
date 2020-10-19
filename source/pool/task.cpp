@@ -94,7 +94,7 @@ namespace pool
 	 * 等待
 	 *
 	 */
-	void TaskPool::Wait()
+	void TaskPool::Wait() const
 	{
 		while (!IsIdle())
 		{

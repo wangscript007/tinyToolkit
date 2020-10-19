@@ -290,31 +290,6 @@ namespace logger
 
 		/**
 		 *
-		 * 写入
-		 *
-		 * @param content 内容
-		 *
-		 */
-		void Emerg(const std::string & content);
-
-		/**
-		 *
-		 * 写入
-		 *
-		 * @tparam Args [all built-in types]
-		 *
-		 * @param fmt 格式化
-		 * @param args 参数
-		 *
-		 */
-		template<typename... Args>
-		void Emerg(const char * fmt, Args &&... args)
-		{
-			Write(LOG_PRIORITY_TYPE::EMERG, fmt, std::forward<Args>(args)...);
-		}
-
-		/**
-		 *
 		 * 添加节点
 		 *
 		 * @param sink 节点

@@ -104,7 +104,7 @@ static void Function()
 	{
 		int32_t count = 3;
 
-		timer::Timer timer;
+		timer::Timer timer{ };
 
 		timer.AddTask([&](){ std::cout << "count : " << --count << std::endl; }, count, 1000);
 

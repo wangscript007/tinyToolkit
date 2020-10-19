@@ -99,30 +99,26 @@ namespace net
 
 		_eventLoop->DoFunction
 		(
-			std::bind
-			(
-				[this](std::shared_ptr<Buffer> message)
+			[this, buffer = std::make_shared<Buffer>(content, length)]() mutable
+			{
+				_messageQueue.push_back(std::move(buffer));
+
+			#if PLATFORM_TYPE == PLATFORM_WINDOWS
+
+				if (!_isSend)
 				{
-					_messageQueue.push_back(std::move(message));
+					_isSend = true;
 
-				#if PLATFORM_TYPE == PLATFORM_WINDOWS
+					auto & message = _messageQueue.front();
 
-					if (!_isSend)
+					if (_socket.Send(const_cast<char *>(message->Peek()), message->ReadableBytes(), _sendChannel->OwnerContext()) == SOCKET_ERROR)
 					{
-						_isSend = true;
-
-						auto & message = _messageQueue.front();
-
-						if (_socket.Send(const_cast<char *>(message->Peek()), message->ReadableBytes(), _sendChannel->OwnerContext()) == SOCKET_ERROR)
-						{
-							DoError();
-						}
+						DoError();
 					}
+				}
 
-				#endif
-				},
-				std::make_shared<Buffer>(content, length)
-			)
+			#endif
+			}
 		);
 
 	#if PLATFORM_TYPE != PLATFORM_WINDOWS

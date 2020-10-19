@@ -39,7 +39,7 @@ namespace debug
 	 * @return 是否是需要的文件
 	 *
 	 */
-	BOOL IsNeedFile(const WCHAR * path)
+	BOOL WINAPI IsNeedFile(const WCHAR * path)
 	{
 		if (path == nullptr)
 		{
@@ -64,8 +64,10 @@ namespace debug
 	 * @return 是否转储成功
 	 *
 	 */
-	BOOL DumpCallback(PVOID param, const PMINIDUMP_CALLBACK_INPUT input, PMINIDUMP_CALLBACK_OUTPUT output)
+	BOOL WINAPI DumpCallback(PVOID param, PMINIDUMP_CALLBACK_INPUT input, PMINIDUMP_CALLBACK_OUTPUT output)
 	{
+		(void)param;
+
 		if (input == nullptr || output == nullptr)
 		{
 			return FALSE;
@@ -108,7 +110,7 @@ namespace debug
 	 * @return 转储时间
 	 *
 	 */
-	std::string DumpTime()
+	std::string WINAPI DumpTime()
 	{
 		std::tm now{ };
 
@@ -152,7 +154,7 @@ namespace debug
 	 * @return 转储文件
 	 *
 	 */
-	std::string DumpFile()
+	std::string WINAPI DumpFile()
 	{
 		char path[PATH_MAX + 1]{ 0 };
 
@@ -179,7 +181,7 @@ namespace debug
 	 * @param exception 异常
 	 *
 	 */
-	void CreateMiniDump(PEXCEPTION_POINTERS exception)
+	void WINAPI CreateMiniDump(PEXCEPTION_POINTERS exception)
 	{
 		std::string file{ };
 
@@ -214,8 +216,8 @@ namespace debug
 
 		MINIDUMP_CALLBACK_INFORMATION callbackInformation{ };
 
-		callbackInformation.CallbackRoutine = (MINIDUMP_CALLBACK_ROUTINE)(DumpCallback);
-		callbackInformation.CallbackParam = 0;
+		callbackInformation.CallbackRoutine = static_cast<MINIDUMP_CALLBACK_ROUTINE>(DumpCallback);
+		callbackInformation.CallbackParam = nullptr;
 
 		MiniDumpWriteDump
 		(
@@ -238,7 +240,7 @@ namespace debug
 	 * @return 异常处理结果
 	 *
 	 */
-	LONG ExceptionHandler(PEXCEPTION_POINTERS exception)
+	LONG WINAPI ExceptionHandler(PEXCEPTION_POINTERS exception)
 	{
 		CreateMiniDump(exception);
 

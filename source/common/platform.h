@@ -17,7 +17,7 @@
 #define PLATFORM_WINDOWS	4
 
 
-#if defined(__mips) || defined(__mips64) || defined(__mips__) || defined(__MIPS__)
+#if defined( __mips ) || defined( __mips64 ) || defined( __mips__ ) || defined( __MIPS__ )
 #
 #  define PLATFORM_TYPE PLATFORM_MIPS
 #

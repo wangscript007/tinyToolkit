@@ -30,7 +30,6 @@
 #endif
 
 #include <memory>
-#include <climits>
 #include <functional>
 
 

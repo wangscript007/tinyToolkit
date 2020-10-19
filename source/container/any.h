@@ -15,6 +15,7 @@
 #include "../common/symbol.h"
 
 #include <memory>
+#include <stdexcept>
 
 
 namespace container

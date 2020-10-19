@@ -9,7 +9,6 @@
 
 #include "time.h"
 
-#include <climits>
 #include <stdexcept>
 
 
@@ -28,7 +27,6 @@ namespace util
 		std::tm local{ };
 
 		int64_t current{ 12 * 3600 };  /// 伦敦中午12点整, 全世界都在同一天
-		int64_t timezone{ };
 
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
@@ -44,7 +42,7 @@ namespace util
 
 	#endif
 
-		timezone = static_cast<int64_t>(local.tm_hour - utc.tm_hour);
+		auto timezone = static_cast<int64_t>(local.tm_hour - utc.tm_hour);
 
 		if (timezone < -12)
 		{

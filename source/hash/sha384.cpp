@@ -224,7 +224,7 @@ namespace hash
 	 */
 	void SHA384::Final(Context & context, uint8_t * digest)
 	{
-		#define UNPACK32(x, str)							\
+		#define UNPACK_32(x, str)							\
 		{													\
 			*((str) + 3) = static_cast<uint8_t>((x)      );	\
 			*((str) + 2) = static_cast<uint8_t>((x) >>  8);	\
@@ -232,7 +232,7 @@ namespace hash
 			*((str) + 0) = static_cast<uint8_t>((x) >> 24);	\
 		}
 
-		#define UNPACK64(x, str)							\
+		#define UNPACK_64(x, str)							\
 		{													\
 			*((str) + 7) = static_cast<uint8_t>((x)      );	\
 			*((str) + 6) = static_cast<uint8_t>((x) >>  8);	\
@@ -252,13 +252,13 @@ namespace hash
 
 		context.block[context.blockLength] = 0x80;
 
-		UNPACK32(totalLength, context.block + blockLength - 4)
+		UNPACK_32(totalLength, context.block + blockLength - 4)
 
 		Transform(context, context.block, blockNumber);
 
 		for (int32_t i = 0 ; i < 6; i++)
 		{
-			UNPACK64(context.hash[i], &digest[i << 3])
+			UNPACK_64(context.hash[i], &digest[i << 3])
 		}
 	}
 
@@ -319,10 +319,10 @@ namespace hash
 		#define CH(x, y, z) ((x & y) ^ (~x & z))
 		#define MAJ(x, y, z) ((x & y) ^ (x & z) ^ (y & z))
 
-		#define SHFR(x, n) (x >> n)
-		#define ROTR(x, n) ((x >> n) | (x << ((sizeof(x) << 3) - n)))
+		#define SHF_R(x, n) (x >> n)
+		#define ROT_R(x, n) ((x >> n) | (x << ((sizeof(x) << 3) - n)))
 
-		#define PACK64(str, x)										\
+		#define PACK_64(str, x)										\
 		{															\
 			*(x) =	(static_cast<uint64_t>(*((str) + 7))      ) |	\
 					(static_cast<uint64_t>(*((str) + 6)) <<  8) |	\
@@ -334,10 +334,10 @@ namespace hash
 					(static_cast<uint64_t>(*((str) + 0)) << 56);	\
 		}
 
-		#define SHA384_F1(x) (ROTR(x, 28) ^ ROTR(x, 34) ^ ROTR(x, 39))
-		#define SHA384_F2(x) (ROTR(x, 14) ^ ROTR(x, 18) ^ ROTR(x, 41))
-		#define SHA384_F3(x) (ROTR(x,  1) ^ ROTR(x,  8) ^ SHFR(x,  7))
-		#define SHA384_F4(x) (ROTR(x, 19) ^ ROTR(x, 61) ^ SHFR(x,  6))
+		#define SHA384_F1(x) (ROT_R(x, 28) ^ ROT_R(x, 34) ^ ROT_R(x, 39))
+		#define SHA384_F2(x) (ROT_R(x, 14) ^ ROT_R(x, 18) ^ ROT_R(x, 41))
+		#define SHA384_F3(x) (ROT_R(x,  1) ^ ROT_R(x,  8) ^ SHF_R(x,  7))
+		#define SHA384_F4(x) (ROT_R(x, 19) ^ ROT_R(x, 61) ^ SHF_R(x,  6))
 
 		#define SHA384_SCR(i)                        \
 		{                                            \
@@ -398,7 +398,7 @@ namespace hash
 
 			for (int32_t j = 0; j < 16; j++)
 			{
-				PACK64(&blockValue[j << 3], &Y[j])
+				PACK_64(&blockValue[j << 3], &Y[j])
 			}
 
 			for (int32_t j = 16; j < 80; j++)

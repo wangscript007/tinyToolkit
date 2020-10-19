@@ -143,10 +143,9 @@ namespace logger
 			{ LOG_PRIORITY_TYPE::CRITICAL, EVENTLOG_ERROR_TYPE },
 			{ LOG_PRIORITY_TYPE::ALERT, EVENTLOG_ERROR_TYPE },
 			{ LOG_PRIORITY_TYPE::FATAL, EVENTLOG_ERROR_TYPE },
-			{ LOG_PRIORITY_TYPE::EMERG, EVENTLOG_ERROR_TYPE },
 		};
 
-		const char * ps[1]{ 0 };
+		const char * ps[1]{ nullptr };
 
 		if (Layout())
 		{
@@ -174,8 +173,7 @@ namespace logger
 			{ LOG_PRIORITY_TYPE::ERRORS, LOG_ERR },
 			{ LOG_PRIORITY_TYPE::CRITICAL, LOG_CRIT },
 			{ LOG_PRIORITY_TYPE::ALERT, LOG_ALERT },
-			{ LOG_PRIORITY_TYPE::FATAL, LOG_ALERT },
-			{ LOG_PRIORITY_TYPE::EMERG, LOG_EMERG },
+			{ LOG_PRIORITY_TYPE::FATAL, LOG_EMERG },
 		};
 
 		if (Layout())

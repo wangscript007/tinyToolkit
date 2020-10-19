@@ -53,7 +53,7 @@ namespace net
 	 * @param overlapped 结构指针
 	 *
 	 */
-	static int32_t SendEx(SOCKET_HANDLE_TYPE handle, LPWSABUF buffer, DWORD count, LPWSAOVERLAPPED overlapped)
+	static int32_t WINAPI SendEx(SOCKET_HANDLE_TYPE handle, LPWSABUF buffer, DWORD count, LPWSAOVERLAPPED overlapped)
 	{
 		DWORD flag = 0;
 		DWORD bytes = 0;
@@ -79,7 +79,7 @@ namespace net
 	 * @param overlapped 结构指针
 	 *
 	 */
-	static int32_t ReceiveEx(SOCKET_HANDLE_TYPE handle, LPWSABUF buffer, DWORD count, LPWSAOVERLAPPED overlapped)
+	static int32_t WINAPI ReceiveEx(SOCKET_HANDLE_TYPE handle, LPWSABUF buffer, DWORD count, LPWSAOVERLAPPED overlapped)
 	{
 		DWORD flag = 0;
 		DWORD bytes = 0;
@@ -107,7 +107,7 @@ namespace net
 	 * @param overlapped 结构指针
 	 *
 	 */
-	static int32_t ReceiveFromEx(SOCKET_HANDLE_TYPE handle, LPWSABUF buffer, DWORD count, struct sockaddr * address, socklen_t addressLength, LPWSAOVERLAPPED overlapped)
+	static int32_t WINAPI ReceiveFromEx(SOCKET_HANDLE_TYPE handle, LPWSABUF buffer, DWORD count, struct sockaddr * address, socklen_t addressLength, LPWSAOVERLAPPED overlapped)
 	{
 		DWORD flag = 0;
 		DWORD bytes = 0;
@@ -135,7 +135,7 @@ namespace net
 	 * @return 是否处理成功
 	 *
 	 */
-	static int32_t AcceptEx(SOCKET_HANDLE_TYPE listenHandle, SOCKET_HANDLE_TYPE acceptHandle, PVOID buffer, LPOVERLAPPED overlapped)
+	static int32_t WINAPI AcceptEx(SOCKET_HANDLE_TYPE listenHandle, SOCKET_HANDLE_TYPE acceptHandle, PVOID buffer, LPOVERLAPPED overlapped)
 	{
 		static LPFN_ACCEPTEX function = nullptr;
 
@@ -189,7 +189,7 @@ namespace net
 	 * @return 是否处理成功
 	 *
 	 */
-	static int32_t ConnectEx(SOCKET_HANDLE_TYPE handle, const struct sockaddr * address, socklen_t addressLength, LPOVERLAPPED overlapped)
+	static int32_t WINAPI ConnectEx(SOCKET_HANDLE_TYPE handle, const struct sockaddr * address, socklen_t addressLength, LPOVERLAPPED overlapped)
 	{
 		static LPFN_CONNECTEX function = nullptr;
 
@@ -386,6 +386,9 @@ namespace net
 		return ::setsockopt(handle, SOL_SOCKET, SO_REUSEPORT, reinterpret_cast<const char *>(&val), static_cast<socklen_t>(sizeof(val))) == 0;
 
 	#else
+
+		(void)on;
+		(void)handle;
 
 		return false;
 
@@ -665,14 +668,14 @@ namespace net
 	 */
 	int32_t Operation::Accept(SOCKET_HANDLE_TYPE handle, SOCKET_HANDLE_TYPE acceptHandle, void * buffer, void * context)
 	{
-		(void)context;
-		(void)acceptHandle;
-
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
 		return AcceptEx(handle, acceptHandle, buffer, reinterpret_cast<LPOVERLAPPED>(context));
 
 	#else
+
+		(void)context;
+		(void)acceptHandle;
 
 		socklen_t length = buffer ? static_cast<socklen_t>(sizeof(struct sockaddr_in6)) : 0;
 
@@ -702,13 +705,13 @@ namespace net
 	 */
 	int32_t Operation::Connect(SOCKET_HANDLE_TYPE handle, const struct sockaddr * address, void * context)
 	{
-		(void)context;
-
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
 		return ConnectEx(handle, address, static_cast<socklen_t>(sizeof(struct sockaddr_in6)), reinterpret_cast<LPOVERLAPPED>(context));
 
 	#else
+
+		(void)context;
 
 		return ::connect(handle, address, static_cast<socklen_t>(sizeof(struct sockaddr_in6)));
 
@@ -729,17 +732,19 @@ namespace net
 	 */
 	int32_t Operation::Send(SOCKET_HANDLE_TYPE handle, void * buffer, std::size_t length, void * context)
 	{
-		(void)context;
-
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
 		return SendEx(handle, reinterpret_cast<LPWSABUF>(buffer), static_cast<DWORD>(length), reinterpret_cast<LPWSAOVERLAPPED>(context));
 
 	#elif PLATFORM_TYPE == PLATFORM_APPLE
 
+		(void)context;
+
 		return static_cast<int32_t>(::send(handle, buffer, length, SO_NOSIGPIPE));
 
 	#else
+
+		(void)context;
 
 		return static_cast<int32_t>(::send(handle, buffer, length, MSG_NOSIGNAL));
 
@@ -760,17 +765,19 @@ namespace net
 	 */
 	int32_t Operation::Receive(SOCKET_HANDLE_TYPE handle, void * buffer, std::size_t length, void * context)
 	{
-		(void)context;
-
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
 		return ReceiveEx(handle, reinterpret_cast<LPWSABUF>(buffer), static_cast<DWORD>(length), reinterpret_cast<LPWSAOVERLAPPED>(context));
 
 	#elif PLATFORM_TYPE == PLATFORM_APPLE
 
+		(void)context;
+
 		return static_cast<int32_t>(::recv(handle, buffer, length, SO_NOSIGPIPE));
 
 	#else
+
+		(void)context;
 
 		return static_cast<int32_t>(::recv(handle, buffer, length, MSG_NOSIGNAL));
 
@@ -793,17 +800,19 @@ namespace net
 	 */
 	int32_t Operation::ReceiveFrom(SOCKET_HANDLE_TYPE handle, void * buffer, std::size_t length, struct sockaddr * address, std::size_t addressLength, void * context)
 	{
-		(void)context;
-
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
 		return ReceiveFromEx(handle, reinterpret_cast<LPWSABUF>(buffer), static_cast<DWORD>(length), address, static_cast<socklen_t>(addressLength), reinterpret_cast<LPWSAOVERLAPPED>(context));
 
 	#elif PLATFORM_TYPE == PLATFORM_APPLE
 
+		(void)context;
+
 		return static_cast<int32_t>(::recvfrom(handle, buffer, length, SO_NOSIGPIPE, address, reinterpret_cast<socklen_t *>(&addressLength)));
 
 	#else
+
+		(void)context;
 
 		return static_cast<int32_t>(::recvfrom(handle, buffer, length, MSG_NOSIGNAL, address, reinterpret_cast<socklen_t *>(&addressLength)));
 

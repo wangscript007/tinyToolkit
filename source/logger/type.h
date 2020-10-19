@@ -46,7 +46,6 @@ namespace logger
 		CRITICAL,
 		ALERT,
 		FATAL,
-		EMERG,
 	};
 }
 

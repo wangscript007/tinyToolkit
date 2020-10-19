@@ -45,7 +45,7 @@ namespace pool
 		 * 等待
 		 *
 		 */
-		void Wait();
+		void Wait() const;
 
 		/**
 		 *

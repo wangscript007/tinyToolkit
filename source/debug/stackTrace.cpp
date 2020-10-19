@@ -16,7 +16,7 @@
 #
 #  pragma comment( lib, "dbghelp.lib")
 #
-#elif PLATFORM_TYPE != PLATFORM_MIPS
+#else
 #
 #  include <memory>
 #
@@ -41,7 +41,7 @@ namespace debug
 	 * @return 符号信息
 	 *
 	 */
-	static std::string ParseSymbol(HANDLE handle, DWORD64 address)
+	static std::string WINAPI ParseSymbol(HANDLE handle, DWORD64 address)
 	{
 		DWORD displacementLine = 0;
 		DWORD64 displacementSym = 0;
@@ -49,9 +49,10 @@ namespace debug
 		char buffer[sizeof(IMAGEHLP_SYMBOL) + MAX_SYM_NAME]{ 0 };
 
 		IMAGEHLP_LINE line{ };
-		PIMAGEHLP_SYMBOL symbol = (PIMAGEHLP_SYMBOL)buffer;
 
 		line.SizeOfStruct = sizeof(IMAGEHLP_LINE);
+
+		auto symbol = reinterpret_cast<PIMAGEHLP_SYMBOL64>(buffer);
 
 		symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL);
 		symbol->MaxNameLength = MAX_SYM_NAME;
@@ -59,13 +60,13 @@ namespace debug
 		if (::SymGetSymFromAddr64(handle, address, &displacementSym, symbol) &&
 		    ::SymGetLineFromAddr64(handle, address, &displacementLine, &line))
 		{
-			char buffer[1024]{ 0 };
+			char content[1024]{ 0 };
 
 			auto len = ::snprintf
 			(
-				buffer,
-				sizeof(buffer),
-				"%s:%d(%s) [0x%02x]",
+				content,
+				sizeof(content),
+				"%s:%ld(%s) [0x%008lx]",
 				line.FileName,
 				line.LineNumber,
 				symbol->Name,
@@ -81,9 +82,9 @@ namespace debug
 				len = NAME_MAX;
 			}
 
-			buffer[len] = '\0';
+			content[len] = '\0';
 
-			return buffer;
+			return content;
 		}
 
 		return { };
@@ -195,7 +196,7 @@ namespace debug
 
 		for (WORD i = 0; i < size; ++i)
 		{
-			auto temp = ParseSymbol(hProcess, (DWORD64)(stack[i]));
+			auto temp = ParseSymbol(hProcess, reinterpret_cast<DWORD64>(stack[i]));
 
 			if (temp.empty())
 			{

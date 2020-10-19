@@ -146,16 +146,12 @@ namespace crypto
 		{
 			uint8_t byte = content[i];
 
-			if (::isalnum(byte))
-			{
-				value += static_cast<char>(byte);
-			}
-			else if (byte == ' ')
+			if (byte == ' ')
 			{
 				value += "+";
 			}
 			else if (byte == '-' || byte == '_' || byte == '.' || byte == '!' ||
-			         byte == '~' || byte == '*' || byte == '(' || byte == ')')
+			         byte == '~' || byte == '*' || byte == '(' || byte == ')' || ::isalnum(byte))
 			{
 				value += static_cast<char>(byte);
 			}

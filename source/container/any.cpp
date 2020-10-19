@@ -55,7 +55,7 @@ namespace container
 	 */
 	bool Any::IsValid() const
 	{
-		return _content ? true : false;
+		return _content.get();
 	}
 
 	/**

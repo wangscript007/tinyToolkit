@@ -21,7 +21,7 @@ namespace net
 	 * @return 是否关闭成功
 	 *
 	 */
-	bool ISocket::Close()
+	bool ISocket::Close() const
 	{
 		return Operation::CloseSocketHandle(_handle);
 	}
@@ -36,7 +36,7 @@ namespace net
 	 * @return 是否关闭成功
 	 *
 	 */
-	bool ISocket::Shutdown(bool read, bool write)
+	bool ISocket::Shutdown(bool read, bool write) const
 	{
 		return Operation::ShutdownSocketHandle(_handle, read, write);
 	}
@@ -62,7 +62,7 @@ namespace net
 	 * @return 是否设置成功
 	 *
 	 */
-	bool ISocket::SetBlockStatus(bool on)
+	bool ISocket::SetBlockStatus(bool on) const
 	{
 		return Operation::SetBlockStatus(_handle, on);
 	}
@@ -77,7 +77,7 @@ namespace net
 	 * @return 是否设置成功
 	 *
 	 */
-	bool ISocket::SetLingerStatus(int32_t timeout, bool on)
+	bool ISocket::SetLingerStatus(int32_t timeout, bool on) const
 	{
 		return Operation::SetLingerStatus(_handle, timeout, on);
 	}
@@ -92,7 +92,7 @@ namespace net
 	 * @return 是否设置成功
 	 *
 	 */
-	bool ISocket::SetKeepaliveStatus(bool on)
+	bool ISocket::SetKeepaliveStatus(bool on) const
 	{
 		return Operation::SetKeepaliveStatus(_handle, on);
 	}
@@ -106,7 +106,7 @@ namespace net
 	 * @return 是否设置成功
 	 *
 	 */
-	bool ISocket::SetReusePortStatus(bool on)
+	bool ISocket::SetReusePortStatus(bool on) const
 	{
 		return Operation::SetReusePortStatus(_handle, on);
 	}
@@ -120,7 +120,7 @@ namespace net
 	 * @return 是否设置成功
 	 *
 	 */
-	bool ISocket::SetReuseAddressStatus(bool on)
+	bool ISocket::SetReuseAddressStatus(bool on) const
 	{
 		return Operation::SetReuseAddressStatus(_handle, on);
 	}
@@ -134,7 +134,7 @@ namespace net
 	 * @return 是否设置成功
 	 *
 	 */
-	bool ISocket::SetSendTimeout(int32_t timeout)
+	bool ISocket::SetSendTimeout(int32_t timeout) const
 	{
 		return Operation::SetSendTimeout(_handle, timeout);
 	}
@@ -148,7 +148,7 @@ namespace net
 	 * @return 是否设置成功
 	 *
 	 */
-	bool ISocket::SetReceiveTimeout(int32_t timeout)
+	bool ISocket::SetReceiveTimeout(int32_t timeout) const
 	{
 		return Operation::SetReceiveTimeout(_handle, timeout);
 	}
@@ -162,7 +162,7 @@ namespace net
 	 * @return 是否设置成功
 	 *
 	 */
-	bool ISocket::SetSendBufferSize(int32_t size)
+	bool ISocket::SetSendBufferSize(int32_t size) const
 	{
 		return Operation::SetSendBufferSize(_handle, size);
 	}
@@ -176,7 +176,7 @@ namespace net
 	 * @return 是否设置成功
 	 *
 	 */
-	bool ISocket::SetReceiveBufferSize(int32_t size)
+	bool ISocket::SetReceiveBufferSize(int32_t size) const
 	{
 		return Operation::SetReceiveBufferSize(_handle, size);
 	}
@@ -190,7 +190,7 @@ namespace net
 	 * @return 绑定结果
 	 *
 	 */
-	int32_t ISocket::Bind(const Endpoint & endpoint)
+	int32_t ISocket::Bind(const Endpoint & endpoint) const
 	{
 		return Operation::Bind(_handle, endpoint.SocketAddress());
 	}
@@ -204,7 +204,7 @@ namespace net
 	 * @return 监听结果
 	 *
 	 */
-	int32_t ISocket::Listen(int32_t backlog)
+	int32_t ISocket::Listen(int32_t backlog) const
 	{
 		return Operation::Listen(_handle, backlog);
 	}
@@ -306,7 +306,7 @@ namespace net
 	 * @return 是否设置成功
 	 *
 	 */
-	bool TCPSocket::SetDelayStatus(bool on)
+	bool TCPSocket::SetDelayStatus(bool on) const
 	{
 		return Operation::SetDelayStatus(_handle, on);
 	}
@@ -322,7 +322,7 @@ namespace net
 	 * @return 发送字节数
 	 *
 	 */
-	int32_t TCPSocket::Send(void * buffer, std::size_t length, Context * context)
+	int32_t TCPSocket::Send(void * buffer, std::size_t length, Context * context) const
 	{
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
@@ -349,7 +349,7 @@ namespace net
 	 * @return 接受结果
 	 *
 	 */
-	int32_t TCPSocket::Accept(Context * context)
+	int32_t TCPSocket::Accept(Context * context) const
 	{
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
@@ -391,7 +391,7 @@ namespace net
 	 * @return 连接结果
 	 *
 	 */
-	int32_t TCPSocket::Connect(const Endpoint & endpoint, Context * context)
+	int32_t TCPSocket::Connect(const Endpoint & endpoint, Context * context) const
 	{
 		return Operation::Connect(_handle, endpoint.SocketAddress(), context);
 	}
@@ -407,7 +407,7 @@ namespace net
 	 * @return 接收字节数
 	 *
 	 */
-	int32_t TCPSocket::Receive(void * buffer, std::size_t length, Context * context)
+	int32_t TCPSocket::Receive(void * buffer, std::size_t length, Context * context) const
 	{
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 

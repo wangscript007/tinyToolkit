@@ -146,7 +146,7 @@ static void Regex()
 		std::cout << "IsIPv4     : " << util::Regex::IsIPv4("192.168.2.256") << std::endl;
 
 		std::cout << "IsIPv6     : " << util::Regex::IsIPv6("2001::1319:8a2h:37") << std::endl;
-		std::cout << "IsIPv6     : " << util::Regex::IsIPv6("fdec:a63b:1db9::828") << std::endl;
+		std::cout << "IsIPv6     : " << util::Regex::IsIPv6("f1ec:a63b:1db9::828") << std::endl;
 		std::cout << "IsIPv6     : " << util::Regex::IsIPv6("fe80::8c3d:dee5:19b:22b7%4") << std::endl;
 
 		std::cout << "IsMail     : " << util::Regex::IsMail("abc@xyz") << std::endl;

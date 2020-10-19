@@ -57,7 +57,6 @@ static void SyncLog()
 			logger->Critical("Sync Message {}", "Critical");
 			logger->Alert("Sync Message {}", "Alert");
 			logger->Fatal("Sync Message {}", "Fatal");
-			logger->Emerg("Sync Message {}", "Emerg");
 		}
 
 		logger->Wait();
@@ -118,7 +117,6 @@ static void AsyncLog()
 			logger->Critical("Async Message {}", "Critical");
 			logger->Alert("Async Message {}", "Alert");
 			logger->Fatal("Async Message {}", "Fatal");
-			logger->Emerg("Async Message {}", "Emerg");
 		}
 
 		logger->Wait();
