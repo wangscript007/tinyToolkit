@@ -224,7 +224,7 @@ namespace hash
 		 */
 	void SHA224::Final(Context & context, uint8_t * digest)
 	{
-		#define UNPACK32(x, str)							\
+		#define UNPACK_32(x, str)							\
 		{													\
 			*((str) + 3) = static_cast<uint8_t>((x)      );	\
 			*((str) + 2) = static_cast<uint8_t>((x) >>  8);	\
@@ -240,13 +240,13 @@ namespace hash
 
 		context.block[context.blockLength] = 0x80;
 
-		UNPACK32(totalLength, context.block + blockLength - 4)
+		UNPACK_32(totalLength, context.block + blockLength - 4)
 
 		Transform(context, context.block, blockNumber);
 
 		for (int32_t i = 0 ; i < 7; i++)
 		{
-			UNPACK32(context.hash[i], digest + (i << 2))
+			UNPACK_32(context.hash[i], digest + (i << 2))
 		}
 	}
 
@@ -307,10 +307,10 @@ namespace hash
 		#define CH(x, y, z) ((x & y) ^ (~x & z))
 		#define MAJ(x, y, z) ((x & y) ^ (x & z) ^ (y & z))
 
-		#define SHFR(x, n) (x >> n)
-		#define ROTR(x, n) ((x >> n) | (x << ((sizeof(x) << 3) - n)))
+		#define SHF_R(x, n) (x >> n)
+		#define ROT_R(x, n) ((x >> n) | (x << ((sizeof(x) << 3) - n)))
 
-		#define PACK32(str, x)										\
+		#define PACK_32(str, x)										\
 		{															\
 			*(x) =	(static_cast<uint32_t>(*((str) + 3))      ) |	\
 					(static_cast<uint32_t>(*((str) + 2)) <<  8) |	\
@@ -318,10 +318,10 @@ namespace hash
 					(static_cast<uint32_t>(*((str) + 0)) << 24);	\
 		}
 
-		#define SHA224_F1(x) (ROTR(x,  2) ^ ROTR(x, 13) ^ ROTR(x, 22))
-		#define SHA224_F2(x) (ROTR(x,  6) ^ ROTR(x, 11) ^ ROTR(x, 25))
-		#define SHA224_F3(x) (ROTR(x,  7) ^ ROTR(x, 18) ^ SHFR(x,  3))
-		#define SHA224_F4(x) (ROTR(x, 17) ^ ROTR(x, 19) ^ SHFR(x, 10))
+		#define SHA224_F1(x) (ROT_R(x,  2) ^ ROT_R(x, 13) ^ ROT_R(x, 22))
+		#define SHA224_F2(x) (ROT_R(x,  6) ^ ROT_R(x, 11) ^ ROT_R(x, 25))
+		#define SHA224_F3(x) (ROT_R(x,  7) ^ ROT_R(x, 18) ^ SHF_R(x,  3))
+		#define SHA224_F4(x) (ROT_R(x, 17) ^ ROT_R(x, 19) ^ SHF_R(x, 10))
 
 		#define SHA224_SCR(i)                        \
 		{                                            \
@@ -374,7 +374,7 @@ namespace hash
 
 			for (int32_t j = 0; j < 16; j++)
 			{
-				PACK32(&blockValue[j << 2], &Y[j])
+				PACK_32(&blockValue[j << 2], &Y[j])
 			}
 
 			for (int32_t j = 16; j < 64; j++)

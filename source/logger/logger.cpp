@@ -159,18 +159,6 @@ namespace logger
 
 	/**
 	 *
-	 * 写入
-	 *
-	 * @param content 内容
-	 *
-	 */
-	void ILogger::Emerg(const std::string & content)
-	{
-		Write(LOG_PRIORITY_TYPE::EMERG, content);
-	}
-
-	/**
-	 *
 	 * 添加节点
 	 *
 	 * @param sink 节点

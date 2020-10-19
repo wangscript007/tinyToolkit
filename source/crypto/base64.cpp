@@ -288,12 +288,12 @@ namespace crypto
 			-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
 		};
 
-		char ch{ };
+		char ch;
 
 		int32_t bin = 0;
 
 		std::size_t i{ 0 };
-		std::size_t pos{ };
+		std::size_t pos;
 
 		std::string value{ };
 

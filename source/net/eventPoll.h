@@ -62,7 +62,7 @@ namespace net
 		 * @return 是否添加成功
 		 *
 		 */
-		bool AppendChannel(Channel * channel);
+		bool AppendChannel(Channel * channel) const;
 
 		/**
 		 *
@@ -73,7 +73,7 @@ namespace net
 		 * @return 是否更新成功
 		 *
 		 */
-		bool UpdateChannel(Channel * channel);
+		bool UpdateChannel(Channel * channel) const;
 
 		/**
 		 *
@@ -84,7 +84,7 @@ namespace net
 		 * @return 是否移除成功
 		 *
 		 */
-		bool RemoveChannel(Channel * channel);
+		bool RemoveChannel(Channel * channel) const;
 
 	private:
 		POLL_HANDLE_TYPE _handle{ POLL_HANDLE_INVALID };

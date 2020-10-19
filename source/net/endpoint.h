@@ -167,7 +167,7 @@ namespace net
 			struct sockaddr_in6 v6;
 		}_address{ };
 	};
-};
+}
 
 
 #endif // __NET__ENDPOINT__H__

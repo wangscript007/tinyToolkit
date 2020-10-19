@@ -19,7 +19,7 @@
 
 namespace net
 {
-	enum class API_TYPE NET_OPTION_TYPE : uint8_t
+	enum class NET_OPTION_TYPE : uint8_t
 	{
 		IO,
 		SEND,

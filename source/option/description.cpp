@@ -191,7 +191,7 @@ namespace option
 	 */
 	bool DescriptionInfo::IsRequired() const
 	{
-		return _value ? true : false;
+		return _value.get();
 	}
 
 	/**

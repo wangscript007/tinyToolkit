@@ -19,7 +19,10 @@ static void Any()
 
 	try
 	{
-		container::Any any;
+		container::Any any(1.01);
+
+		std::cout << "type  : " << any.Type().name() << std::endl;
+		std::cout << "value : " << any.Get<double>() << std::endl;
 
 		any = 123;
 
@@ -27,6 +30,11 @@ static void Any()
 		std::cout << "value : " << any.Get<int32_t>() << std::endl;
 
 		any = "456";
+
+		std::cout << "type  : " << any.Type().name() << std::endl;
+		std::cout << "value : " << any.Get<const char * >() << std::endl;
+
+		any.Clear();
 
 		std::cout << "type  : " << any.Type().name() << std::endl;
 		std::cout << "value : " << any.Get<const char * >() << std::endl;

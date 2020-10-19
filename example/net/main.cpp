@@ -19,18 +19,20 @@ static void TCP()
 
 	try
 	{
-		static int32_t totalCount = 10;
+		static uint32_t ClientSend = 0;
+		static uint32_t ServerSend = 0;
+		static uint32_t TotalCount = 10;
 
 		class Client
 		{
 		public:
 			explicit Client(net::EventLoop * eventLoop) : _client(eventLoop)
 			{
-				_client.SetSendCallback(std::bind(&Client::OnSend, this, std::placeholders::_1));
-				_client.SetErrorCallback(std::bind(&Client::OnError, this, std::placeholders::_1));
-				_client.SetCloseCallback(std::bind(&Client::OnClose, this, std::placeholders::_1));
-				_client.SetConnectCallback(std::bind(&Client::OnConnect, this, std::placeholders::_1));
-				_client.SetReceiveCallback(std::bind(&Client::OnReceive, this, std::placeholders::_1, std::placeholders::_2));
+				_client.SetSendCallback(OnSend);
+				_client.SetErrorCallback(OnError);
+				_client.SetCloseCallback(OnClose);
+				_client.SetConnectCallback(OnConnect);
+				_client.SetReceiveCallback(OnReceive);
 			}
 
 			void Connect(const net::Endpoint & endpoint)
@@ -39,7 +41,7 @@ static void TCP()
 			}
 
 		private:
-			void OnSend(const std::shared_ptr<net::TCPSession> & session)
+			static void OnSend(const std::shared_ptr<net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -51,7 +53,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			void OnError(const std::shared_ptr<net::TCPSession> & session)
+			static void OnError(const std::shared_ptr<net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -59,7 +61,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			void OnClose(const std::shared_ptr<net::TCPSession> & session)
+			static void OnClose(const std::shared_ptr<net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -69,7 +71,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			void OnConnect(const std::shared_ptr<net::TCPSession> & session)
+			static void OnConnect(const std::shared_ptr<net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -79,7 +81,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			void OnReceive(const std::shared_ptr<net::TCPSession> & session, net::Buffer * buffer)
+			static void OnReceive(const std::shared_ptr<net::TCPSession> & session, net::Buffer * buffer)
 			{
 				auto byte = buffer->ReadableBytes();
 
@@ -93,7 +95,7 @@ static void TCP()
 				          << buffer->ReadString(buffer->ReadableBytes())
 				          << std::endl;
 
-				if (++_count == totalCount)
+				if (++ClientSend == TotalCount)
 				{
 					session->Shutdown();
 				}
@@ -104,8 +106,6 @@ static void TCP()
 			}
 
 		private:
-			int32_t _count{ 0 };
-
 			net::TCPClient _client;
 		};
 
@@ -114,11 +114,11 @@ static void TCP()
 		public:
 			explicit Server(net::EventLoop * eventLoop) : _server(eventLoop)
 			{
-				_server.SetSendCallback(std::bind(&Server::OnSend, this, std::placeholders::_1));
-				_server.SetErrorCallback(std::bind(&Server::OnError, this, std::placeholders::_1));
-				_server.SetCloseCallback(std::bind(&Server::OnClose, this, std::placeholders::_1));
-				_server.SetAcceptCallback(std::bind(&Server::OnAccept, this, std::placeholders::_1));
-				_server.SetReceiveCallback(std::bind(&Server::OnReceive, this, std::placeholders::_1, std::placeholders::_2));
+				_server.SetSendCallback(OnSend);
+				_server.SetErrorCallback(OnError);
+				_server.SetCloseCallback(OnClose);
+				_server.SetAcceptCallback(OnAccept);
+				_server.SetReceiveCallback(OnReceive);
 			}
 
 			void Listen(const net::Endpoint & endpoint)
@@ -127,7 +127,7 @@ static void TCP()
 			}
 
 		private:
-			void OnSend(const std::shared_ptr<net::TCPSession> & session)
+			static void OnSend(const std::shared_ptr<net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -139,7 +139,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			void OnError(const std::shared_ptr<net::TCPSession> & session)
+			static void OnError(const std::shared_ptr<net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -147,7 +147,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			void OnClose(const std::shared_ptr<net::TCPSession> & session)
+			static void OnClose(const std::shared_ptr<net::TCPSession> & session)
 			{
 				std::cout << "[" << session->LocalEndpoint().AsString()
 				          << "] close ["
@@ -156,7 +156,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			void OnAccept(const std::shared_ptr<net::TCPSession> & session)
+			static void OnAccept(const std::shared_ptr<net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -170,7 +170,7 @@ static void TCP()
 				}
 			}
 
-			void OnReceive(const std::shared_ptr<net::TCPSession> & session, net::Buffer * buffer)
+			static void OnReceive(const std::shared_ptr<net::TCPSession> & session, net::Buffer * buffer)
 			{
 				auto byte = buffer->ReadableBytes();
 
@@ -184,7 +184,7 @@ static void TCP()
 				          << buffer->ReadString(buffer->ReadableBytes())
 				          << std::endl;
 
-				if (++_count == totalCount)
+				if (++ServerSend == TotalCount)
 				{
 					session->Shutdown();
 				}
@@ -195,8 +195,6 @@ static void TCP()
 			}
 
 		private:
-			int32_t _count{ 0 };
-
 			net::TCPServer _server;
 		};
 

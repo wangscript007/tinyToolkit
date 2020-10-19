@@ -197,7 +197,7 @@ namespace net
 			functionList.swap(_functionList);
 		}
 
-		for (const auto & function : functionList)
+		for (auto && function : functionList)
 		{
 			function();
 		}

@@ -36,7 +36,6 @@ namespace logger
 			{ "CRITICAL", LOG_PRIORITY_TYPE::CRITICAL },
 			{ "ALERT", LOG_PRIORITY_TYPE::ALERT },
 			{ "FATAL", LOG_PRIORITY_TYPE::FATAL },
-			{ "EMERG", LOG_PRIORITY_TYPE::EMERG },
 		};
 
 		auto find = PriorityNumber.find(name);
@@ -70,7 +69,6 @@ namespace logger
 			{ LOG_PRIORITY_TYPE::CRITICAL, "CRITICAL" },
 			{ LOG_PRIORITY_TYPE::ALERT,    "ALERT   " },
 			{ LOG_PRIORITY_TYPE::FATAL,    "FATAL   " },
-			{ LOG_PRIORITY_TYPE::EMERG,    "EMERG   " },
 		};
 
 		auto find = PriorityName.find(priority);

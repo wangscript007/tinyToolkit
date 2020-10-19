@@ -70,11 +70,11 @@ namespace net
 	{
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
+		auto handle = SOCKET_HANDLE_INVALID;
+
 		DWORD bytes = 0;
 
 		Context * context = nullptr;
-
-		SOCKET_HANDLE_TYPE handle = SOCKET_HANDLE_INVALID;
 
 		if (::GetQueuedCompletionStatus(_handle, &bytes, (PULONG_PTR)&handle, (LPOVERLAPPED *)&context, timeout))
 		{
@@ -119,7 +119,7 @@ namespace net
 
 		for (int32_t i = 0; i < count; ++i)
 		{
-			auto * context = reinterpret_cast<Context *>(events[i].udata);
+			auto context = reinterpret_cast<Context *>(events[i].udata);
 
 			if (context && context->channel)
 			{
@@ -127,7 +127,7 @@ namespace net
 			}
 		}
 
-	#elif PLATFORM_TYPE == PLATFORM_LINUX
+	#else
 
 		struct epoll_event events[32]{ };
 
@@ -140,7 +140,7 @@ namespace net
 
 		for (int32_t i = 0; i < count; ++i)
 		{
-			auto * context = reinterpret_cast<Context *>(events[i].data.ptr);
+			auto context = reinterpret_cast<Context *>(events[i].data.ptr);
 
 			if (context && context->channel)
 			{
@@ -162,7 +162,7 @@ namespace net
 	 * @return 是否添加成功
 	 *
 	 */
-	bool EventPoll::AppendChannel(Channel * channel)
+	bool EventPoll::AppendChannel(Channel * channel) const
 	{
 		if (!IsValid())
 		{
@@ -177,12 +177,12 @@ namespace net
 
 		struct kevent event[2]{ };
 
-		EV_SET(&event[0], channel->Handle(), EVFILT_READ,  EV_ADD | (channel->IsListenReading() ? EV_ENABLE : EV_DISABLE), 0, 0, &channel->_context;);
-		EV_SET(&event[1], channel->Handle(), EVFILT_WRITE, EV_ADD | (channel->IsListenWriting() ? EV_ENABLE : EV_DISABLE), 0, 0, &channel->_context;);
+		EV_SET(&event[0], channel->Handle(), EVFILT_READ,  EV_ADD | (channel->IsListenReading() ? EV_ENABLE : EV_DISABLE), 0, 0, &channel->_context);
+		EV_SET(&event[1], channel->Handle(), EVFILT_WRITE, EV_ADD | (channel->IsListenWriting() ? EV_ENABLE : EV_DISABLE), 0, 0, &channel->_context);
 
 		return ::kevent(_handle, event, 2, nullptr, 0, nullptr) != -1;
 
-	#elif PLATFORM_TYPE == PLATFORM_LINUX
+	#else
 
 		struct epoll_event event{ };
 
@@ -203,7 +203,7 @@ namespace net
 	 * @return 是否更新成功
 	 *
 	 */
-	bool EventPoll::UpdateChannel(Channel * channel)
+	bool EventPoll::UpdateChannel(Channel * channel) const
 	{
 		if (!IsValid())
 		{
@@ -211,6 +211,8 @@ namespace net
 		}
 
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
+
+		(void)channel;
 
 		return true;
 
@@ -223,7 +225,7 @@ namespace net
 
 		return ::kevent(_handle, event, 2, nullptr, 0, nullptr) != -1;
 
-	#elif PLATFORM_TYPE == PLATFORM_LINUX
+	#else
 
 		struct epoll_event event{ };
 
@@ -244,7 +246,7 @@ namespace net
 	 * @return 是否移除成功
 	 *
 	 */
-	bool EventPoll::RemoveChannel(Channel * channel)
+	bool EventPoll::RemoveChannel(Channel * channel) const
 	{
 		if (!IsValid())
 		{
@@ -252,6 +254,8 @@ namespace net
 		}
 
 	#if PLATFORM_TYPE == PLATFORM_WINDOWS
+
+		(void)channel;
 
 		return true;
 
@@ -264,7 +268,7 @@ namespace net
 
 		return ::kevent(_handle, event, 2, nullptr, 0, nullptr) != -1;
 
-	#elif PLATFORM_TYPE == PLATFORM_LINUX
+	#else
 
 		struct epoll_event event{ };
 

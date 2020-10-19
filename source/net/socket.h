@@ -48,7 +48,7 @@ namespace net
 		 * @return 是否关闭成功
 		 *
 		 */
-		bool Close();
+		bool Close() const;
 
 		/**
 		 *
@@ -60,7 +60,7 @@ namespace net
 		 * @return 是否关闭成功
 		 *
 		 */
-		bool Shutdown(bool read = false, bool write = true);
+		bool Shutdown(bool read = false, bool write = true) const;
 
 		/**
 		 *
@@ -80,7 +80,7 @@ namespace net
 		 * @return 是否设置成功
 		 *
 		 */
-		bool SetBlockStatus(bool on = true);
+		bool SetBlockStatus(bool on = true) const;
 
 		/**
 		 *
@@ -92,7 +92,7 @@ namespace net
 		 * @return 是否设置成功
 		 *
 		 */
-		bool SetLingerStatus(int32_t timeout, bool on = true);
+		bool SetLingerStatus(int32_t timeout, bool on = true) const;
 
 		/**
 		 *
@@ -104,7 +104,7 @@ namespace net
 		 * @return 是否设置成功
 		 *
 		 */
-		bool SetKeepaliveStatus(bool on = true);
+		bool SetKeepaliveStatus(bool on = true) const;
 
 		/**
 		 *
@@ -115,7 +115,7 @@ namespace net
 		 * @return 是否设置成功
 		 *
 		 */
-		bool SetReusePortStatus(bool on = true);
+		bool SetReusePortStatus(bool on = true) const;
 
 		/**
 		 *
@@ -126,7 +126,7 @@ namespace net
 		 * @return 是否设置成功
 		 *
 		 */
-		bool SetReuseAddressStatus(bool on = true);
+		bool SetReuseAddressStatus(bool on = true) const;
 
 		/**
 		 *
@@ -137,7 +137,7 @@ namespace net
 		 * @return 是否设置成功
 		 *
 		 */
-		bool SetSendTimeout(int32_t timeout);
+		bool SetSendTimeout(int32_t timeout) const;
 
 		/**
 		 *
@@ -148,7 +148,7 @@ namespace net
 		 * @return 是否设置成功
 		 *
 		 */
-		bool SetReceiveTimeout(int32_t timeout);
+		bool SetReceiveTimeout(int32_t timeout) const;
 
 		/**
 		 *
@@ -159,7 +159,7 @@ namespace net
 		 * @return 是否设置成功
 		 *
 		 */
-		bool SetSendBufferSize(int32_t size);
+		bool SetSendBufferSize(int32_t size) const;
 
 		/**
 		 *
@@ -170,7 +170,7 @@ namespace net
 		 * @return 是否设置成功
 		 *
 		 */
-		bool SetReceiveBufferSize(int32_t size);
+		bool SetReceiveBufferSize(int32_t size) const;
 
 		/**
 		 *
@@ -181,7 +181,7 @@ namespace net
 		 * @return 绑定结果
 		 *
 		 */
-		int32_t Bind(const Endpoint & endpoint);
+		int32_t Bind(const Endpoint & endpoint) const;
 
 		/**
 		 *
@@ -192,7 +192,7 @@ namespace net
 		 * @return 监听结果
 		 *
 		 */
-		int32_t Listen(int32_t backlog = SOMAXCONN);
+		int32_t Listen(int32_t backlog = SOMAXCONN) const;
 
 		/**
 		 *
@@ -280,7 +280,7 @@ namespace net
 		 * @return 是否设置成功
 		 *
 		 */
-		bool SetDelayStatus(bool on = true);
+		bool SetDelayStatus(bool on = true) const;
 
 		/**
 		 *
@@ -293,7 +293,7 @@ namespace net
 		 * @return 发送字节数
 		 *
 		 */
-		int32_t Send(void * buffer, std::size_t length, Context * context);
+		int32_t Send(void * buffer, std::size_t length, Context * context) const;
 
 		/**
 		 *
@@ -304,7 +304,7 @@ namespace net
 		 * @return 接受结果
 		 *
 		 */
-		int32_t Accept(Context * context);
+		int32_t Accept(Context * context) const;
 
 		/**
 		 *
@@ -316,7 +316,7 @@ namespace net
 		 * @return 连接结果
 		 *
 		 */
-		int32_t Connect(const Endpoint & endpoint, Context * context);
+		int32_t Connect(const Endpoint & endpoint, Context * context) const;
 
 		/**
 		 *
@@ -329,7 +329,7 @@ namespace net
 		 * @return 接收字节数
 		 *
 		 */
-		int32_t Receive(void * buffer, std::size_t length, Context * context);
+		int32_t Receive(void * buffer, std::size_t length, Context * context) const;
 	};
 }
 

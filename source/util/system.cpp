@@ -20,8 +20,6 @@
 #
 #endif
 
-#include <climits>
-
 
 namespace util
 {
