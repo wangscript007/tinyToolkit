@@ -17,56 +17,59 @@
 #include <string>
 
 
-namespace util
+namespace tinyToolkit
 {
-	class API_TYPE System
+	namespace util
 	{
-	public:
-		/**
-		 *
-		 * 是否是大端字节序
-		 *
-		 * @return 是否是大端字节序
-		 *
-		 */
-		static bool IsBigEndian();
+		class API_TYPE System
+		{
+		public:
+			/**
+			 *
+			 * 是否是大端字节序
+			 *
+			 * @return 是否是大端字节序
+			 *
+			 */
+			static bool IsBigEndian();
 
-		/**
-		 *
-		 * 是否是小端字节序
-		 *
-		 * @return 是否是小端字节序
-		 *
-		 */
-		static bool IsLittleEndian();
+			/**
+			 *
+			 * 是否是小端字节序
+			 *
+			 * @return 是否是小端字节序
+			 *
+			 */
+			static bool IsLittleEndian();
 
-		/**
-		 *
-		 * 处理器个数
-		 *
-		 * @return 处理器个数
-		 *
-		 */
-		static uint32_t ProcessorCount();
+			/**
+			 *
+			 * 处理器个数
+			 *
+			 * @return 处理器个数
+			 *
+			 */
+			static uint32_t ProcessorCount();
 
-		/**
-		 *
-		 * 用户名
-		 *
-		 * @return 用户名
-		 *
-		 */
-		static std::string UserName();
+			/**
+			 *
+			 * 用户名
+			 *
+			 * @return 用户名
+			 *
+			 */
+			static std::string UserName();
 
-		/**
-		 *
-		 * 计算机名称
-		 *
-		 * @return 计算机名称
-		 *
-		 */
-		static std::string ComputerName();
-	};
+			/**
+			 *
+			 * 计算机名称
+			 *
+			 * @return 计算机名称
+			 *
+			 */
+			static std::string ComputerName();
+		};
+	}
 }
 
 

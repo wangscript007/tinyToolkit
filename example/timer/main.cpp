@@ -19,7 +19,7 @@ static void Task()
 
 	try
 	{
-		class Task : public timer::ITask
+		class Task : public tinyToolkit::timer::ITask
 		{
 		public:
 			~Task() override = default;
@@ -52,7 +52,7 @@ static void Task()
 
 		auto task = std::make_shared<Task>();
 
-		timer::Timer timer{ };
+		tinyToolkit::timer::Timer timer{ };
 
 		timer.AddTask(task, -1, 1000);
 
@@ -104,7 +104,7 @@ static void Function()
 	{
 		int32_t count = 3;
 
-		timer::Timer timer{ };
+		tinyToolkit::timer::Timer timer{ };
 
 		timer.AddTask([&](){ std::cout << "count : " << --count << std::endl; }, count, 1000);
 

@@ -10,7 +10,10 @@
 #include "type.h"
 
 
-namespace option
+namespace tinyToolkit
 {
+	namespace option
+	{
 
+	}
 }

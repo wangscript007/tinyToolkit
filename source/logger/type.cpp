@@ -10,7 +10,10 @@
 #include "type.h"
 
 
-namespace logger
+namespace tinyToolkit
 {
+	namespace logger
+	{
 
+	}
 }

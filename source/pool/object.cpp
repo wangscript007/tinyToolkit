@@ -10,7 +10,10 @@
 #include "object.h"
 
 
-namespace pool
+namespace tinyToolkit
 {
+	namespace pool
+	{
 
+	}
 }

@@ -14,34 +14,37 @@
 #include "layout.h"
 
 
-namespace logger
+namespace tinyToolkit
 {
-	class API_TYPE PatternLayout : public ILayout
+	namespace logger
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param pattern 模式
-		 *
-		 */
-		explicit PatternLayout(std::string pattern);
+		class API_TYPE PatternLayout : public ILayout
+		{
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param pattern 模式
+			 *
+			 */
+			explicit PatternLayout(std::string pattern);
 
-		/**
-		 *
-		 * 格式化
-		 *
-		 * @param context 上下文
-		 *
-		 * @return 格式化后内容
-		 *
-		 */
-		std::string Format(const Context & context) override;
+			/**
+			 *
+			 * 格式化
+			 *
+			 * @param context 上下文
+			 *
+			 * @return 格式化后内容
+			 *
+			 */
+			std::string Format(const Context & context) override;
 
-	private:
-		std::string _pattern{ };
-	};
+		private:
+			std::string _pattern{ };
+		};
+	}
 }
 
 

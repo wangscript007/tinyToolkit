@@ -10,225 +10,228 @@
 #include "task.h"
 
 
-namespace pool
+namespace tinyToolkit
 {
-	/**
-	 *
-	 * 构造函数
-	 *
-	 * @param count 线程个数
-	 *
-	 */
-	TaskPool::TaskPool(std::size_t count)
+	namespace pool
 	{
-		_idles.store(count);
-
-		for (std::size_t i = 0; i < count; ++i)
+		/**
+		 *
+		 * 构造函数
+		 *
+		 * @param count 线程个数
+		 *
+		 */
+		TaskPool::TaskPool(std::size_t count)
 		{
-			_threads.emplace_back
-			(
-				[this]()
-				{
-					std::function<void()> task{ };
+			_idles.store(count);
 
-					while (true)
+			for (std::size_t i = 0; i < count; ++i)
+			{
+				_threads.emplace_back
+				(
+					[this]()
 					{
+						std::function<void()> task{ };
+
+						while (true)
 						{
-							std::unique_lock<std::mutex> lock(_mutex);
-
-							_condition.wait
-							(
-								lock,
-
-								[this]
-								{
-									if (_tasks.empty())
-									{
-										return _isClose;
-									}
-									else
-									{
-										return !_isPause;
-									}
-								}
-							);
-
-							if (_isClose)
 							{
-								return;
+								std::unique_lock<std::mutex> lock(_mutex);
+
+								_condition.wait
+								(
+									lock,
+
+									[this]
+									{
+										if (_tasks.empty())
+										{
+											return _isClose;
+										}
+										else
+										{
+											return !_isPause;
+										}
+									}
+								);
+
+								if (_isClose)
+								{
+									return;
+								}
+
+								task = std::move(_tasks.front());
+
+								_tasks.pop();
 							}
 
-							task = std::move(_tasks.front());
+							--_idles;
 
-							_tasks.pop();
+							task();
+
+							++_idles;
 						}
-
-						--_idles;
-
-						task();
-
-						++_idles;
 					}
-				}
-			);
+				);
+			}
+
+			_isValid = true;
 		}
 
-		_isValid = true;
-	}
-
-	/**
-	 *
-	 * 析构函数
-	 *
-	 */
-	TaskPool::~TaskPool()
-	{
-		Close();
-
-		_threads.clear();
-		_threads.shrink_to_fit();
-	}
-
-	/**
-	 *
-	 * 等待
-	 *
-	 */
-	void TaskPool::Wait() const
-	{
-		while (!IsIdle())
+		/**
+		 *
+		 * 析构函数
+		 *
+		 */
+		TaskPool::~TaskPool()
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			Close();
+
+			_threads.clear();
+			_threads.shrink_to_fit();
 		}
-	}
 
-	/**
-	 *
-	 * 关闭
-	 *
-	 */
-	void TaskPool::Close()
-	{
-		_isClose = true;
-
-		_condition.notify_all();
-
-		for (auto && thread : _threads)
+		/**
+		 *
+		 * 等待
+		 *
+		 */
+		void TaskPool::Wait() const
 		{
-			if (thread.joinable())
+			while (!IsIdle())
 			{
-				thread.join();
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			}
 		}
-	}
 
-	/**
-	 *
-	 * 暂停
-	 *
-	 */
-	void TaskPool::Pause()
-	{
-		std::lock_guard<std::mutex> lock(_mutex);
+		/**
+		 *
+		 * 关闭
+		 *
+		 */
+		void TaskPool::Close()
+		{
+			_isClose = true;
 
-		_isPause = true;
-	}
+			_condition.notify_all();
 
-	/**
-	 *
-	 * 恢复
-	 *
-	 */
-	void TaskPool::Resume()
-	{
-		std::lock_guard<std::mutex> lock(_mutex);
+			for (auto && thread : _threads)
+			{
+				if (thread.joinable())
+				{
+					thread.join();
+				}
+			}
+		}
 
-		_isPause = false;
+		/**
+		 *
+		 * 暂停
+		 *
+		 */
+		void TaskPool::Pause()
+		{
+			std::lock_guard<std::mutex> lock(_mutex);
 
-		_condition.notify_all();
-	}
+			_isPause = true;
+		}
 
-	/**
-	 *
-	 * 是否为空闲状态
-	 *
-	 * @return 是否为空闲状态
-	 *
-	 */
-	bool TaskPool::IsIdle() const
-	{
-		std::lock_guard<std::mutex> lock(_mutex);
+		/**
+		 *
+		 * 恢复
+		 *
+		 */
+		void TaskPool::Resume()
+		{
+			std::lock_guard<std::mutex> lock(_mutex);
 
-		return _tasks.empty() && _idles == _threads.size();
-	}
+			_isPause = false;
 
-	/**
-	 *
-	 * 是否为关闭状态
-	 *
-	 * @return 是否为关闭状态
-	 *
-	 */
-	bool TaskPool::IsClose() const
-	{
-		std::lock_guard<std::mutex> lock(_mutex);
+			_condition.notify_all();
+		}
 
-		return _isClose;
-	}
+		/**
+		 *
+		 * 是否为空闲状态
+		 *
+		 * @return 是否为空闲状态
+		 *
+		 */
+		bool TaskPool::IsIdle() const
+		{
+			std::lock_guard<std::mutex> lock(_mutex);
 
-	/**
-	 *
-	 * 是否为暂停状态
-	 *
-	 * @return 是否为暂停状态
-	 *
-	 */
-	bool TaskPool::IsPause() const
-	{
-		std::lock_guard<std::mutex> lock(_mutex);
+			return _tasks.empty() && _idles == _threads.size();
+		}
 
-		return _isPause;
-	}
+		/**
+		 *
+		 * 是否为关闭状态
+		 *
+		 * @return 是否为关闭状态
+		 *
+		 */
+		bool TaskPool::IsClose() const
+		{
+			std::lock_guard<std::mutex> lock(_mutex);
 
-	/**
-	 *
-	 * 是否有效
-	 *
-	 * @return 是否有效
-	 *
-	 */
-	bool TaskPool::IsValid() const
-	{
-		std::lock_guard<std::mutex> lock(_mutex);
+			return _isClose;
+		}
 
-		return _isValid;
-	}
+		/**
+		 *
+		 * 是否为暂停状态
+		 *
+		 * @return 是否为暂停状态
+		 *
+		 */
+		bool TaskPool::IsPause() const
+		{
+			std::lock_guard<std::mutex> lock(_mutex);
 
-	/**
-	 *
-	 * 任务个数
-	 *
-	 * @return 任务个数
-	 *
-	 */
-	std::size_t TaskPool::TaskSize() const
-	{
-		std::lock_guard<std::mutex> lock(_mutex);
+			return _isPause;
+		}
 
-		return _tasks.size();
-	}
+		/**
+		 *
+		 * 是否有效
+		 *
+		 * @return 是否有效
+		 *
+		 */
+		bool TaskPool::IsValid() const
+		{
+			std::lock_guard<std::mutex> lock(_mutex);
 
-	/**
-	 *
-	 * 线程个数
-	 *
-	 * @return 线程个数
-	 *
-	 */
-	std::size_t TaskPool::ThreadSize() const
-	{
-		std::lock_guard<std::mutex> lock(_mutex);
+			return _isValid;
+		}
 
-		return _threads.size();
+		/**
+		 *
+		 * 任务个数
+		 *
+		 * @return 任务个数
+		 *
+		 */
+		std::size_t TaskPool::TaskSize() const
+		{
+			std::lock_guard<std::mutex> lock(_mutex);
+
+			return _tasks.size();
+		}
+
+		/**
+		 *
+		 * 线程个数
+		 *
+		 * @return 线程个数
+		 *
+		 */
+		std::size_t TaskPool::ThreadSize() const
+		{
+			std::lock_guard<std::mutex> lock(_mutex);
+
+			return _threads.size();
+		}
 	}
 }

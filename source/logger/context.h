@@ -17,20 +17,23 @@
 #include <string>
 
 
-namespace logger
+namespace tinyToolkit
 {
-	struct API_TYPE Context
+	namespace logger
 	{
-		std::tm tm{ };
+		struct API_TYPE Context
+		{
+			std::tm tm{ };
 
-		std::string name{ };
-		std::string content{ };
+			std::string name{ };
+			std::string content{ };
 
-		LOG_OPTION_TYPE option{ };
-		LOG_PRIORITY_TYPE priority{ };
+			LOG_OPTION_TYPE option{ };
+			LOG_PRIORITY_TYPE priority{ };
 
-		std::chrono::system_clock::time_point timePoint{ };
-	};
+			std::chrono::system_clock::time_point timePoint{ };
+		};
+	}
 }
 
 

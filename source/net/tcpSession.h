@@ -20,220 +20,223 @@
 #include <memory>
 
 
-namespace net
+namespace tinyToolkit
 {
-	class API_TYPE TCPSession : public std::enable_shared_from_this<TCPSession>
+	namespace net
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param eventLoop 事件循环器
-		 * @param handle 句柄
-		 * @param peerEndpoint 远端端点
-		 * @param localEndpoint 本地端点
-		 *
-		 */
-		explicit TCPSession(EventLoop * eventLoop, SOCKET_HANDLE_TYPE handle, const Endpoint & peerEndpoint, const Endpoint & localEndpoint);
+		class API_TYPE TCPSession : public std::enable_shared_from_this<TCPSession>
+		{
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param eventLoop 事件循环器
+			 * @param handle 句柄
+			 * @param peerEndpoint 远端端点
+			 * @param localEndpoint 本地端点
+			 *
+			 */
+			explicit TCPSession(EventLoop * eventLoop, SOCKET_HANDLE_TYPE handle, const Endpoint & peerEndpoint, const Endpoint & localEndpoint);
 
-		/**
-		 *
-		 * 析构函数
-		 *
-		 */
-		~TCPSession();
+			/**
+			 *
+			 * 析构函数
+			 *
+			 */
+			~TCPSession();
 
-		/**
-		 *
-		 * 发送
-		 *
-		 * @param buffer 内容
-		 * @param length 长度
-		 *
-		 */
-		void Send(const void * content, std::size_t length);
+			/**
+			 *
+			 * 发送
+			 *
+			 * @param buffer 内容
+			 * @param length 长度
+			 *
+			 */
+			void Send(const void * content, std::size_t length);
 
-		/**
-		 *
-		 * 开始
-		 *
-		 */
-		void Start();
+			/**
+			 *
+			 * 开始
+			 *
+			 */
+			void Start();
 
-		/**
-		 *
-		 * 关闭
-		 *
-		 */
-		void Shutdown();
+			/**
+			 *
+			 * 关闭
+			 *
+			 */
+			void Shutdown();
 
-		/**
-		 *
-		 * 设置发送数据事件回调函数
-		 *
-		 * @param function 函数
-		 *
-		 */
-		void SetSendCallback(std::function<void(const std::shared_ptr<net::TCPSession> &)> function);
+			/**
+			 *
+			 * 设置发送数据事件回调函数
+			 *
+			 * @param function 函数
+			 *
+			 */
+			void SetSendCallback(std::function<void(const std::shared_ptr<net::TCPSession> &)> function);
 
-		/**
-		 *
-		 * 设置错误信息事件回调函数
-		 *
-		 * @param function 函数
-		 *
-		 */
-		void SetErrorCallback(std::function<void(const std::shared_ptr<net::TCPSession> &)> function);
+			/**
+			 *
+			 * 设置错误信息事件回调函数
+			 *
+			 * @param function 函数
+			 *
+			 */
+			void SetErrorCallback(std::function<void(const std::shared_ptr<net::TCPSession> &)> function);
 
-		/**
-		 *
-		 * 设置连接关闭事件回调函数
-		 *
-		 * @param function 函数
-		 *
-		 */
-		void SetCloseCallback(std::function<void(const std::shared_ptr<net::TCPSession> &)> function);
+			/**
+			 *
+			 * 设置连接关闭事件回调函数
+			 *
+			 * @param function 函数
+			 *
+			 */
+			void SetCloseCallback(std::function<void(const std::shared_ptr<net::TCPSession> &)> function);
 
-		/**
-		 *
-		 * 设置接收数据事件回调函数
-		 *
-		 * @param function 函数
-		 *
-		 */
-		void SetReceiveCallback(std::function<void(const std::shared_ptr<net::TCPSession> &, net::Buffer *)> function);
+			/**
+			 *
+			 * 设置接收数据事件回调函数
+			 *
+			 * @param function 函数
+			 *
+			 */
+			void SetReceiveCallback(std::function<void(const std::shared_ptr<net::TCPSession> &, net::Buffer *)> function);
 
-		/**
-		 *
-		 * 是否连接
-		 *
-		 * @return 是否连接
-		 *
-		 */
-		bool IsConnect() const;
+			/**
+			 *
+			 * 是否连接
+			 *
+			 * @return 是否连接
+			 *
+			 */
+			bool IsConnect() const;
 
-		/**
-		 *
-		 * 总共发送字节数
-		 *
-		 * @return 总共发送字节数
-		 *
-		 */
-		uint64_t TotalSendBytes() const;
+			/**
+			 *
+			 * 总共发送字节数
+			 *
+			 * @return 总共发送字节数
+			 *
+			 */
+			uint64_t TotalSendBytes() const;
 
-		/**
-		 *
-		 * 本次发送字节数
-		 *
-		 * @return 本次发送字节数
-		 *
-		 */
-		uint64_t CurrentSendBytes() const;
+			/**
+			 *
+			 * 本次发送字节数
+			 *
+			 * @return 本次发送字节数
+			 *
+			 */
+			uint64_t CurrentSendBytes() const;
 
-		/**
-		 *
-		 * 总共接收字节数
-		 *
-		 * @return 总共接收字节数
-		 *
-		 */
-		uint64_t TotalReceiveBytes() const;
+			/**
+			 *
+			 * 总共接收字节数
+			 *
+			 * @return 总共接收字节数
+			 *
+			 */
+			uint64_t TotalReceiveBytes() const;
 
-		/**
-		 *
-		 * 本次接收字节数
-		 *
-		 * @return 本次接收字节数
-		 *
-		 */
-		uint64_t CurrentReceiveBytes() const;
+			/**
+			 *
+			 * 本次接收字节数
+			 *
+			 * @return 本次接收字节数
+			 *
+			 */
+			uint64_t CurrentReceiveBytes() const;
 
-		/**
-		 *
-		 * 对端端点
-		 *
-		 * @return 对端端点
-		 *
-		 */
-		const Endpoint & PeerEndpoint() const;
+			/**
+			 *
+			 * 对端端点
+			 *
+			 * @return 对端端点
+			 *
+			 */
+			const Endpoint & PeerEndpoint() const;
 
-		/**
-		 *
-		 * 对端端点
-		 *
-		 * @return 对端端点
-		 *
-		 */
-		const Endpoint & LocalEndpoint() const;
+			/**
+			 *
+			 * 对端端点
+			 *
+			 * @return 对端端点
+			 *
+			 */
+			const Endpoint & LocalEndpoint() const;
 
-	private:
-		/**
-		 *
-		 * 执行读事件
-		 *
-		 */
-		void DoRead();
+		private:
+			/**
+			 *
+			 * 执行读事件
+			 *
+			 */
+			void DoRead();
 
-		/**
-		 *
-		 * 执行写事件
-		 *
-		 */
-		void DoWrite();
+			/**
+			 *
+			 * 执行写事件
+			 *
+			 */
+			void DoWrite();
 
-		/**
-		 *
-		 * 执行错误事件
-		 *
-		 */
-		void DoError();
+			/**
+			 *
+			 * 执行错误事件
+			 *
+			 */
+			void DoError();
 
-		/**
-		 *
-		 * 执行关闭事件
-		 *
-		 */
-		void DoClose();
+			/**
+			 *
+			 * 执行关闭事件
+			 *
+			 */
+			void DoClose();
 
-	private:
-		bool _isConnect{ true };
+		private:
+			bool _isConnect{ true };
 
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
+		#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-		bool _isSend{ false };
+			bool _isSend{ false };
 
-		std::shared_ptr<Channel> _sendChannel{ };
-		std::shared_ptr<Channel> _recvChannel{ };
+			std::shared_ptr<Channel> _sendChannel{ };
+			std::shared_ptr<Channel> _recvChannel{ };
 
-	#else
+		#else
 
-		std::shared_ptr<Channel> _ioChannel{ };
+			std::shared_ptr<Channel> _ioChannel{ };
 
-	#endif
+		#endif
 
-		Buffer _buffer{ };
+			Buffer _buffer{ };
 
-		uint64_t _totalSendBytes{ 0 };
-		uint64_t _currentSendBytes{ 0 };
-		uint64_t _totalReceiveBytes{ 0 };
-		uint64_t _currentReceiveBytes{ 0 };
+			uint64_t _totalSendBytes{ 0 };
+			uint64_t _currentSendBytes{ 0 };
+			uint64_t _totalReceiveBytes{ 0 };
+			uint64_t _currentReceiveBytes{ 0 };
 
-		TCPSocket _socket;
+			TCPSocket _socket;
 
-		Endpoint _peerEndpoint{ };
-		Endpoint _localEndpoint{ };
+			Endpoint _peerEndpoint{ };
+			Endpoint _localEndpoint{ };
 
-		EventLoop * _eventLoop{ nullptr };
+			EventLoop * _eventLoop{ nullptr };
 
-		std::list<std::shared_ptr<Buffer>> _messageQueue{ };
+			std::list<std::shared_ptr<Buffer>> _messageQueue{ };
 
-		std::function<void(const std::shared_ptr<net::TCPSession> &)> _sendCallback{ };
-		std::function<void(const std::shared_ptr<net::TCPSession> &)> _errorCallback{ };
-		std::function<void(const std::shared_ptr<net::TCPSession> &)> _closeCallback{ };
-		std::function<void(const std::shared_ptr<net::TCPSession> &, net::Buffer *)> _receiveCallback{ };
+			std::function<void(const std::shared_ptr<net::TCPSession> &)> _sendCallback{ };
+			std::function<void(const std::shared_ptr<net::TCPSession> &)> _errorCallback{ };
+			std::function<void(const std::shared_ptr<net::TCPSession> &)> _closeCallback{ };
+			std::function<void(const std::shared_ptr<net::TCPSession> &, net::Buffer *)> _receiveCallback{ };
 
-	};
+		};
+	}
 }
 
 

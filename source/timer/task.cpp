@@ -10,79 +10,82 @@
 #include "task.h"
 
 
-namespace timer
+namespace tinyToolkit
 {
-	/**
-	 *
-	 * 杀死事件
-	 *
-	 */
-	void ITask::OnKill()
+	namespace timer
 	{
+		/**
+		 *
+		 * 杀死事件
+		 *
+		 */
+		void ITask::OnKill()
+		{
 
-	}
+		}
 
-	/**
-	 *
-	 * 暂停事件
-	 *
-	 */
-	void ITask::OnPause()
-	{
+		/**
+		 *
+		 * 暂停事件
+		 *
+		 */
+		void ITask::OnPause()
+		{
 
-	}
+		}
 
-	/**
-	 *
-	 * 恢复事件
-	 *
-	 */
-	void ITask::OnResume()
-	{
+		/**
+		 *
+		 * 恢复事件
+		 *
+		 */
+		void ITask::OnResume()
+		{
 
-	}
+		}
 
-	/**
-	 *
-	 * 完成事件
-	 *
-	 */
-	void ITask::OnFinish()
-	{
+		/**
+		 *
+		 * 完成事件
+		 *
+		 */
+		void ITask::OnFinish()
+		{
 
-	}
+		}
 
-	/**
-	 *
-	 * 触发事件
-	 *
-	 */
-	void ITask::OnTrigger()
-	{
+		/**
+		 *
+		 * 触发事件
+		 *
+		 */
+		void ITask::OnTrigger()
+		{
 
-	}
+		}
 
-	/**
-	 *
-	 * 任务次数
-	 *
-	 * @return 任务次数
-	 *
-	 */
-	int64_t ITask::TotalCount() const
-	{
-		return _totalCount;
-	}
+		/**
+		 *
+		 * 任务次数
+		 *
+		 * @return 任务次数
+		 *
+		 */
+		int64_t ITask::TotalCount() const
+		{
+			return _totalCount;
+		}
 
-	/**
-	 *
-	 * 触发次数
-	 *
-	 * @return 触发次数
-	 *
-	 */
-	int64_t ITask::TriggerCount() const
-	{
-		return _triggerCount;
+		/**
+		 *
+		 * 触发次数
+		 *
+		 * @return 触发次数
+		 *
+		 */
+		int64_t ITask::TriggerCount() const
+		{
+			return _triggerCount;
+		}
 	}
 }

@@ -17,50 +17,53 @@
 #include <condition_variable>
 
 
-namespace util
+namespace tinyToolkit
 {
-	class API_TYPE CountLatch
+	namespace util
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param count 计数
-		 *
-		 */
-		explicit CountLatch(uint32_t count);
+		class API_TYPE CountLatch
+		{
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param count 计数
+			 *
+			 */
+			explicit CountLatch(uint32_t count);
 
-		/**
-		 *
-		 * 等待
-		 *
-		 */
-		void Wait();
+			/**
+			 *
+			 * 等待
+			 *
+			 */
+			void Wait();
 
-		/**
-		 *
-		 * 触发
-		 *
-		 */
-		void Down();
+			/**
+			 *
+			 * 触发
+			 *
+			 */
+			void Down();
 
-		/**
-		 *
-		 * 剩余计数
-		 *
-		 * @return 剩余计数
-		 *
-		 */
-		uint32_t RemainingCount();
+			/**
+			 *
+			 * 剩余计数
+			 *
+			 * @return 剩余计数
+			 *
+			 */
+			uint32_t RemainingCount();
 
-	private:
-		uint32_t _count{ 0 };
+		private:
+			uint32_t _count{ 0 };
 
-		std::mutex _mutex{ };
+			std::mutex _mutex{ };
 
-		std::condition_variable _condition{ };
-	};
+			std::condition_variable _condition{ };
+		};
+	}
 }
 
 

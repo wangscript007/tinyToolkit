@@ -19,7 +19,7 @@ static void Any()
 
 	try
 	{
-		container::Any any(1.01);
+		tinyToolkit::container::Any any(1.01);
 
 		std::cout << "type  : " << any.Type().name() << std::endl;
 		std::cout << "value : " << any.Get<double>() << std::endl;
@@ -57,7 +57,7 @@ static void Queue()
 	{
 		std::string value{ };
 
-		container::LockQueue<std::string> queue;
+		tinyToolkit::container::LockQueue<std::string> queue;
 
 		queue.Push("123");
 		queue.Push("456");

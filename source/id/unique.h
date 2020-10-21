@@ -17,41 +17,44 @@
 #include <cstdint>
 
 
-namespace id
+namespace tinyToolkit
 {
-	class API_TYPE Unique
+	namespace id
 	{
-		union ONLY_ID
+		class API_TYPE Unique
 		{
-			struct
+			union ONLY_ID
 			{
-				uint32_t count;
-				uint32_t times;
-			}key;
+				struct
+				{
+					uint32_t count;
+					uint32_t times;
+				}key;
 
-			uint64_t value{ 0 };
+				uint64_t value{ 0 };
+			};
+
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 */
+			Unique();
+
+			/**
+			 *
+			 * 生成
+			 *
+			 * @return 唯一标识码
+			 *
+			 */
+			uint64_t Generate();
+
+		private:
+			ONLY_ID _id{ };
 		};
-
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 */
-		Unique();
-
-		/**
-		 *
-		 * 生成
-		 *
-		 * @return 唯一标识码
-		 *
-		 */
-		uint64_t Generate();
-
-	private:
-		ONLY_ID _id{ };
-	};
+	}
 }
 
 

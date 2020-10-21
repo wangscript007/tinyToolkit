@@ -10,209 +10,212 @@
 #include "event.h"
 
 
-namespace timer
+namespace tinyToolkit
 {
-	/**
-	 *
-	 * 构造函数
-	 *
-	 * @param task 事件
-	 * @param count 次数
-	 * @param expire 到期时间
-	 * @param interval 间隔(毫秒)
-	 *
-	 */
-	Event::Event(std::shared_ptr<ITask> task, int64_t count, int64_t expire, int64_t interval) : _count(count),
-																								 _expire(expire),
-																								 _interval(interval),
-																								 _task(std::move(task))
+	namespace timer
 	{
-		if (_task)
+		/**
+		 *
+		 * 构造函数
+		 *
+		 * @param task 事件
+		 * @param count 次数
+		 * @param expire 到期时间
+		 * @param interval 间隔(毫秒)
+		 *
+		 */
+		Event::Event(std::shared_ptr<ITask> task, int64_t count, int64_t expire, int64_t interval) : _count(count),
+																									 _expire(expire),
+																									 _interval(interval),
+																									 _task(std::move(task))
 		{
-			_task->_totalCount = count;
-		}
-	}
-
-	/**
-	 *
-	 * 析构函数
-	 *
-	 */
-	Event::~Event()
-	{
-		Kill();
-	}
-
-	/**
-	 *
-	 * 杀死
-	 *
-	 */
-	void Event::Kill()
-	{
-		if (!_isValid)
-		{
-			return;
-		}
-
-		_isValid = false;
-
-		if (_task)
-		{
-			_task->OnKill();
-		}
-	}
-
-	/**
-	 *
-	 * 触发
-	 *
-	 */
-	void Event::Trigger()
-	{
-		if (!_isValid)
-		{
-			return;
-		}
-
-		_expire += _interval;
-
-		if (_count != 0)
-		{
-			if (_count > 0)
-			{
-				--_count;
-			}
-
 			if (_task)
 			{
-				++_task->_triggerCount;
-
-				_task->OnTrigger();
+				_task->_totalCount = count;
 			}
 		}
 
-		if (_count == 0)
+		/**
+		 *
+		 * 析构函数
+		 *
+		 */
+		Event::~Event()
 		{
+			Kill();
+		}
+
+		/**
+		 *
+		 * 杀死
+		 *
+		 */
+		void Event::Kill()
+		{
+			if (!_isValid)
+			{
+				return;
+			}
+
 			_isValid = false;
 
 			if (_task)
 			{
-				_task->OnFinish();
+				_task->OnKill();
 			}
 		}
-	}
 
-	/**
-	 *
-	 * 暂停
-	 *
-	 * @param tick 时间戳
-	 *
-	 */
-	void Event::Pause(int64_t tick)
-	{
-		if (!_isValid || _isPause)
+		/**
+		 *
+		 * 触发
+		 *
+		 */
+		void Event::Trigger()
 		{
-			return;
+			if (!_isValid)
+			{
+				return;
+			}
+
+			_expire += _interval;
+
+			if (_count != 0)
+			{
+				if (_count > 0)
+				{
+					--_count;
+				}
+
+				if (_task)
+				{
+					++_task->_triggerCount;
+
+					_task->OnTrigger();
+				}
+			}
+
+			if (_count == 0)
+			{
+				_isValid = false;
+
+				if (_task)
+				{
+					_task->OnFinish();
+				}
+			}
 		}
 
-		_isPause = true;
-
-		_pauseTick = tick;
-
-		if (_task)
+		/**
+		 *
+		 * 暂停
+		 *
+		 * @param tick 时间戳
+		 *
+		 */
+		void Event::Pause(int64_t tick)
 		{
-			_task->OnPause();
-		}
-	}
+			if (!_isValid || _isPause)
+			{
+				return;
+			}
 
-	/**
-	 *
-	 * 恢复
-	 *
-	 * @param tick 时间戳
-	 *
-	 */
-	void Event::Resume(int64_t tick)
-	{
-		if (!_isValid || !_isPause)
+			_isPause = true;
+
+			_pauseTick = tick;
+
+			if (_task)
+			{
+				_task->OnPause();
+			}
+		}
+
+		/**
+		 *
+		 * 恢复
+		 *
+		 * @param tick 时间戳
+		 *
+		 */
+		void Event::Resume(int64_t tick)
 		{
-			return;
+			if (!_isValid || !_isPause)
+			{
+				return;
+			}
+
+			_expire += tick - _pauseTick;
+
+			_isPause = false;
+
+			if (_task)
+			{
+				_task->OnResume();
+			}
 		}
 
-		_expire += tick - _pauseTick;
-
-		_isPause = false;
-
-		if (_task)
+		/**
+		 *
+		 * 修正过期时间
+		 *
+		 * @param tick 时间戳
+		 *
+		 */
+		void Event::RevisedExpire(int64_t tick)
 		{
-			_task->OnResume();
+			auto interval = _expire - tick;
+
+			if (interval < 0 && std::abs(interval) > _interval)
+			{
+				_expire += (std::abs(interval) / _interval) * _interval;
+			}
 		}
-	}
 
-	/**
-	 *
-	 * 修正过期时间
-	 *
-	 * @param tick 时间戳
-	 *
-	 */
-	void Event::RevisedExpire(int64_t tick)
-	{
-		auto interval = _expire - tick;
-
-		if (interval < 0 && std::abs(interval) > _interval)
+		/**
+		 *
+		 * 是否有效
+		 *
+		 * @return 是否有效
+		 *
+		 */
+		bool Event::IsValid() const
 		{
-			_expire += (std::abs(interval) / _interval) * _interval;
+			return _isValid;
 		}
-	}
 
-	/**
-	 *
-	 * 是否有效
-	 *
-	 * @return 是否有效
-	 *
-	 */
-	bool Event::IsValid() const
-	{
-		return _isValid;
-	}
+		/**
+		 *
+		 * 是否暂停
+		 *
+		 * @return 是否暂停
+		 *
+		 */
+		bool Event::IsPause() const
+		{
+			return _isPause;
+		}
 
-	/**
-	 *
-	 * 是否暂停
-	 *
-	 * @return 是否暂停
-	 *
-	 */
-	bool Event::IsPause() const
-	{
-		return _isPause;
-	}
+		/**
+		 *
+		 * 过期时间
+		 *
+		 * @return 过期时间
+		 *
+		 */
+		int64_t Event::Expire() const
+		{
+			return _expire;
+		}
 
-	/**
-	 *
-	 * 过期时间
-	 *
-	 * @return 过期时间
-	 *
-	 */
-	int64_t Event::Expire() const
-	{
-		return _expire;
-	}
-
-	/**
-	 *
-	 * 任务
-	 *
-	 * @return 任务
-	 *
-	 */
-	std::shared_ptr<ITask> Event::Task()
-	{
-		return _task;
+		/**
+		 *
+		 * 任务
+		 *
+		 * @return 任务
+		 *
+		 */
+		std::shared_ptr<ITask> Event::Task()
+		{
+			return _task;
+		}
 	}
 }

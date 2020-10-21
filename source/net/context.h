@@ -21,43 +21,46 @@
 #endif
 
 
-namespace net
+namespace tinyToolkit
 {
-	class API_TYPE Channel;
-
-	class API_TYPE Context
+	namespace net
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param option 操作
-		 *
-		 */
-		explicit Context(NET_OPTION_TYPE option = NET_OPTION_TYPE::INVALID);
+		class API_TYPE Channel;
 
-	public:
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
+		class API_TYPE Context
+		{
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param option 操作
+			 *
+			 */
+			explicit Context(NET_OPTION_TYPE option = NET_OPTION_TYPE::INVALID);
 
-		OVERLAPPED overlap{ 0 };
+		public:
+		#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-		WSABUF buffer{ 0 };
+			OVERLAPPED overlap{ 0 };
 
-		int32_t bytes{ 0 };
+			WSABUF buffer{ 0 };
 
-		char temp[1460]{ 0 };
+			int32_t bytes{ 0 };
 
-		bool status{ false };
+			char temp[1460]{ 0 };
 
-	#endif
+			bool status{ false };
 
-		Channel * channel{ nullptr };
+		#endif
 
-		NET_OPTION_TYPE optionType{ NET_OPTION_TYPE::INVALID };
+			Channel * channel{ nullptr };
 
-		SOCKET_HANDLE_TYPE handle{ SOCKET_HANDLE_INVALID };
-	};
+			NET_OPTION_TYPE optionType{ NET_OPTION_TYPE::INVALID };
+
+			SOCKET_HANDLE_TYPE handle{ SOCKET_HANDLE_INVALID };
+		};
+	}
 }
 
 

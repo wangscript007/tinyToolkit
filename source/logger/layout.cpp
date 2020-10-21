@@ -10,7 +10,10 @@
 #include "layout.h"
 
 
-namespace logger
+namespace tinyToolkit
 {
+	namespace logger
+	{
 
+	}
 }

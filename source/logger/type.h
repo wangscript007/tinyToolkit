@@ -17,36 +17,39 @@
 #include <cstdint>
 
 
-namespace logger
+namespace tinyToolkit
 {
-	/**
-	 *
-	 * 日志操作
-	 *
-	 */
-	enum class LOG_OPTION_TYPE : uint8_t
+	namespace logger
 	{
-		WRITING,
-		FLUSH,
-		TERMINATE,
-	};
+		/**
+		 *
+		 * 日志操作
+		 *
+		 */
+		enum class LOG_OPTION_TYPE : uint8_t
+		{
+			WRITING,
+			FLUSH,
+			TERMINATE,
+		};
 
-	/**
-	 *
-	 * 日志优先级
-	 *
-	 */
-	enum class LOG_PRIORITY_TYPE : uint8_t
-	{
-		DEBUGS,
-		INFO,
-		NOTICE,
-		WARNING,
-		ERRORS,
-		CRITICAL,
-		ALERT,
-		FATAL,
-	};
+		/**
+		 *
+		 * 日志优先级
+		 *
+		 */
+		enum class LOG_PRIORITY_TYPE : uint8_t
+		{
+			DEBUGS,
+			INFO,
+			NOTICE,
+			WARNING,
+			ERRORS,
+			CRITICAL,
+			ALERT,
+			FATAL,
+		};
+	}
 }
 
 

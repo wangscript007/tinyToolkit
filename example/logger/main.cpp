@@ -19,21 +19,21 @@ static void SyncLog()
 
 	try
 	{
-		auto logger = std::make_shared<logger::SyncLogger>();
+		auto logger = std::make_shared<tinyToolkit::logger::SyncLogger>();
 
-		auto fileSink = std::make_shared<logger::FileSink>("fileSink", "syncFileSink.log", true);
-		auto syslogSink = std::make_shared<logger::SyslogSink>("syslogSink");
-		auto consoleSink = std::make_shared<logger::ConsoleSink>("consoleFile");
-		auto dailyFileSink = std::make_shared<logger::DailyFileSink>("dailyFileSink", "syncDailyFileSink.log");
-		auto rotatingFileLogSink = std::make_shared<logger::RotatingFileSink>("rotatingFileSink", "syncRotatingFileSink.log", 1000, 10);
+		auto fileSink = std::make_shared<tinyToolkit::logger::FileSink>("fileSink", "syncFileSink.log", true);
+		auto syslogSink = std::make_shared<tinyToolkit::logger::SyslogSink>("syslogSink");
+		auto consoleSink = std::make_shared<tinyToolkit::logger::ConsoleSink>("consoleFile");
+		auto dailyFileSink = std::make_shared<tinyToolkit::logger::DailyFileSink>("dailyFileSink", "syncDailyFileSink.log");
+		auto rotatingFileLogSink = std::make_shared<tinyToolkit::logger::RotatingFileSink>("rotatingFileSink", "syncRotatingFileSink.log", 1000, 10);
 
-		auto simpleLayout = std::make_shared<logger::SimpleLayout>();
-		auto patternLayout = std::make_shared<logger::PatternLayout>("[%d.%A][%N][%P][%t] %V%n");
+		auto simpleLayout = std::make_shared<tinyToolkit::logger::SimpleLayout>();
+		auto patternLayout = std::make_shared<tinyToolkit::logger::PatternLayout>("[%d.%A][%N][%P][%t] %V%n");
 
-		auto regexFilter = std::make_shared<logger::RegexFilter>(".*Critical.*");
-		auto priorityFilter = std::make_shared<logger::PriorityFilter>("DEBUG");
-		auto priorityBelowFilter = std::make_shared<logger::PriorityBelowFilter>("INFO");
-		auto priorityAboveFilter = std::make_shared<logger::PriorityAboveFilter>("NOTICE");
+		auto regexFilter = std::make_shared<tinyToolkit::logger::RegexFilter>(".*Critical.*");
+		auto priorityFilter = std::make_shared<tinyToolkit::logger::PriorityFilter>("DEBUG");
+		auto priorityBelowFilter = std::make_shared<tinyToolkit::logger::PriorityBelowFilter>("INFO");
+		auto priorityAboveFilter = std::make_shared<tinyToolkit::logger::PriorityAboveFilter>("NOTICE");
 
 		fileSink->SetLayout(simpleLayout)->AddFilter(priorityFilter);
 		syslogSink->SetLayout(simpleLayout)->AddFilter(priorityAboveFilter);
@@ -79,21 +79,21 @@ static void AsyncLog()
 
 	try
 	{
-		auto logger = std::make_shared<logger::AsyncLogger>();
+		auto logger = std::make_shared<tinyToolkit::logger::AsyncLogger>();
 
-		auto fileSink = std::make_shared<logger::FileSink>("fileSink", "asyncFileSink.log", true);
-		auto syslogSink = std::make_shared<logger::SyslogSink>("syslogSink");
-		auto consoleSink = std::make_shared<logger::ConsoleSink>("consoleFile");
-		auto dailyFileSink = std::make_shared<logger::DailyFileSink>("dailyFileSink", "asyncDailyFileSink.log");
-		auto rotatingFileLogSink = std::make_shared<logger::RotatingFileSink>("rotatingFileSink", "asyncRotatingFileSink.log", 1000, 10);
+		auto fileSink = std::make_shared<tinyToolkit::logger::FileSink>("fileSink", "asyncFileSink.log", true);
+		auto syslogSink = std::make_shared<tinyToolkit::logger::SyslogSink>("syslogSink");
+		auto consoleSink = std::make_shared<tinyToolkit::logger::ConsoleSink>("consoleFile");
+		auto dailyFileSink = std::make_shared<tinyToolkit::logger::DailyFileSink>("dailyFileSink", "asyncDailyFileSink.log");
+		auto rotatingFileLogSink = std::make_shared<tinyToolkit::logger::RotatingFileSink>("rotatingFileSink", "asyncRotatingFileSink.log", 1000, 10);
 
-		auto simpleLayout = std::make_shared<logger::SimpleLayout>();
-		auto patternLayout = std::make_shared<logger::PatternLayout>("[%d.%A][%N][%P][%t] %V%n");
+		auto simpleLayout = std::make_shared<tinyToolkit::logger::SimpleLayout>();
+		auto patternLayout = std::make_shared<tinyToolkit::logger::PatternLayout>("[%d.%A][%N][%P][%t] %V%n");
 
-		auto regexFilter = std::make_shared<logger::RegexFilter>(".*Critical.*");
-		auto priorityFilter = std::make_shared<logger::PriorityFilter>("DEBUG");
-		auto priorityBelowFilter = std::make_shared<logger::PriorityBelowFilter>("INFO");
-		auto priorityAboveFilter = std::make_shared<logger::PriorityAboveFilter>("NOTICE");
+		auto regexFilter = std::make_shared<tinyToolkit::logger::RegexFilter>(".*Critical.*");
+		auto priorityFilter = std::make_shared<tinyToolkit::logger::PriorityFilter>("DEBUG");
+		auto priorityBelowFilter = std::make_shared<tinyToolkit::logger::PriorityBelowFilter>("INFO");
+		auto priorityAboveFilter = std::make_shared<tinyToolkit::logger::PriorityAboveFilter>("NOTICE");
 
 		fileSink->SetLayout(simpleLayout)->AddFilter(priorityFilter);
 		syslogSink->SetLayout(simpleLayout)->AddFilter(priorityAboveFilter);

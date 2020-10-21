@@ -15,190 +15,193 @@
 #include "layout.h"
 
 
-namespace logger
+namespace tinyToolkit
 {
-	class API_TYPE ISink : public std::enable_shared_from_this<ISink>
+	namespace logger
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param name 名称
-		 *
-		 */
-		explicit ISink(std::string name);
-
-		/**
-		 *
-		 * 析构函数
-		 *
-		 */
-		virtual ~ISink() = default;
-
-		/**
-		 *
-		 * 关闭
-		 *
-		 */
-		virtual void Close() = 0;
-
-		/**
-		 *
-		 * 刷新
-		 *
-		 */
-		virtual void Flush() = 0;
-
-		/**
-		 *
-		 * 写入
-		 *
-		 * @param context 上下文
-		 *
-		 */
-		virtual void Write(const Context & context) = 0;
-
-		/**
-		 *
-		 * 是否自动刷新
-		 *
-		 * @return 是否自动刷新
-		 *
-		 */
-		bool IsAutoFlush() const;
-
-		/**
-		 *
-		 * 开启自动刷新
-		 *
-		 * @return 节点对象
-		 *
-		 */
-		std::shared_ptr<ISink> EnableAutoFlush();
-
-		/**
-		 *
-		 * 禁用自动刷新
-		 *
-		 * @return 节点对象
-		 *
-		 */
-		std::shared_ptr<ISink> DisableAutoFlush();
-
-		/**
-		 *
-		 * 设置布局
-		 *
-		 * @param args 参数
-		 *
-		 * @return 节点对象
-		 *
-		 */
-		template<class LayoutTypeT, typename... Args>
-		std::shared_ptr<ISink> SetLayout(Args &&... args)
+		class API_TYPE ISink : public std::enable_shared_from_this<ISink>
 		{
-			return SetLayout(std::make_shared<LayoutTypeT>(std::forward<Args>(args)...));
-		}
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param name 名称
+			 *
+			 */
+			explicit ISink(std::string name);
 
-		/**
-		 *
-		 * 设置布局
-		 *
-		 * @param layout 布局
-		 *
-		 * @return 节点对象
-		 *
-		 */
-		std::shared_ptr<ISink> SetLayout(std::shared_ptr<ILayout> layout);
+			/**
+			 *
+			 * 析构函数
+			 *
+			 */
+			virtual ~ISink() = default;
 
-		/**
-		 *
-		 * 设置过滤器
-		 *
-		 * @param args 参数
-		 *
-		 * @return 节点对象
-		 *
-		 */
-		template<class FilterTypeT, typename... Args>
-		std::shared_ptr<ISink> SetFilter(Args &&... args)
-		{
-			return SetFilter(std::make_shared<FilterTypeT>(std::forward<Args>(args)...));
-		}
+			/**
+			 *
+			 * 关闭
+			 *
+			 */
+			virtual void Close() = 0;
 
-		/**
-		 *
-		 * 设置过滤器
-		 *
-		 * @param filter 过滤器
-		 *
-		 * @return 节点对象
-		 *
-		 */
-		std::shared_ptr<ISink> SetFilter(std::shared_ptr<IFilter> filter);
+			/**
+			 *
+			 * 刷新
+			 *
+			 */
+			virtual void Flush() = 0;
 
-		/**
-		 *
-		 * 添加过滤器
-		 *
-		 * @param args 参数
-		 *
-		 * @return 节点对象
-		 *
-		 */
-		template<class FilterTypeT, typename... Args>
-		std::shared_ptr<ISink> AddFilter(Args &&... args)
-		{
-			return AddFilter(std::make_shared<FilterTypeT>(std::forward<Args>(args)...));
-		}
+			/**
+			 *
+			 * 写入
+			 *
+			 * @param context 上下文
+			 *
+			 */
+			virtual void Write(const Context & context) = 0;
 
-		/**
-		 *
-		 * 添加过滤器
-		 *
-		 * @param filter 过滤器
-		 *
-		 * @return 节点对象
-		 *
-		 */
-		std::shared_ptr<ISink> AddFilter(std::shared_ptr<IFilter> filter);
+			/**
+			 *
+			 * 是否自动刷新
+			 *
+			 * @return 是否自动刷新
+			 *
+			 */
+			bool IsAutoFlush() const;
 
-		/**
-		 *
-		 * 名称
-		 *
-		 * @return 名称
-		 *
-		 */
-		const std::string & Name() const;
+			/**
+			 *
+			 * 开启自动刷新
+			 *
+			 * @return 节点对象
+			 *
+			 */
+			std::shared_ptr<ISink> EnableAutoFlush();
 
-		/**
-		 *
-		 * 布局
-		 *
-		 * @return 布局
-		 *
-		 */
-		const std::shared_ptr<ILayout> & Layout() const;
+			/**
+			 *
+			 * 禁用自动刷新
+			 *
+			 * @return 节点对象
+			 *
+			 */
+			std::shared_ptr<ISink> DisableAutoFlush();
 
-		/**
-		 *
-		 * 过滤器
-		 *
-		 * @return 过滤器
-		 *
-		 */
-		const std::shared_ptr<IFilter> & Filter() const;
+			/**
+			 *
+			 * 设置布局
+			 *
+			 * @param args 参数
+			 *
+			 * @return 节点对象
+			 *
+			 */
+			template<class LayoutTypeT, typename... Args>
+			std::shared_ptr<ISink> SetLayout(Args &&... args)
+			{
+				return SetLayout(std::make_shared<LayoutTypeT>(std::forward<Args>(args)...));
+			}
 
-	private:
-		bool _isAutoFlush{ false };
+			/**
+			 *
+			 * 设置布局
+			 *
+			 * @param layout 布局
+			 *
+			 * @return 节点对象
+			 *
+			 */
+			std::shared_ptr<ISink> SetLayout(std::shared_ptr<ILayout> layout);
 
-		std::string _name{ };
+			/**
+			 *
+			 * 设置过滤器
+			 *
+			 * @param args 参数
+			 *
+			 * @return 节点对象
+			 *
+			 */
+			template<class FilterTypeT, typename... Args>
+			std::shared_ptr<ISink> SetFilter(Args &&... args)
+			{
+				return SetFilter(std::make_shared<FilterTypeT>(std::forward<Args>(args)...));
+			}
 
-		std::shared_ptr<ILayout> _layout{ };
-		std::shared_ptr<IFilter> _filter{ };
-	};
+			/**
+			 *
+			 * 设置过滤器
+			 *
+			 * @param filter 过滤器
+			 *
+			 * @return 节点对象
+			 *
+			 */
+			std::shared_ptr<ISink> SetFilter(std::shared_ptr<IFilter> filter);
+
+			/**
+			 *
+			 * 添加过滤器
+			 *
+			 * @param args 参数
+			 *
+			 * @return 节点对象
+			 *
+			 */
+			template<class FilterTypeT, typename... Args>
+			std::shared_ptr<ISink> AddFilter(Args &&... args)
+			{
+				return AddFilter(std::make_shared<FilterTypeT>(std::forward<Args>(args)...));
+			}
+
+			/**
+			 *
+			 * 添加过滤器
+			 *
+			 * @param filter 过滤器
+			 *
+			 * @return 节点对象
+			 *
+			 */
+			std::shared_ptr<ISink> AddFilter(std::shared_ptr<IFilter> filter);
+
+			/**
+			 *
+			 * 名称
+			 *
+			 * @return 名称
+			 *
+			 */
+			const std::string & Name() const;
+
+			/**
+			 *
+			 * 布局
+			 *
+			 * @return 布局
+			 *
+			 */
+			const std::shared_ptr<ILayout> & Layout() const;
+
+			/**
+			 *
+			 * 过滤器
+			 *
+			 * @return 过滤器
+			 *
+			 */
+			const std::shared_ptr<IFilter> & Filter() const;
+
+		private:
+			bool _isAutoFlush{ false };
+
+			std::string _name{ };
+
+			std::shared_ptr<ILayout> _layout{ };
+			std::shared_ptr<IFilter> _filter{ };
+		};
+	}
 }
 
 

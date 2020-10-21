@@ -18,249 +18,252 @@
 #endif
 
 
-namespace net
+namespace tinyToolkit
 {
-	/**
-	 *
-	 * 构造函数
-	 *
-	 * @param eventLoop 事件循环器
-	 *
-	 */
-	TCPConnector::TCPConnector(EventLoop * eventLoop) : _eventLoop(eventLoop)
+	namespace net
 	{
-
-	}
-
-	/**
-	 *
-	 * 析构函数
-	 *
-	 */
-	TCPConnector::~TCPConnector()
-	{
-		Close();
-	}
-
-	/**
-	 *
-	 * 关闭
-	 *
-	 */
-	void TCPConnector::Close()
-	{
-		_isWork = false;
-
-		if (_channel)
+		/**
+		 *
+		 * 构造函数
+		 *
+		 * @param eventLoop 事件循环器
+		 *
+		 */
+		TCPConnector::TCPConnector(EventLoop * eventLoop) : _eventLoop(eventLoop)
 		{
-			_channel->Remove();
+
 		}
 
-		if (_socket)
+		/**
+		 *
+		 * 析构函数
+		 *
+		 */
+		TCPConnector::~TCPConnector()
 		{
-			_socket->Close();
-		}
-	}
-
-	/**
-	 *
-	 * 连接
-	 *
-	 * @param peerEndpoint 对端端点
-	 *
-	 */
-	void TCPConnector::Connect(const Endpoint & peerEndpoint)
-	{
-		Endpoint localEndpoint(0);
-
-		Connect(localEndpoint, peerEndpoint);
-	}
-
-	/**
-	 *
-	 * 连接
-	 *
-	 * @param localEndpoint 本地端点
-	 * @param peerEndpoint 对端端点
-	 *
-	 */
-	void TCPConnector::Connect(const Endpoint & localEndpoint, const Endpoint & peerEndpoint)
-	{
-		if (_isWork)
-		{
-			return;
+			Close();
 		}
 
-		_isWork = true;
-
-		_peerEndpoint  = peerEndpoint;
-		_localEndpoint = localEndpoint;
-
-		_socket = std::make_shared<TCPSocket>(localEndpoint.Family());
-
-		if (!_socket->IsValid())
+		/**
+		 *
+		 * 关闭
+		 *
+		 */
+		void TCPConnector::Close()
 		{
-			return;
+			_isWork = false;
+
+			if (_channel)
+			{
+				_channel->Remove();
+			}
+
+			if (_socket)
+			{
+				_socket->Close();
+			}
 		}
 
-		_socket->SetBlockStatus(false);
-		_socket->SetDelayStatus(false);
-		_socket->SetReusePortStatus(true);
-		_socket->SetReuseAddressStatus(true);
-
-		if (_socket->Bind(localEndpoint) == SOCKET_ERROR)
+		/**
+		 *
+		 * 连接
+		 *
+		 * @param peerEndpoint 对端端点
+		 *
+		 */
+		void TCPConnector::Connect(const Endpoint & peerEndpoint)
 		{
-			DoError();
+			Endpoint localEndpoint(0);
 
-			return;
+			Connect(localEndpoint, peerEndpoint);
 		}
 
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
-
-		_channel = std::make_shared<Channel>(_eventLoop, _socket->Handle(), NET_OPTION_TYPE::SEND);
-
-		_channel->SetErrorCallback([this]() { DoError();   });
-		_channel->SetWriteCallback([this]() { DoConnect(); });
-
-		_channel->SetListenWritingStatus(true);
-
-		auto ret = _socket->Connect(peerEndpoint, _channel->OwnerContext());
-
-		if (ret < 0)
+		/**
+		 *
+		 * 连接
+		 *
+		 * @param localEndpoint 本地端点
+		 * @param peerEndpoint 对端端点
+		 *
+		 */
+		void TCPConnector::Connect(const Endpoint & localEndpoint, const Endpoint & peerEndpoint)
 		{
-			DoError();
-		}
+			if (_isWork)
+			{
+				return;
+			}
 
-	#else
+			_isWork = true;
 
-		auto ret = _socket->Connect(peerEndpoint, nullptr);
+			_peerEndpoint  = peerEndpoint;
+			_localEndpoint = localEndpoint;
 
-		if (ret == 0)
-		{
-			DoConnect();
-		}
-		else if (errno == EINTR || errno == EISCONN || errno == EINPROGRESS)
-		{
-			_channel = std::make_shared<Channel>(_eventLoop, _socket->Handle(), NET_OPTION_TYPE::IO);
+			_socket = std::make_shared<TCPSocket>(localEndpoint.Family());
+
+			if (!_socket->IsValid())
+			{
+				return;
+			}
+
+			_socket->SetBlockStatus(false);
+			_socket->SetDelayStatus(false);
+			_socket->SetReusePortStatus(true);
+			_socket->SetReuseAddressStatus(true);
+
+			if (_socket->Bind(localEndpoint) == SOCKET_ERROR)
+			{
+				DoError();
+
+				return;
+			}
+
+		#if PLATFORM_TYPE == PLATFORM_WINDOWS
+
+			_channel = std::make_shared<Channel>(_eventLoop, _socket->Handle(), NET_OPTION_TYPE::SEND);
 
 			_channel->SetErrorCallback([this]() { DoError();   });
 			_channel->SetWriteCallback([this]() { DoConnect(); });
 
 			_channel->SetListenWritingStatus(true);
-		}
-		else
-		{
-			DoError();
-		}
 
-	#endif
-	}
+			auto ret = _socket->Connect(peerEndpoint, _channel->OwnerContext());
 
-	/**
-	 *
-	 * 设置连接端点事件回调函数
-	 *
-	 * @param function 函数
-	 *
-	 */
-	void TCPConnector::SetConnectCallback(std::function<void()> function)
-	{
-		_connectCallback = std::move(function);
-	}
+			if (ret < 0)
+			{
+				DoError();
+			}
 
-	/**
-	 *
-	 * 是否连接成功
-	 *
-	 * @return 是否连接成功
-	 *
-	 */
-	bool TCPConnector::IsConnect() const
-	{
-		return _isConnect;
-	}
+		#else
 
-	/**
-	 *
-	 * 对端端点
-	 *
-	 * @return 对端端点
-	 *
-	 */
-	const Endpoint & TCPConnector::PeerEndpoint() const
-	{
-		return _peerEndpoint;
-	}
+			auto ret = _socket->Connect(peerEndpoint, nullptr);
 
-	/**
-	 *
-	 * 对端端点
-	 *
-	 * @return 对端端点
-	 *
-	 */
-	const Endpoint & TCPConnector::LocalEndpoint() const
-	{
-		return _localEndpoint;
-	}
+			if (ret == 0)
+			{
+				DoConnect();
+			}
+			else if (errno == EINTR || errno == EISCONN || errno == EINPROGRESS)
+			{
+				_channel = std::make_shared<Channel>(_eventLoop, _socket->Handle(), NET_OPTION_TYPE::IO);
 
-	/**
-	 *
-	 * 句柄
-	 *
-	 * @return 句柄
-	 *
-	 */
-	SOCKET_HANDLE_TYPE TCPConnector::Handle() const
-	{
-		return _socket ? _socket->Handle() : SOCKET_HANDLE_INVALID;
-	}
+				_channel->SetErrorCallback([this]() { DoError();   });
+				_channel->SetWriteCallback([this]() { DoConnect(); });
 
-	/**
-	 *
-	 * 执行错误事件
-	 *
-	 */
-	void TCPConnector::DoError()
-	{
-		_isConnect = false;
+				_channel->SetListenWritingStatus(true);
+			}
+			else
+			{
+				DoError();
+			}
 
-		if (_channel)
-		{
-			_channel->Remove();
+		#endif
 		}
 
-		if (_connectCallback)
+		/**
+		 *
+		 * 设置连接端点事件回调函数
+		 *
+		 * @param function 函数
+		 *
+		 */
+		void TCPConnector::SetConnectCallback(std::function<void()> function)
 		{
-			_connectCallback();
-		}
-	}
-
-	/**
-	 *
-	 * 执行连接事件
-	 *
-	 */
-	void TCPConnector::DoConnect()
-	{
-		_isConnect = true;
-
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
-
-		::setsockopt(_socket->Handle(), SOL_SOCKET, SO_UPDATE_CONNECT_CONTEXT, nullptr, 0);
-
-		_isConnect = _channel->OwnerContext()->status;
-
-	#endif
-
-		if (_channel)
-		{
-			_channel->Remove();
+			_connectCallback = std::move(function);
 		}
 
-		if (_connectCallback)
+		/**
+		 *
+		 * 是否连接成功
+		 *
+		 * @return 是否连接成功
+		 *
+		 */
+		bool TCPConnector::IsConnect() const
 		{
-			_connectCallback();
+			return _isConnect;
+		}
+
+		/**
+		 *
+		 * 对端端点
+		 *
+		 * @return 对端端点
+		 *
+		 */
+		const Endpoint & TCPConnector::PeerEndpoint() const
+		{
+			return _peerEndpoint;
+		}
+
+		/**
+		 *
+		 * 对端端点
+		 *
+		 * @return 对端端点
+		 *
+		 */
+		const Endpoint & TCPConnector::LocalEndpoint() const
+		{
+			return _localEndpoint;
+		}
+
+		/**
+		 *
+		 * 句柄
+		 *
+		 * @return 句柄
+		 *
+		 */
+		SOCKET_HANDLE_TYPE TCPConnector::Handle() const
+		{
+			return _socket ? _socket->Handle() : SOCKET_HANDLE_INVALID;
+		}
+
+		/**
+		 *
+		 * 执行错误事件
+		 *
+		 */
+		void TCPConnector::DoError()
+		{
+			_isConnect = false;
+
+			if (_channel)
+			{
+				_channel->Remove();
+			}
+
+			if (_connectCallback)
+			{
+				_connectCallback();
+			}
+		}
+
+		/**
+		 *
+		 * 执行连接事件
+		 *
+		 */
+		void TCPConnector::DoConnect()
+		{
+			_isConnect = true;
+
+		#if PLATFORM_TYPE == PLATFORM_WINDOWS
+
+			::setsockopt(_socket->Handle(), SOL_SOCKET, SO_UPDATE_CONNECT_CONTEXT, nullptr, 0);
+
+			_isConnect = _channel->OwnerContext()->status;
+
+		#endif
+
+			if (_channel)
+			{
+				_channel->Remove();
+			}
+
+			if (_connectCallback)
+			{
+				_connectCallback();
+			}
 		}
 	}
 }

@@ -19,9 +19,9 @@ static void Dump()
 
 	try
 	{
-		debug::Dump::Register();
+		tinyToolkit::debug::Dump::Register();
 
-		debug::Dump::UnRegister();
+		tinyToolkit::debug::Dump::UnRegister();
 	}
 	catch (std::exception & e)
 	{
@@ -39,7 +39,7 @@ static void StackTrace()
 
 	try
 	{
-		std::cout << debug::StackTrace::Content() << std::endl;
+		std::cout << tinyToolkit::debug::StackTrace::Content() << std::endl;
 	}
 	catch (std::exception & e)
 	{

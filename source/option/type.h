@@ -17,25 +17,28 @@
 #include <cstdint>
 
 
-namespace option
+namespace tinyToolkit
 {
-	enum class OPTION_TYPE : uint8_t
+	namespace option
 	{
-		BOOL,
-		FLOAT,
-		DOUBLE,
-		LONG_DOUBLE,
-		INT8,
-		UINT8,
-		INT16,
-		UINT16,
-		INT32,
-		UINT32,
-		INT64,
-		UINT64,
-		STRING,
-		UNKNOWN,
-	};
+		enum class OPTION_TYPE : uint8_t
+		{
+			BOOL,
+			FLOAT,
+			DOUBLE,
+			LONG_DOUBLE,
+			INT8,
+			UINT8,
+			INT16,
+			UINT16,
+			INT32,
+			UINT32,
+			INT64,
+			UINT64,
+			STRING,
+			UNKNOWN,
+		};
+	}
 }
 
 

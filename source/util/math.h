@@ -17,45 +17,48 @@
 #include <string>
 
 
-namespace util
+namespace tinyToolkit
 {
-	class API_TYPE Math
+	namespace util
 	{
-	public:
-		/***
-		 *
-		 * 是否为奇数
-		 *
-		 * @param content 数字
-		 *
-		 * @return 是否为奇数
-		 *
-		 */
-		template <typename ContentTypeT>
-		static bool IsOdd(ContentTypeT content)
+		class API_TYPE Math
 		{
-			static_assert(std::is_integral<ContentTypeT>::value, "Template must be an integral type");
+		public:
+			/***
+			 *
+			 * 是否为奇数
+			 *
+			 * @param content 数字
+			 *
+			 * @return 是否为奇数
+			 *
+			 */
+			template <typename ContentTypeT>
+			static bool IsOdd(ContentTypeT content)
+			{
+				static_assert(std::is_integral<ContentTypeT>::value, "Template must be an integral type");
 
-			return (content & 1) != 0;
-		}
+				return (content & 1) != 0;
+			}
 
-		/**
-		 *
-		 * 是否为偶数
-		 *
-		 * @param content 数字
-		 *
-		 * @return 是否为偶数
-		 *
-		 */
-		template <typename ContentTypeT>
-		static bool IsEven(ContentTypeT content)
-		{
-			static_assert(std::is_integral<ContentTypeT>::value, "Template must be an integral type");
+			/**
+			 *
+			 * 是否为偶数
+			 *
+			 * @param content 数字
+			 *
+			 * @return 是否为偶数
+			 *
+			 */
+			template <typename ContentTypeT>
+			static bool IsEven(ContentTypeT content)
+			{
+				static_assert(std::is_integral<ContentTypeT>::value, "Template must be an integral type");
 
-			return (content & 1) == 0;
-		}
-	};
+				return (content & 1) == 0;
+			}
+		};
+	}
 }
 
 

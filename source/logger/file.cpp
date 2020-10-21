@@ -12,134 +12,137 @@
 #include <stdexcept>
 
 
-namespace logger
+namespace tinyToolkit
 {
-	/**
-	 *
-	 * 析构函数
-	 *
-	 */
-	File::~File()
+	namespace logger
 	{
-		Close();
-	}
-
-	/**
-	 *
-	 * 关闭
-	 *
-	 */
-	void File::Close()
-	{
-		if (!IsOpen())
+		/**
+		 *
+		 * 析构函数
+		 *
+		 */
+		File::~File()
 		{
-			return;
+			Close();
 		}
 
-		_size = 0;
-
-		_file.flush();
-		_file.close();
-	}
-
-	/**
-	 *
-	 * 刷新
-	 *
-	 */
-	void File::Flush()
-	{
-		if (!IsOpen())
+		/**
+		 *
+		 * 关闭
+		 *
+		 */
+		void File::Close()
 		{
-			return;
+			if (!IsOpen())
+			{
+				return;
+			}
+
+			_size = 0;
+
+			_file.flush();
+			_file.close();
 		}
 
-		_file.flush();
-	}
-
-	/**
-	 *
-	 * 写入
-	 *
-	 * @param content 内容
-	 *
-	 */
-	void File::Write(const std::string & content)
-	{
-		if (!IsOpen())
+		/**
+		 *
+		 * 刷新
+		 *
+		 */
+		void File::Flush()
 		{
-			return;
+			if (!IsOpen())
+			{
+				return;
+			}
+
+			_file.flush();
 		}
 
-		_file << content;
-
-		_size += content.size();
-	}
-
-	/**
-	 *
-	 * 打开
-	 *
-	 * @param path 路径
-	 * @param truncate 是否截断
-	 *
-	 * @return 是否打开成功
-	 *
-	 */
-	bool File::Open(const std::string & path, bool truncate)
-	{
-		if (IsOpen())
+		/**
+		 *
+		 * 写入
+		 *
+		 * @param content 内容
+		 *
+		 */
+		void File::Write(const std::string & content)
 		{
-			throw std::runtime_error("Handle is already in use");
+			if (!IsOpen())
+			{
+				return;
+			}
+
+			_file << content;
+
+			_size += content.size();
 		}
 
-		_path = path;
-
-		_file.open(_path, truncate ? std::ios::binary : std::ios::binary | std::ios::app);
-
-		if (!IsOpen())
+		/**
+		 *
+		 * 打开
+		 *
+		 * @param path 路径
+		 * @param truncate 是否截断
+		 *
+		 * @return 是否打开成功
+		 *
+		 */
+		bool File::Open(const std::string & path, bool truncate)
 		{
-			return false;
+			if (IsOpen())
+			{
+				throw std::runtime_error("Handle is already in use");
+			}
+
+			_path = path;
+
+			_file.open(_path, truncate ? std::ios::binary : std::ios::binary | std::ios::app);
+
+			if (!IsOpen())
+			{
+				return false;
+			}
+
+			_size += static_cast<std::size_t>(_file.tellp());
+
+			return true;
 		}
 
-		_size += static_cast<std::size_t>(_file.tellp());
+		/**
+		 *
+		 * 是否已经打开
+		 *
+		 * @return 是否已经打开
+		 *
+		 */
+		bool File::IsOpen() const
+		{
+			return _file.is_open();
+		}
 
-		return true;
-	}
+		/**
+		 *
+		 * 大小
+		 *
+		 * @return 大小
+		 *
+		 */
+		std::size_t File::Size() const
+		{
+			return _size;
+		}
 
-	/**
-	 *
-	 * 是否已经打开
-	 *
-	 * @return 是否已经打开
-	 *
-	 */
-	bool File::IsOpen() const
-	{
-		return _file.is_open();
-	}
-
-	/**
-	 *
-	 * 大小
-	 *
-	 * @return 大小
-	 *
-	 */
-	std::size_t File::Size() const
-	{
-		return _size;
-	}
-
-	/**
-	 *
-	 * 路径
-	 *
-	 * @return 路径
-	 *
-	 */
-	const std::string & File::Path() const
-	{
-		return _path;
+		/**
+		 *
+		 * 路径
+		 *
+		 * @return 路径
+		 *
+		 */
+		const std::string & File::Path() const
+		{
+			return _path;
+		}
 	}
 }

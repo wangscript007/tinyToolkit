@@ -16,33 +16,36 @@
 #include <string>
 
 
-namespace logger
+namespace tinyToolkit
 {
-	class API_TYPE PriorityCorrespond
+	namespace logger
 	{
-	public:
-		/**
-		 *
-		 * 优先级
-		 *
-		 * @param name 名称
-		 *
-		 * @return 优先级
-		 *
-		 */
-		static LOG_PRIORITY_TYPE Priority(const std::string & name);
+		class API_TYPE PriorityCorrespond
+		{
+		public:
+			/**
+			 *
+			 * 优先级
+			 *
+			 * @param name 名称
+			 *
+			 * @return 优先级
+			 *
+			 */
+			static LOG_PRIORITY_TYPE Priority(const std::string & name);
 
-		/**
-		 *
-		 * 名称
-		 *
-		 * @param priority 优先级
-		 *
-		 * @return 名称
-		 *
-		 */
-		static const std::string & Name(LOG_PRIORITY_TYPE priority);
-	};
+			/**
+			 *
+			 * 名称
+			 *
+			 * @param priority 优先级
+			 *
+			 * @return 名称
+			 *
+			 */
+			static const std::string & Name(LOG_PRIORITY_TYPE priority);
+		};
+	}
 }
 
 

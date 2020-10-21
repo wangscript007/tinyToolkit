@@ -20,58 +20,61 @@
 #endif
 
 
-namespace logger
+namespace tinyToolkit
 {
-	class API_TYPE SyslogSink : public ISink
+	namespace logger
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param name 名称
-		 *
-		 */
-		explicit SyslogSink(std::string name);
+		class API_TYPE SyslogSink : public ISink
+		{
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param name 名称
+			 *
+			 */
+			explicit SyslogSink(std::string name);
 
-		/**
-		 *
-		 * 析构函数
-		 *
-		 */
-		~SyslogSink() override;
+			/**
+			 *
+			 * 析构函数
+			 *
+			 */
+			~SyslogSink() override;
 
-		/**
-		 *
-		 * 关闭
-		 *
-		 */
-		void Close() override;
+			/**
+			 *
+			 * 关闭
+			 *
+			 */
+			void Close() override;
 
-		/**
-		 *
-		 * 刷新
-		 *
-		 */
-		void Flush() override;
+			/**
+			 *
+			 * 刷新
+			 *
+			 */
+			void Flush() override;
 
-		/**
-		 *
-		 * 写入
-		 *
-		 * @param context 上下文
-		 *
-		 */
-		void Write(const Context & context) override;
+			/**
+			 *
+			 * 写入
+			 *
+			 * @param context 上下文
+			 *
+			 */
+			void Write(const Context & context) override;
 
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
+		#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-	private:
+		private:
 
-		HANDLE _handle{ };
+			HANDLE _handle{ };
 
-	#endif
-	};
+		#endif
+		};
+	}
 }
 
 

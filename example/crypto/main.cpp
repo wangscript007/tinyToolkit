@@ -19,8 +19,8 @@ static void Url()
 
 	try
 	{
-		std::string encode = crypto::Url::Encode("https://www.baidu.com/?p1=123&p2=uuid");
-		std::string decode = crypto::Url::Decode(encode);
+		std::string encode = tinyToolkit::crypto::Url::Encode("https://www.baidu.com/?p1=123&p2=uuid");
+		std::string decode = tinyToolkit::crypto::Url::Decode(encode);
 
 		std::cout << "encode : " << encode << std::endl;
 		std::cout << "decode : " << decode << std::endl;
@@ -41,8 +41,8 @@ static void Base64()
 
 	try
 	{
-		std::string encode = crypto::Base64::Encode("https://www.baidu.com/?p1=123&p2=uuid");
-		std::string decode = crypto::Base64::Decode(encode);
+		std::string encode = tinyToolkit::crypto::Base64::Encode("https://www.baidu.com/?p1=123&p2=uuid");
+		std::string decode = tinyToolkit::crypto::Base64::Decode(encode);
 
 		std::cout << "encode : " << encode << std::endl;
 		std::cout << "decode : " << decode << std::endl;

@@ -10,22 +10,25 @@
 #include "context.h"
 
 
-namespace net
+namespace tinyToolkit
 {
-	/**
-	 *
-	 * 构造函数
-	 *
-	 * @param option 操作
-	 *
-	 */
-	Context::Context(NET_OPTION_TYPE option) : optionType(option)
+	namespace net
 	{
-	#if PLATFORM_TYPE == PLATFORM_WINDOWS
+		/**
+		 *
+		 * 构造函数
+		 *
+		 * @param option 操作
+		 *
+		 */
+		Context::Context(NET_OPTION_TYPE option) : optionType(option)
+		{
+		#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-		::memset(&buffer,  0, sizeof(WSABUF));
-		::memset(&overlap, 0, sizeof(OVERLAPPED));
+			::memset(&buffer,  0, sizeof(WSABUF));
+			::memset(&overlap, 0, sizeof(OVERLAPPED));
 
-	#endif
+		#endif
+		}
 	}
 }

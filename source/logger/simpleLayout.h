@@ -14,22 +14,25 @@
 #include "layout.h"
 
 
-namespace logger
+namespace tinyToolkit
 {
-	class API_TYPE SimpleLayout : public ILayout
+	namespace logger
 	{
-	public:
-		/**
-		 *
-		 * 格式化
-		 *
-		 * @param context 上下文
-		 *
-		 * @return 格式化后内容
-		 *
-		 */
-		std::string Format(const Context & context) override;
-	};
+		class API_TYPE SimpleLayout : public ILayout
+		{
+		public:
+			/**
+			 *
+			 * 格式化
+			 *
+			 * @param context 上下文
+			 *
+			 * @return 格式化后内容
+			 *
+			 */
+			std::string Format(const Context & context) override;
+		};
+	}
 }
 
 

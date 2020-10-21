@@ -13,71 +13,74 @@
 #include <stdexcept>
 
 
-namespace logger
+namespace tinyToolkit
 {
-	/**
-	 *
-	 * 优先级
-	 *
-	 * @param name 名称
-	 *
-	 * @return 优先级
-	 *
-	 */
-	LOG_PRIORITY_TYPE PriorityCorrespond::Priority(const std::string & name)
+	namespace logger
 	{
-		static std::map<std::string, LOG_PRIORITY_TYPE> PriorityNumber
+		/**
+		 *
+		 * 优先级
+		 *
+		 * @param name 名称
+		 *
+		 * @return 优先级
+		 *
+		 */
+		LOG_PRIORITY_TYPE PriorityCorrespond::Priority(const std::string & name)
 		{
-			{ "DEBUG", LOG_PRIORITY_TYPE::DEBUGS },
-			{ "INFO", LOG_PRIORITY_TYPE::INFO },
-			{ "NOTICE", LOG_PRIORITY_TYPE::NOTICE },
-			{ "WARNING", LOG_PRIORITY_TYPE::WARNING },
-			{ "ERROR", LOG_PRIORITY_TYPE::ERRORS },
-			{ "CRITICAL", LOG_PRIORITY_TYPE::CRITICAL },
-			{ "ALERT", LOG_PRIORITY_TYPE::ALERT },
-			{ "FATAL", LOG_PRIORITY_TYPE::FATAL },
-		};
+			static std::map<std::string, LOG_PRIORITY_TYPE> PriorityNumber
+			{
+				{ "DEBUG", LOG_PRIORITY_TYPE::DEBUGS },
+				{ "INFO", LOG_PRIORITY_TYPE::INFO },
+				{ "NOTICE", LOG_PRIORITY_TYPE::NOTICE },
+				{ "WARNING", LOG_PRIORITY_TYPE::WARNING },
+				{ "ERROR", LOG_PRIORITY_TYPE::ERRORS },
+				{ "CRITICAL", LOG_PRIORITY_TYPE::CRITICAL },
+				{ "ALERT", LOG_PRIORITY_TYPE::ALERT },
+				{ "FATAL", LOG_PRIORITY_TYPE::FATAL },
+			};
 
-		auto find = PriorityNumber.find(name);
+			auto find = PriorityNumber.find(name);
 
-		if (find == PriorityNumber.end())
-		{
-			throw std::logic_error("The priority name cannot be recognized : " + name);
+			if (find == PriorityNumber.end())
+			{
+				throw std::logic_error("The priority name cannot be recognized : " + name);
+			}
+
+			return find->second;
 		}
 
-		return find->second;
-	}
-
-	/**
-	 *
-	 * 名称
-	 *
-	 * @param priority 优先级
-	 *
-	 * @return 名称
-	 *
-	 */
-	const std::string & PriorityCorrespond::Name(LOG_PRIORITY_TYPE priority)
-	{
-		static std::map<LOG_PRIORITY_TYPE, std::string> PriorityName
+		/**
+		 *
+		 * 名称
+		 *
+		 * @param priority 优先级
+		 *
+		 * @return 名称
+		 *
+		 */
+		const std::string & PriorityCorrespond::Name(LOG_PRIORITY_TYPE priority)
 		{
-			{ LOG_PRIORITY_TYPE::DEBUGS,   "DEBUG   " },
-			{ LOG_PRIORITY_TYPE::INFO,     "INFO    " },
-			{ LOG_PRIORITY_TYPE::NOTICE,   "NOTICE  " },
-			{ LOG_PRIORITY_TYPE::WARNING,  "WARNING " },
-			{ LOG_PRIORITY_TYPE::ERRORS,   "ERROR   " },
-			{ LOG_PRIORITY_TYPE::CRITICAL, "CRITICAL" },
-			{ LOG_PRIORITY_TYPE::ALERT,    "ALERT   " },
-			{ LOG_PRIORITY_TYPE::FATAL,    "FATAL   " },
-		};
+			static std::map<LOG_PRIORITY_TYPE, std::string> PriorityName
+			{
+				{ LOG_PRIORITY_TYPE::DEBUGS,   "DEBUG   " },
+				{ LOG_PRIORITY_TYPE::INFO,     "INFO    " },
+				{ LOG_PRIORITY_TYPE::NOTICE,   "NOTICE  " },
+				{ LOG_PRIORITY_TYPE::WARNING,  "WARNING " },
+				{ LOG_PRIORITY_TYPE::ERRORS,   "ERROR   " },
+				{ LOG_PRIORITY_TYPE::CRITICAL, "CRITICAL" },
+				{ LOG_PRIORITY_TYPE::ALERT,    "ALERT   " },
+				{ LOG_PRIORITY_TYPE::FATAL,    "FATAL   " },
+			};
 
-		auto find = PriorityName.find(priority);
+			auto find = PriorityName.find(priority);
 
-		if (find == PriorityName.end())
-		{
-			throw std::logic_error("The priority type cannot be recognized");
+			if (find == PriorityName.end())
+			{
+				throw std::logic_error("The priority type cannot be recognized");
+			}
+
+			return find->second;
 		}
-
-		return find->second;
 	}
 }

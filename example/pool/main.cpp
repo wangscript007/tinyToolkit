@@ -19,7 +19,7 @@ static void TaskPool()
 
 	try
 	{
-		pool::TaskPool pool{ };
+		tinyToolkit::pool::TaskPool pool{ };
 
 		pool.AddTask([](){ std::cout << "task1 [" << std::this_thread::get_id() << "]" << std::endl; std::this_thread::sleep_for(std::chrono::milliseconds(1)); });
 		pool.AddTask([](){ std::cout << "task2 [" << std::this_thread::get_id() << "]" << std::endl; std::this_thread::sleep_for(std::chrono::milliseconds(2)); });
@@ -77,7 +77,7 @@ static void ObjectPool()
 			std::string _name;
 		};
 
-		pool::ObjectPool<A> pool{ };
+		tinyToolkit::pool::ObjectPool<A> pool{ };
 
 		auto t1 = pool.Borrow("t1");
 		auto t2 = pool.Borrow("t2");
