@@ -65,7 +65,7 @@ IF(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
 	TRAVERSE_SET(CMAKE_CXX_FLAGS	-g								# 将编译时的调试信息保存到本地文件中
 									-O2								# 优选代码空间
-									-ldl							# 支持dlopen, dlsym, dlclose, dlerror显示加载动态库
+									-ldl							# 支持显示加载动态库
 									-fPIC							# 告诉编译器产生与位置无关代码, 则产生的代码中, 没有绝对地址, 全部使用相对地址
 									-latomic                        # 链接原子操作库
 									-pthread						# 链接线程库

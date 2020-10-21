@@ -35,61 +35,160 @@ namespace tinyToolkit
 
 		/**
 		 *
+		 * 格式化符号
+		 *
+		 * @param content 内容
+		 * @param format 格式化
+		 * @param args 参数
+		 *
+		 */
+		template <typename ... Args>
+		static void WINAPI FormatSymbol(std::string & content, const char * format, Args &&... args)
+		{
+			char buffer[MAX_SYM_NAME]{ 0 };
+
+			auto len = ::snprintf(buffer, sizeof(buffer), format, std::forward<Args>(args)...);
+
+			if (len < 0)
+			{
+				len = 0;
+			}
+			else if (len > MAX_SYM_NAME)
+			{
+				len = MAX_SYM_NAME;
+			}
+
+			buffer[len] = '\0';
+
+			content.append(buffer, len);
+			content.append(LINE_EOL);
+		}
+
+		/**
+		 *
 		 * 解析符号
 		 *
 		 * @param handle 句柄
-		 * @param address 地址
-		 *
-		 * @return 符号信息
+		 * @param content 内容
 		 *
 		 */
-		static std::string WINAPI ParseSymbol(HANDLE handle, DWORD64 address)
+		static void WINAPI ParseSymbol(HANDLE handle, std::string & content)
 		{
-			DWORD displacementLine = 0;
-			DWORD64 displacementSym = 0;
+			CONTEXT ctx{ 0 };
 
-			char buffer[sizeof(IMAGEHLP_SYMBOL) + MAX_SYM_NAME]{ 0 };
+			ctx.ContextFlags = CONTEXT_FULL;
 
-			IMAGEHLP_LINE line{ };
+			::RtlCaptureContext(&ctx);
 
-			line.SizeOfStruct = sizeof(IMAGEHLP_LINE);
+			STACKFRAME64 stackFrame{ 0 };
 
-			auto symbol = reinterpret_cast<PIMAGEHLP_SYMBOL64>(buffer);
+			::memset(&stackFrame, 0, sizeof(STACKFRAME64));
 
-			symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL);
-			symbol->MaxNameLength = MAX_SYM_NAME;
+		#ifdef _M_IX86
 
-			if (::SymGetSymFromAddr64(handle, address, &displacementSym, symbol) &&
-			    ::SymGetLineFromAddr64(handle, address, &displacementLine, &line))
+			DWORD machineType = IMAGE_FILE_MACHINE_I386;
+
+			stackFrame.AddrPC.Offset = ctx.Eip;
+			stackFrame.AddrPC.Mode = AddrModeFlat;
+			stackFrame.AddrFrame.Offset = ctx.Ebp;
+			stackFrame.AddrFrame.Mode = AddrModeFlat;
+			stackFrame.AddrStack.Offset = ctx.Esp;
+			stackFrame.AddrStack.Mode = AddrModeFlat;
+
+		#elif _M_X64
+
+			DWORD machineType = IMAGE_FILE_MACHINE_AMD64;
+
+			stackFrame.AddrPC.Offset = ctx.Rip;
+			stackFrame.AddrPC.Mode = AddrModeFlat;
+			stackFrame.AddrFrame.Offset = ctx.Rsp;
+			stackFrame.AddrFrame.Mode = AddrModeFlat;
+			stackFrame.AddrStack.Offset = ctx.Rsp;
+			stackFrame.AddrStack.Mode = AddrModeFlat;
+
+		#elif _M_IA64
+
+			DWORD machineType = IMAGE_FILE_MACHINE_IA64;
+
+			stackFrame.AddrPC.Offset = c.StIIP;
+			stackFrame.AddrPC.Mode = AddrModeFlat;
+			stackFrame.AddrFrame.Offset = c.IntSp;
+			stackFrame.AddrFrame.Mode = AddrModeFlat;
+			stackFrame.AddrBStore.Offset = c.RsBSP;
+			stackFrame.AddrBStore.Mode = AddrModeFlat;
+			stackFrame.AddrStack.Offset = c.IntSp;
+			stackFrame.AddrStack.Mode = AddrModeFlat;
+
+		#else
+		#error "Platform not supported!"
+		#endif
+
+			IMAGEHLP_LINE64 line{ };
+
+			::memset(&line, 0, sizeof(IMAGEHLP_LINE64));
+
+			line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+
+			IMAGEHLP_MODULE64 module{ };
+
+			::memset(&module, 0, sizeof(IMAGEHLP_MODULE64));
+
+			module.SizeOfStruct = sizeof(IMAGEHLP_MODULE64);
+
+			auto symbol = (IMAGEHLP_SYMBOL64 *)::malloc(sizeof(IMAGEHLP_SYMBOL64) + MAX_SYM_NAME);
+
+			if (symbol == nullptr)
 			{
-				char content[1024]{ 0 };
-
-				auto len = ::snprintf
-				(
-					content,
-					sizeof(content),
-					"%s:%ld(%s) [0x%008lx]",
-					line.FileName,
-					line.LineNumber,
-					symbol->Name,
-					static_cast<DWORD>(symbol->Address)
-				);
-
-				if (len < 0)
-				{
-					len = 0;
-				}
-				else if (len > NAME_MAX)
-				{
-					len = NAME_MAX;
-				}
-
-				content[len] = '\0';
-
-				return content;
+				return;
 			}
 
-			return { };
+			::memset(symbol, 0, sizeof(IMAGEHLP_SYMBOL64) + 1024);
+
+			symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
+			symbol->MaxNameLength = MAX_SYM_NAME;
+
+			auto hThread = ::GetCurrentThread();
+
+			for (;;)
+			{
+				if (::StackWalk64(machineType, handle, hThread, &stackFrame, &ctx, nullptr, ::SymFunctionTableAccess64, ::SymGetModuleBase64, nullptr) == FALSE)
+				{
+					break;
+				}
+
+				if (stackFrame.AddrPC.Offset == 0)
+				{
+					break;
+				}
+
+				DWORD displacementLine{ 0 };
+				DWORD64 displacementSym{ 0 };
+
+				auto lineRet = ::SymGetLineFromAddr64(handle, stackFrame.AddrPC.Offset, &displacementLine, &line);
+				auto moduleRet = ::SymGetModuleInfo64(handle, stackFrame.AddrPC.Offset, &module);
+				auto symbolRet = ::SymGetSymFromAddr64(handle, stackFrame.AddrPC.Offset, &displacementSym, symbol);
+
+				if (moduleRet == FALSE)
+				{
+					FormatSymbol(content, "    SymGetModuleInfo64 (Error: %d, Address: 0x%08llx)", ::GetLastError(), stackFrame.AddrPC.Offset);
+				}
+
+				if (symbolRet == FALSE)
+				{
+					FormatSymbol(content, "    SymGetSymFromAddr64 (Error: %d, Address: 0x%08llx)", ::GetLastError(), stackFrame.AddrPC.Offset);
+				}
+
+				if (lineRet)
+				{
+					FormatSymbol(content, "    at %s:%ld(%s) [%s 0x%08llx]", line.FileName, line.LineNumber, symbolRet ? symbol->Name : "function-name not available", moduleRet ? module.ModuleName : "(module-name not available)", "(filename not available)", symbol->Address);
+				}
+				else
+				{
+					FormatSymbol(content, "    at %s(%s) [%s 0x%08llx]", "(filename not available)", symbolRet ? symbol->Name : "(function-name not available)", moduleRet ? module.ModuleName : "(module-name not available)", "(filename not available)");
+				}
+			}
+
+			::free(symbol);
 		}
 
 	#elif PLATFORM_TYPE != PLATFORM_MIPS
@@ -178,37 +277,21 @@ namespace tinyToolkit
 
 		#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-			void * stack[1024]{ };
-
 			HANDLE hProcess = ::GetCurrentProcess();
 
-			::SymInitialize(hProcess, nullptr, TRUE);
-
-			WORD size = ::CaptureStackBackTrace(0, 1024, stack, nullptr);
-
-			if (size <= 0)
+			if (::SymInitialize(hProcess, nullptr, TRUE) == FALSE)
 			{
 				return { };
 			}
+
+			::SymSetOptions(::SymGetOptions() | SYMOPT_LOAD_LINES | SYMOPT_FAIL_CRITICAL_ERRORS);
 
 			content += "StackTrace [pid=";
 			content += std::to_string(::GetCurrentProcessId());
 			content += "] :";
 			content += LINE_EOL;
 
-			for (WORD i = 0; i < size; ++i)
-			{
-				auto temp = ParseSymbol(hProcess, reinterpret_cast<DWORD64>(stack[i]));
-
-				if (temp.empty())
-				{
-					continue;
-				}
-
-				content += "    at ";
-				content += temp;
-				content += LINE_EOL;
-			}
+			ParseSymbol(hProcess, content);
 
 		#elif PLATFORM_TYPE != PLATFORM_MIPS
 
