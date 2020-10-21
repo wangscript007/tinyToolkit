@@ -168,16 +168,6 @@ namespace tinyToolkit
 				auto moduleRet = ::SymGetModuleInfo64(handle, stackFrame.AddrPC.Offset, &module);
 				auto symbolRet = ::SymGetSymFromAddr64(handle, stackFrame.AddrPC.Offset, &displacementSym, symbol);
 
-				if (moduleRet == FALSE)
-				{
-					FormatSymbol(content, "    SymGetModuleInfo64 (Error: %d, Address: 0x%08llx)", ::GetLastError(), stackFrame.AddrPC.Offset);
-				}
-
-				if (symbolRet == FALSE)
-				{
-					FormatSymbol(content, "    SymGetSymFromAddr64 (Error: %d, Address: 0x%08llx)", ::GetLastError(), stackFrame.AddrPC.Offset);
-				}
-
 				if (lineRet)
 				{
 					FormatSymbol(content, "    at %s:%ld(%s) [%s 0x%08llx]", line.FileName, line.LineNumber, symbolRet ? symbol->Name : "function-name not available", moduleRet ? module.ModuleName : "(module-name not available)", "(filename not available)", symbol->Address);
