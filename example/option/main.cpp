@@ -19,32 +19,32 @@ static void Options()
 
 	try
 	{
-		option::Option option{ };
+		tinyToolkit::option::Option option{ };
 
-		auto group_1 = std::make_shared<option::DescriptionGroup>("group_1");
-		auto group_2 = std::make_shared<option::DescriptionGroup>("group_2");
-		auto group_3 = std::make_shared<option::DescriptionGroup>("group_3");
-		auto group_4 = std::make_shared<option::DescriptionGroup>("group_4");
+		auto group_1 = std::make_shared<tinyToolkit::option::DescriptionGroup>("group_1");
+		auto group_2 = std::make_shared<tinyToolkit::option::DescriptionGroup>("group_2");
+		auto group_3 = std::make_shared<tinyToolkit::option::DescriptionGroup>("group_3");
+		auto group_4 = std::make_shared<tinyToolkit::option::DescriptionGroup>("group_4");
 
 		group_1->AddOption()
 		("help,h", "help message");
 
 		group_2->AddOption()
-		("float,f", "value", "float message", option::Value<float>())
-		("double,d", "value", "double message", option::Value<double>());
+		("float,f", "value", "float message", tinyToolkit::option::Value<float>())
+		("double,d", "value", "double message", tinyToolkit::option::Value<double>());
 
 		group_3->AddOption()
-		("int8_t,i8", "value", "int8_t message", option::Value<int8_t>(1))
-		("uint8_t,u8", "value", "uint8_t message", option::Value<uint8_t>(10))
-		("int16_t,i16", "value", "int16_t message", option::Value<int16_t>(100))
-		("uint16_t,u16", "value", "uint16_t message", option::Value<uint16_t>(1000))
-		("int32_t,i32", "value", "int32_t message", option::Value<int32_t>(10000))
-		("uint32_t,u32", "value", "uint32_t message", option::Value<uint32_t>(100000))
-		("int64_t,i64", "value", "int64_t message", option::Value<int64_t>(1000000))
-		("uint64_t,u64", "value", "uint64_t message", option::Value<uint64_t>(10000000));
+		("int8_t,i8", "value", "int8_t message", tinyToolkit::option::Value<int8_t>(1))
+		("uint8_t,u8", "value", "uint8_t message", tinyToolkit::option::Value<uint8_t>(10))
+		("int16_t,i16", "value", "int16_t message", tinyToolkit::option::Value<int16_t>(100))
+		("uint16_t,u16", "value", "uint16_t message", tinyToolkit::option::Value<uint16_t>(1000))
+		("int32_t,i32", "value", "int32_t message", tinyToolkit::option::Value<int32_t>(10000))
+		("uint32_t,u32", "value", "uint32_t message", tinyToolkit::option::Value<uint32_t>(100000))
+		("int64_t,i64", "value", "int64_t message", tinyToolkit::option::Value<int64_t>(1000000))
+		("uint64_t,u64", "value", "uint64_t message", tinyToolkit::option::Value<uint64_t>(10000000));
 
 		group_4->AddOption()
-		("string,s", "value", "string message", option::Value<std::string>());
+		("string,s", "value", "string message", tinyToolkit::option::Value<std::string>());
 
 		option.AddDescriptionGroup(group_1);
 		option.AddDescriptionGroup(group_2);

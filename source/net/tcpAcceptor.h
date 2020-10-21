@@ -16,123 +16,126 @@
 #include <memory>
 
 
-namespace net
+namespace tinyToolkit
 {
-	class API_TYPE TCPAcceptor
+	namespace net
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param eventLoop 事件循环器
-		 *
-		 */
-		explicit TCPAcceptor(EventLoop * eventLoop);
+		class API_TYPE TCPAcceptor
+		{
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param eventLoop 事件循环器
+			 *
+			 */
+			explicit TCPAcceptor(EventLoop * eventLoop);
 
-		/**
-		 *
-		 * 析构函数
-		 *
-		 */
-		~TCPAcceptor();
+			/**
+			 *
+			 * 析构函数
+			 *
+			 */
+			~TCPAcceptor();
 
-		/**
-		 *
-		 * 关闭
-		 *
-		 */
-		void Close();
+			/**
+			 *
+			 * 关闭
+			 *
+			 */
+			void Close();
 
-		/**
-		 *
-		 * 监听
-		 *
-		 * @param localEndpoint 本地端点
-		 *
-		 */
-		void Listen(const Endpoint & localEndpoint);
+			/**
+			 *
+			 * 监听
+			 *
+			 * @param localEndpoint 本地端点
+			 *
+			 */
+			void Listen(const Endpoint & localEndpoint);
 
-		/**
-		 *
-		 * 设置接收端点事件回调函数
-		 *
-		 * @param function 函数
-		 *
-		 */
-		void SetAcceptCallback(std::function<void()> function);
+			/**
+			 *
+			 * 设置接收端点事件回调函数
+			 *
+			 * @param function 函数
+			 *
+			 */
+			void SetAcceptCallback(std::function<void()> function);
 
-		/**
-		 *
-		 * 是否接收成功
-		 *
-		 * @return 是否接收成功
-		 *
-		 */
-		bool IsAccept() const;
+			/**
+			 *
+			 * 是否接收成功
+			 *
+			 * @return 是否接收成功
+			 *
+			 */
+			bool IsAccept() const;
 
-		/**
-		 *
-		 * 对端端点
-		 *
-		 * @return 对端端点
-		 *
-		 */
-		const Endpoint & PeerEndpoint() const;
+			/**
+			 *
+			 * 对端端点
+			 *
+			 * @return 对端端点
+			 *
+			 */
+			const Endpoint & PeerEndpoint() const;
 
-		/**
-		 *
-		 * 对端端点
-		 *
-		 * @return 对端端点
-		 *
-		 */
-		const Endpoint & LocalEndpoint() const;
+			/**
+			 *
+			 * 对端端点
+			 *
+			 * @return 对端端点
+			 *
+			 */
+			const Endpoint & LocalEndpoint() const;
 
-		/**
-		 *
-		 * 句柄
-		 *
-		 * @return 句柄
-		 *
-		 */
-		SOCKET_HANDLE_TYPE Handle() const;
+			/**
+			 *
+			 * 句柄
+			 *
+			 * @return 句柄
+			 *
+			 */
+			SOCKET_HANDLE_TYPE Handle() const;
 
-	private:
-		/**
-		 *
-		 * 执行错误事件
-		 *
-		 */
-		void DoError();
+		private:
+			/**
+			 *
+			 * 执行错误事件
+			 *
+			 */
+			void DoError();
 
-		/**
-		 *
-		 * 执行接收事件
-		 *
-		 */
-		void DoAccept();
+			/**
+			 *
+			 * 执行接收事件
+			 *
+			 */
+			void DoAccept();
 
-	private:
-		bool _isWork{ false };
-		bool _isAccept{ false };
+		private:
+			bool _isWork{ false };
+			bool _isAccept{ false };
 
-		Endpoint _peerEndpoint{ };
-		Endpoint _localEndpoint{ };
+			Endpoint _peerEndpoint{ };
+			Endpoint _localEndpoint{ };
 
-		EventLoop * _eventLoop{ nullptr };
+			EventLoop * _eventLoop{ nullptr };
 
-	#if PLATFORM_TYPE != PLATFORM_WINDOWS
+		#if PLATFORM_TYPE != PLATFORM_WINDOWS
 
-		SOCKET_HANDLE_TYPE _idleHandle{ SOCKET_HANDLE_INVALID };
+			SOCKET_HANDLE_TYPE _idleHandle{ SOCKET_HANDLE_INVALID };
 
-	#endif
+		#endif
 
-		std::function<void()> _acceptCallback;
+			std::function<void()> _acceptCallback;
 
-		std::shared_ptr<Channel> _channel{ };
-		std::shared_ptr<TCPSocket> _socket{ };
-	};
+			std::shared_ptr<Channel> _channel{ };
+			std::shared_ptr<TCPSocket> _socket{ };
+		};
+	}
 }
 
 

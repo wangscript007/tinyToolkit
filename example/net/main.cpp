@@ -26,7 +26,7 @@ static void TCP()
 		class Client
 		{
 		public:
-			explicit Client(net::EventLoop * eventLoop) : _client(eventLoop)
+			explicit Client(tinyToolkit::net::EventLoop * eventLoop) : _client(eventLoop)
 			{
 				_client.SetSendCallback(OnSend);
 				_client.SetErrorCallback(OnError);
@@ -35,13 +35,13 @@ static void TCP()
 				_client.SetReceiveCallback(OnReceive);
 			}
 
-			void Connect(const net::Endpoint & endpoint)
+			void Connect(const tinyToolkit::net::Endpoint & endpoint)
 			{
 				_client.Connect(endpoint);
 			}
 
 		private:
-			static void OnSend(const std::shared_ptr<net::TCPSession> & session)
+			static void OnSend(const std::shared_ptr<tinyToolkit::net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -53,7 +53,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			static void OnError(const std::shared_ptr<net::TCPSession> & session)
+			static void OnError(const std::shared_ptr<tinyToolkit::net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -61,7 +61,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			static void OnClose(const std::shared_ptr<net::TCPSession> & session)
+			static void OnClose(const std::shared_ptr<tinyToolkit::net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -71,7 +71,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			static void OnConnect(const std::shared_ptr<net::TCPSession> & session)
+			static void OnConnect(const std::shared_ptr<tinyToolkit::net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -81,7 +81,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			static void OnReceive(const std::shared_ptr<net::TCPSession> & session, net::Buffer * buffer)
+			static void OnReceive(const std::shared_ptr<tinyToolkit::net::TCPSession> & session, tinyToolkit::net::Buffer * buffer)
 			{
 				auto byte = buffer->ReadableBytes();
 
@@ -106,13 +106,13 @@ static void TCP()
 			}
 
 		private:
-			net::TCPClient _client;
+			tinyToolkit::net::TCPClient _client;
 		};
 
 		class Server
 		{
 		public:
-			explicit Server(net::EventLoop * eventLoop) : _server(eventLoop)
+			explicit Server(tinyToolkit::net::EventLoop * eventLoop) : _server(eventLoop)
 			{
 				_server.SetSendCallback(OnSend);
 				_server.SetErrorCallback(OnError);
@@ -121,13 +121,13 @@ static void TCP()
 				_server.SetReceiveCallback(OnReceive);
 			}
 
-			void Listen(const net::Endpoint & endpoint)
+			void Listen(const tinyToolkit::net::Endpoint & endpoint)
 			{
 				_server.Listen(endpoint);
 			}
 
 		private:
-			static void OnSend(const std::shared_ptr<net::TCPSession> & session)
+			static void OnSend(const std::shared_ptr<tinyToolkit::net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -139,7 +139,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			static void OnError(const std::shared_ptr<net::TCPSession> & session)
+			static void OnError(const std::shared_ptr<tinyToolkit::net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -147,7 +147,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			static void OnClose(const std::shared_ptr<net::TCPSession> & session)
+			static void OnClose(const std::shared_ptr<tinyToolkit::net::TCPSession> & session)
 			{
 				std::cout << "[" << session->LocalEndpoint().AsString()
 				          << "] close ["
@@ -156,7 +156,7 @@ static void TCP()
 				          << std::endl;
 			}
 
-			static void OnAccept(const std::shared_ptr<net::TCPSession> & session)
+			static void OnAccept(const std::shared_ptr<tinyToolkit::net::TCPSession> & session)
 			{
 				std::cout << "["
 				          << session->LocalEndpoint().AsString()
@@ -170,7 +170,7 @@ static void TCP()
 				}
 			}
 
-			static void OnReceive(const std::shared_ptr<net::TCPSession> & session, net::Buffer * buffer)
+			static void OnReceive(const std::shared_ptr<tinyToolkit::net::TCPSession> & session, tinyToolkit::net::Buffer * buffer)
 			{
 				auto byte = buffer->ReadableBytes();
 
@@ -195,18 +195,18 @@ static void TCP()
 			}
 
 		private:
-			net::TCPServer _server;
+			tinyToolkit::net::TCPServer _server;
 		};
 
-		net::EventLoop eventLoop{ };
+		tinyToolkit::net::EventLoop eventLoop{ };
 
 		Server server(&eventLoop);
 
-		server.Listen(net::Endpoint("127.0.0.1", 10080));
+		server.Listen(tinyToolkit::net::Endpoint("127.0.0.1", 10080));
 
 		Client client(&eventLoop);
 
-		client.Connect(net::Endpoint("127.0.0.1", 10080));
+		client.Connect(tinyToolkit::net::Endpoint("127.0.0.1", 10080));
 
 		eventLoop.Loop();
 	}

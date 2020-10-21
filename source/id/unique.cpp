@@ -12,42 +12,45 @@
 #include <chrono>
 
 
-namespace id
+namespace tinyToolkit
 {
-	/**
-	 *
-	 * 构造函数
-	 *
-	 */
-	Unique::Unique()
+	namespace id
 	{
-		/// 这里需要用稳定时间, 防止系统时间变化
-		_id.key.count = 0;
-		_id.key.times = static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
-	}
-
-	/**
-	 *
-	 * 生成
-	 *
-	 * @return 唯一标识码
-	 *
-	 */
-	uint64_t Unique::Generate()
-	{
-		/// 这里需要用稳定时间, 防止系统时间变化
-		auto times = static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
-
-		if (times == _id.key.times)
+		/**
+		 *
+		 * 构造函数
+		 *
+		 */
+		Unique::Unique()
 		{
-			++_id.key.count;
-		}
-		else
-		{
+			/// 这里需要用稳定时间, 防止系统时间变化
 			_id.key.count = 0;
-			_id.key.times = times;
+			_id.key.times = static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
 		}
 
-		return _id.value;
+		/**
+		 *
+		 * 生成
+		 *
+		 * @return 唯一标识码
+		 *
+		 */
+		uint64_t Unique::Generate()
+		{
+			/// 这里需要用稳定时间, 防止系统时间变化
+			auto times = static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
+
+			if (times == _id.key.times)
+			{
+				++_id.key.count;
+			}
+			else
+			{
+				_id.key.count = 0;
+				_id.key.times = times;
+			}
+
+			return _id.value;
+		}
 	}
 }

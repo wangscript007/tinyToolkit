@@ -19,7 +19,7 @@ static void Unique()
 
 	try
 	{
-		id::Unique unique{ };
+		tinyToolkit::id::Unique unique{ };
 
 		for (int i = 0; i < 3; ++i)
 		{
@@ -49,7 +49,7 @@ static void Snowflake()
 
 	try
 	{
-		id::Snowflake snowflake(64, 128);
+		tinyToolkit::id::Snowflake snowflake(64, 128);
 
 		for (int i = 0; i < 3; ++i)
 		{

@@ -10,7 +10,10 @@
 #include "type.h"
 
 
-namespace net
+namespace tinyToolkit
 {
+	namespace net
+	{
 
+	}
 }

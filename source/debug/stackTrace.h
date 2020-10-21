@@ -17,20 +17,23 @@
 #include <string>
 
 
-namespace debug
+namespace tinyToolkit
 {
-	class API_TYPE StackTrace
+	namespace debug
 	{
-	public:
-		/**
-		 *
-		 * 内容
-		 *
-		 * @return 内容
-		 *
-		 */
-		static std::string Content();
-	};
+		class API_TYPE StackTrace
+		{
+		public:
+			/**
+			 *
+			 * 内容
+			 *
+			 * @return 内容
+			 *
+			 */
+			static std::string Content();
+		};
+	}
 }
 
 

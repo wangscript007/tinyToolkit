@@ -15,25 +15,28 @@
 #include "../common/symbol.h"
 
 
-namespace debug
+namespace tinyToolkit
 {
-	class API_TYPE Dump
+	namespace debug
 	{
-	public:
-		/**
-		 *
-		 * 注册
-		 *
-		 */
-		static void Register();
+		class API_TYPE Dump
+		{
+		public:
+			/**
+			 *
+			 * 注册
+			 *
+			 */
+			static void Register();
 
-		/**
-		 *
-		 * 注销
-		 *
-		 */
-		static void UnRegister();
-	};
+			/**
+			 *
+			 * 注销
+			 *
+			 */
+			static void UnRegister();
+		};
+	}
 }
 
 

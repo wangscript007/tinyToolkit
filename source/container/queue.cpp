@@ -10,7 +10,10 @@
 #include "queue.h"
 
 
-namespace container
+namespace tinyToolkit
 {
+	namespace container
+	{
 
+	}
 }

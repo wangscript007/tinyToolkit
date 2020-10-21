@@ -17,15 +17,18 @@
 #include <cstdint>
 
 
-namespace net
+namespace tinyToolkit
 {
-	enum class NET_OPTION_TYPE : uint8_t
+	namespace net
 	{
-		IO,
-		SEND,
-		RECEIVE,
-		INVALID,
-	};
+		enum class NET_OPTION_TYPE : uint8_t
+		{
+			IO,
+			SEND,
+			RECEIVE,
+			INVALID,
+		};
+	}
 }
 
 

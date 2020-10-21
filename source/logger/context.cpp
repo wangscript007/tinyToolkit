@@ -10,7 +10,10 @@
 #include "context.h"
 
 
-namespace logger
+namespace tinyToolkit
 {
+	namespace logger
+	{
 
+	}
 }

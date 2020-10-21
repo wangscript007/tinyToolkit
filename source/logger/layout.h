@@ -14,29 +14,32 @@
 #include "context.h"
 
 
-namespace logger
+namespace tinyToolkit
 {
-	class API_TYPE ILayout
+	namespace logger
 	{
-	public:
-		/**
-		 *
-		 * 析构函数
-		 *
-		 */
-		virtual ~ILayout() = default;
+		class API_TYPE ILayout
+		{
+		public:
+			/**
+			 *
+			 * 析构函数
+			 *
+			 */
+			virtual ~ILayout() = default;
 
-		/**
-		 *
-		 * 格式化
-		 *
-		 * @param context 上下文
-		 *
-		 * @return 格式化后内容
-		 *
-		 */
-		virtual std::string Format(const Context & context) = 0;
-	};
+			/**
+			 *
+			 * 格式化
+			 *
+			 * @param context 上下文
+			 *
+			 * @return 格式化后内容
+			 *
+			 */
+			virtual std::string Format(const Context & context) = 0;
+		};
+	}
 }
 
 

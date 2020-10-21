@@ -16,79 +16,82 @@
 #include <ctime>
 
 
-namespace logger
+namespace tinyToolkit
 {
-	class API_TYPE SyncLogger : public ILogger
+	namespace logger
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 */
-		SyncLogger();
+		class API_TYPE SyncLogger : public ILogger
+		{
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 */
+			SyncLogger();
 
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param name 名称
-		 *
-		 */
-		explicit SyncLogger(std::string name);
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param name 名称
+			 *
+			 */
+			explicit SyncLogger(std::string name);
 
-		/**
-		 *
-		 * 析构函数
-		 *
-		 */
-		~SyncLogger() override = default;
+			/**
+			 *
+			 * 析构函数
+			 *
+			 */
+			~SyncLogger() override = default;
 
-		/**
-		 *
-		 * 单例对象
-		 *
-		 * @return 单例对象
-		 *
-		 */
-		static SyncLogger & Instance();
+			/**
+			 *
+			 * 单例对象
+			 *
+			 * @return 单例对象
+			 *
+			 */
+			static SyncLogger & Instance();
 
-		/**
-		 *
-		 * 等待
-		 *
-		 */
-		void Wait() override;
+			/**
+			 *
+			 * 等待
+			 *
+			 */
+			void Wait() override;
 
-		/**
-		 *
-		 * 关闭
-		 *
-		 */
-		void Close() override;
+			/**
+			 *
+			 * 关闭
+			 *
+			 */
+			void Close() override;
 
-		/**
-		 *
-		 * 刷新
-		 *
-		 */
-		void Flush() override;
+			/**
+			 *
+			 * 刷新
+			 *
+			 */
+			void Flush() override;
 
-		/**
-		 *
-		 * 写入
-		 *
-		 * @param context 上下文
-		 *
-		 */
-		void Write(Context & context) override;
+			/**
+			 *
+			 * 写入
+			 *
+			 * @param context 上下文
+			 *
+			 */
+			void Write(Context & context) override;
 
-	private:
-		std::tm _tm{ };
+		private:
+			std::tm _tm{ };
 
-		int64_t _second{ 0 };
-		int64_t _minutes{ 0 };
-	};
+			int64_t _second{ 0 };
+			int64_t _minutes{ 0 };
+		};
+	}
 }
 
 

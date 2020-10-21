@@ -15,57 +15,60 @@
 #include "sink.h"
 
 
-namespace logger
+namespace tinyToolkit
 {
-	class API_TYPE FileSink : public ISink
+	namespace logger
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param name 名称
-		 * @param path 路径
-		 * @param truncate 是否截断
-		 *
-		 */
-		FileSink(std::string name, std::string path, bool truncate = false);
+		class API_TYPE FileSink : public ISink
+		{
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param name 名称
+			 * @param path 路径
+			 * @param truncate 是否截断
+			 *
+			 */
+			FileSink(std::string name, std::string path, bool truncate = false);
 
-		/**
-		 *
-		 * 析构函数
-		 *
-		 */
-		~FileSink() override;
+			/**
+			 *
+			 * 析构函数
+			 *
+			 */
+			~FileSink() override;
 
-		/**
-		 *
-		 * 关闭
-		 *
-		 */
-		void Close() override;
+			/**
+			 *
+			 * 关闭
+			 *
+			 */
+			void Close() override;
 
-		/**
-		 *
-		 * 刷新
-		 *
-		 */
-		void Flush() override;
+			/**
+			 *
+			 * 刷新
+			 *
+			 */
+			void Flush() override;
 
-		/**
-		 *
-		 * 写入
-		 *
-		 * @param context 上下文
-		 *
-		 */
-		void Write(const Context & context) override;
+			/**
+			 *
+			 * 写入
+			 *
+			 * @param context 上下文
+			 *
+			 */
+			void Write(const Context & context) override;
 
-	private:
-		File _file{ };
+		private:
+			File _file{ };
 
-		std::string _path{ };
-	};
+			std::string _path{ };
+		};
+	}
 }
 
 

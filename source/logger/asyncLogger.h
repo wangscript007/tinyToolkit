@@ -19,85 +19,88 @@
 #include <condition_variable>
 
 
-namespace logger
+namespace tinyToolkit
 {
-	class API_TYPE AsyncLogger : public ILogger
+	namespace logger
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 */
-		AsyncLogger();
+		class API_TYPE AsyncLogger : public ILogger
+		{
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 */
+			AsyncLogger();
 
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param name 名称
-		 *
-		 */
-		explicit AsyncLogger(std::string name);
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param name 名称
+			 *
+			 */
+			explicit AsyncLogger(std::string name);
 
-		/**
-		 *
-		 * 析构函数
-		 *
-		 */
-		~AsyncLogger() override = default;
+			/**
+			 *
+			 * 析构函数
+			 *
+			 */
+			~AsyncLogger() override = default;
 
-		/**
-		 *
-		 * 单例对象
-		 *
-		 * @return 单例对象
-		 *
-		 */
-		static AsyncLogger & Instance();
+			/**
+			 *
+			 * 单例对象
+			 *
+			 * @return 单例对象
+			 *
+			 */
+			static AsyncLogger & Instance();
 
-		/**
-		 *
-		 * 等待
-		 *
-		 */
-		void Wait() override;
+			/**
+			 *
+			 * 等待
+			 *
+			 */
+			void Wait() override;
 
-		/**
-		 *
-		 * 关闭
-		 *
-		 */
-		void Close() override;
+			/**
+			 *
+			 * 关闭
+			 *
+			 */
+			void Close() override;
 
-		/**
-		 *
-		 * 刷新
-		 *
-		 */
-		void Flush() override;
+			/**
+			 *
+			 * 刷新
+			 *
+			 */
+			void Flush() override;
 
-		/**
-		 *
-		 * 写入
-		 *
-		 * @param context 上下文
-		 *
-		 */
-		void Write(Context & context) override;
+			/**
+			 *
+			 * 写入
+			 *
+			 * @param context 上下文
+			 *
+			 */
+			void Write(Context & context) override;
 
-	private:
-		std::tm _tm{ };
+		private:
+			std::tm _tm{ };
 
-		int64_t _second{ 0 };
-		int64_t _minutes{ 0 };
+			int64_t _second{ 0 };
+			int64_t _minutes{ 0 };
 
-		std::thread _thread{ };
+			std::thread _thread{ };
 
-		std::queue<Context> _queue{ };
+			std::queue<Context> _queue{ };
 
-		std::condition_variable _condition{ };
-	};
+			std::condition_variable _condition{ };
+		};
+	}
 }
 
 

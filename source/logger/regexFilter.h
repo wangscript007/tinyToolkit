@@ -16,44 +16,47 @@
 #include <regex>
 
 
-namespace logger
+namespace tinyToolkit
 {
-	class API_TYPE RegexFilter : public IFilter
+	namespace logger
 	{
-	public:
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param rule 规则
-		 *
-		 */
-		explicit RegexFilter(std::regex rule);
+		class API_TYPE RegexFilter : public IFilter
+		{
+		public:
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param rule 规则
+			 *
+			 */
+			explicit RegexFilter(std::regex rule);
 
-		/**
-		 *
-		 * 构造函数
-		 *
-		 * @param rule 规则
-		 *
-		 */
-		explicit RegexFilter(const std::string & rule);
+			/**
+			 *
+			 * 构造函数
+			 *
+			 * @param rule 规则
+			 *
+			 */
+			explicit RegexFilter(const std::string & rule);
 
-	private:
-		/**
-		 *
-		 * 过滤处理
-		 *
-		 * @param context 上下文
-		 *
-		 * @return 是否过滤
-		 *
-		 */
-		bool Filter(const Context & context) override;
+		private:
+			/**
+			 *
+			 * 过滤处理
+			 *
+			 * @param context 上下文
+			 *
+			 * @return 是否过滤
+			 *
+			 */
+			bool Filter(const Context & context) override;
 
-	private:
-		std::regex _rule{ };
-	};
+		private:
+			std::regex _rule{ };
+		};
+	}
 }
 
 

@@ -10,7 +10,10 @@
 #include "value.h"
 
 
-namespace option
+namespace tinyToolkit
 {
+	namespace option
+	{
 
+	}
 }

@@ -10,7 +10,10 @@
 #include "math.h"
 
 
-namespace util
+namespace tinyToolkit
 {
+	namespace util
+	{
 
+	}
 }

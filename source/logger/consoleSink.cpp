@@ -10,93 +10,96 @@
 #include "consoleSink.h"
 
 
-namespace logger
+namespace tinyToolkit
 {
-	/**
-	 *
-	 * 构造函数
-	 *
-	 * @param name 名称
-	 * @param file 句柄
-	 *
-	 */
-	ConsoleSink::ConsoleSink(std::string name, FILE * file) : ISink(std::move(name)),
-	                                                          _file(file)
+	namespace logger
 	{
-
-	}
-
-	/**
-	 *
-	 * 析构函数
-	 *
-	 */
-	ConsoleSink::~ConsoleSink()
-	{
-		if (_file)
+		/**
+		 *
+		 * 构造函数
+		 *
+		 * @param name 名称
+		 * @param file 句柄
+		 *
+		 */
+		ConsoleSink::ConsoleSink(std::string name, FILE * file) : ISink(std::move(name)),
+		                                                          _file(file)
 		{
-			fflush(_file);
-		}
-	}
 
-	/**
-	 *
-	 * 关闭
-	 *
-	 */
-	void ConsoleSink::Close()
-	{
-		Flush();
-	}
-
-	/**
-	 *
-	 * 刷新
-	 *
-	 */
-	void ConsoleSink::Flush()
-	{
-		if (_file == nullptr)
-		{
-			return;
 		}
 
-		fflush(_file);
-	}
-
-	/**
-	 *
-	 * 写入
-	 *
-	 * @param context 上下文
-	 *
-	 */
-	void ConsoleSink::Write(const Context & context)
-	{
-		if (_file == nullptr)
+		/**
+		 *
+		 * 析构函数
+		 *
+		 */
+		ConsoleSink::~ConsoleSink()
 		{
-			return;
+			if (_file)
+			{
+				fflush(_file);
+			}
 		}
 
-		if (Filter() && Filter()->Decide(context))
-		{
-			return;
-		}
-
-		if (Layout())
-		{
-			std::string content(Layout()->Format(context));
-
-			::fwrite(content.c_str(), sizeof(char), content.size(), _file);
-		}
-		else
-		{
-			::fwrite(context.content.c_str(), sizeof(char), context.content.size(), _file);
-		}
-
-		if (IsAutoFlush())
+		/**
+		 *
+		 * 关闭
+		 *
+		 */
+		void ConsoleSink::Close()
 		{
 			Flush();
+		}
+
+		/**
+		 *
+		 * 刷新
+		 *
+		 */
+		void ConsoleSink::Flush()
+		{
+			if (_file == nullptr)
+			{
+				return;
+			}
+
+			fflush(_file);
+		}
+
+		/**
+		 *
+		 * 写入
+		 *
+		 * @param context 上下文
+		 *
+		 */
+		void ConsoleSink::Write(const Context & context)
+		{
+			if (_file == nullptr)
+			{
+				return;
+			}
+
+			if (Filter() && Filter()->Decide(context))
+			{
+				return;
+			}
+
+			if (Layout())
+			{
+				std::string content(Layout()->Format(context));
+
+				::fwrite(content.c_str(), sizeof(char), content.size(), _file);
+			}
+			else
+			{
+				::fwrite(context.content.c_str(), sizeof(char), context.content.size(), _file);
+			}
+
+			if (IsAutoFlush())
+			{
+				Flush();
+			}
 		}
 	}
 }

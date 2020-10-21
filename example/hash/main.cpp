@@ -19,7 +19,7 @@ static void MD5()
 
 	try
 	{
-		hash::MD5 md5{ };
+		tinyToolkit::hash::MD5 md5{ };
 
 		md5.Append("123");
 		md5.Append("abc");
@@ -53,7 +53,7 @@ static void SHA1()
 
 	try
 	{
-		hash::SHA1 sha1{ };
+		tinyToolkit::hash::SHA1 sha1{ };
 
 		sha1.Append("123");
 		sha1.Append("abc");
@@ -87,7 +87,7 @@ static void SHA224()
 
 	try
 	{
-		hash::SHA224 sha224{ };
+		tinyToolkit::hash::SHA224 sha224{ };
 
 		sha224.Append("123");
 		sha224.Append("abc");
@@ -121,7 +121,7 @@ static void SHA256()
 
 	try
 	{
-		hash::SHA256 sha256{ };
+		tinyToolkit::hash::SHA256 sha256{ };
 
 		sha256.Append("123");
 		sha256.Append("abc");
@@ -155,7 +155,7 @@ static void SHA384()
 
 	try
 	{
-		hash::SHA384 sha384{ };
+		tinyToolkit::hash::SHA384 sha384{ };
 
 		sha384.Append("123");
 		sha384.Append("abc");
@@ -189,7 +189,7 @@ static void SHA512()
 
 	try
 	{
-		hash::SHA512 sha512{ };
+		tinyToolkit::hash::SHA512 sha512{ };
 
 		sha512.Append("123");
 		sha512.Append("abc");
@@ -223,7 +223,7 @@ static void HMAC_MD5()
 
 	try
 	{
-		hash::HMAC_MD5 hmac_md5{ };
+		tinyToolkit::hash::HMAC_MD5 hmac_md5{ };
 
 		hmac_md5.SetKey("123");
 		hmac_md5.Append("123");
@@ -259,7 +259,7 @@ static void HMAC_SHA1()
 
 	try
 	{
-		hash::HMAC_SHA1 hmac_sha1{ };
+		tinyToolkit::hash::HMAC_SHA1 hmac_sha1{ };
 
 		hmac_sha1.SetKey("123");
 		hmac_sha1.Append("123");
@@ -295,7 +295,7 @@ static void HMAC_SHA224()
 
 	try
 	{
-		hash::HMAC_SHA224 hmac_sha224{ };
+		tinyToolkit::hash::HMAC_SHA224 hmac_sha224{ };
 
 		hmac_sha224.SetKey("123");
 		hmac_sha224.Append("123");
@@ -331,7 +331,7 @@ static void HMAC_SHA256()
 
 	try
 	{
-		hash::HMAC_SHA256 hmac_sha256{ };
+		tinyToolkit::hash::HMAC_SHA256 hmac_sha256{ };
 
 		hmac_sha256.SetKey("123");
 		hmac_sha256.Append("123");
@@ -367,7 +367,7 @@ static void HMAC_SHA384()
 
 	try
 	{
-		hash::HMAC_SHA384 hmac_sha384{ };
+		tinyToolkit::hash::HMAC_SHA384 hmac_sha384{ };
 
 		hmac_sha384.SetKey("123");
 		hmac_sha384.Append("123");
@@ -403,7 +403,7 @@ static void HMAC_SHA512()
 
 	try
 	{
-		hash::HMAC_SHA512 hmac_sha512{ };
+		tinyToolkit::hash::HMAC_SHA512 hmac_sha512{ };
 
 		hmac_sha512.SetKey("123");
 		hmac_sha512.Append("123");

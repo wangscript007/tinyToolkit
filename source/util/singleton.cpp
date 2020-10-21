@@ -10,7 +10,10 @@
 #include "singleton.h"
 
 
-namespace util
+namespace tinyToolkit
 {
+	namespace util
+	{
 
+	}
 }
