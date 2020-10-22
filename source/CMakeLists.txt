@@ -134,6 +134,7 @@ INSTALL(TARGETS ${PROGRAM_NAME_SHARE} ${PROGRAM_NAME_STATIC}
 # 遍历递归指定目录安装头文件
 #
 TRAVERSE_INSTALL_INCLUDE(id							include/tinyToolkit/id)
+TRAVERSE_INSTALL_INCLUDE(net						include/tinyToolkit/net)
 TRAVERSE_INSTALL_INCLUDE(hash						include/tinyToolkit/hash)
 TRAVERSE_INSTALL_INCLUDE(pool						include/tinyToolkit/pool)
 TRAVERSE_INSTALL_INCLUDE(util					    include/tinyToolkit/util)

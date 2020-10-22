@@ -84,6 +84,18 @@ namespace tinyToolkit
 
 			/**
 			 *
+			 * 设置信号处理状态
+			 *
+			 * @param handle 句柄
+			 * @param on 状态
+			 *
+			 * @return 是否设置成功
+			 *
+			 */
+			static bool SetSignalStatus(SOCKET_HANDLE_TYPE handle, bool on = true);
+
+			/**
+			 *
 			 * 设置延时关闭状态
 			 *
 			 * @param handle 句柄

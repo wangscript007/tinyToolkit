@@ -18,6 +18,12 @@
 #
 #else
 #
+#  if PLATFORM_TYPE == PLATFORM_APPLE
+#
+#    include <cerrno>
+#
+#  endif
+#
 #  include <fcntl.h>
 #  include <zconf.h>
 #
@@ -37,7 +43,7 @@ namespace tinyToolkit
 		 */
 		TCPAcceptor::TCPAcceptor(EventLoop * eventLoop) : _eventLoop(eventLoop)
 		{
-		#if PLATFORM_TYPE != PLATFORM_WINDOWS
+		#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 
 			_idleHandle = ::open("/dev/null", O_RDONLY | O_CLOEXEC);
 
@@ -73,7 +79,7 @@ namespace tinyToolkit
 				_socket->Close();
 			}
 
-		#if PLATFORM_TYPE != PLATFORM_WINDOWS
+		#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 
 			if (_idleHandle >= 0)
 			{
@@ -110,6 +116,7 @@ namespace tinyToolkit
 
 			_socket->SetBlockStatus(false);
 			_socket->SetDelayStatus(false);
+			_socket->SetSignalStatus(false);
 			_socket->SetReusePortStatus(true);
 			_socket->SetReuseAddressStatus(true);
 
@@ -246,6 +253,12 @@ namespace tinyToolkit
 
 			::setsockopt(_channel->OwnerContext()->handle, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, reinterpret_cast<const char *>(&handle), sizeof(handle));
 
+			Operation::SetBlockStatus(_channel->OwnerContext()->handle, false);
+			Operation::SetDelayStatus(_channel->OwnerContext()->handle, false);
+			Operation::SetSignalStatus(_channel->OwnerContext()->handle, false);
+			Operation::SetReusePortStatus(_channel->OwnerContext()->handle, true);
+			Operation::SetReusePortStatus(_channel->OwnerContext()->handle, true);
+
 		#else
 
 			if (_socket->Accept(_channel->OwnerContext()) == SOCKET_ERROR)
@@ -263,6 +276,14 @@ namespace tinyToolkit
 					_idleHandle = ::open("/dev/null", O_RDONLY | O_CLOEXEC);
 				}
 			}
+			else
+			{
+				Operation::SetBlockStatus(_channel->OwnerContext()->handle, false);
+				Operation::SetDelayStatus(_channel->OwnerContext()->handle, false);
+				Operation::SetSignalStatus(_channel->OwnerContext()->handle, false);
+				Operation::SetReusePortStatus(_channel->OwnerContext()->handle, true);
+				Operation::SetReusePortStatus(_channel->OwnerContext()->handle, true);
+			}
 
 		#endif
 
@@ -270,6 +291,19 @@ namespace tinyToolkit
 			{
 				_acceptCallback();
 			}
+
+		#if PLATFORM_TYPE == PLATFORM_WINDOWS
+
+			_channel->OwnerContext()->handle = Operation::TCPSocketHandle(localEndpoint.Family());
+
+			if (_socket->Accept(_channel->OwnerContext()) == SOCKET_ERROR)
+			{
+				DoError();
+
+				return;
+			}
+
+		#endif
 		}
 	}
 }

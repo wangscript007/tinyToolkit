@@ -86,6 +86,17 @@ namespace tinyToolkit
 
 			/**
 			 *
+			 * 设置信号处理状态
+			 *
+			 * @param on 状态
+			 *
+			 * @return 是否设置成功
+			 *
+			 */
+			bool SetSignalStatus(bool on = true) const;
+
+			/**
+			 *
 			 * 设置延时关闭状态
 			 *
 			 * @param timeout 超时时长

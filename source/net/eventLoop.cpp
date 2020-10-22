@@ -10,15 +10,7 @@
 #include "eventLoop.h"
 #include "operation.h"
 
-#if PLATFORM_TYPE == PLATFORM_APPLE
-#
-#
-#
-#elif PLATFORM_TYPE == PLATFORM_WINDOWS
-#
-#
-#
-#else
+#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_LINUX
 #
 #  include <unistd.h>
 #
@@ -72,9 +64,7 @@ namespace tinyToolkit
 		 */
 		EventLoop::EventLoop() : _threadID(ThreadID())
 		{
-		#if PLATFORM_TYPE == PLATFORM_WINDOWS
-
-		#else
+		#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_LINUX
 
 			_wakeupChannel = std::make_shared<Channel>(this, ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC));
 
@@ -101,7 +91,7 @@ namespace tinyToolkit
 
 			while (_isLoop)
 			{
-				_eventPoll.DoEvent(5);
+				_eventPoll.DoEvent(10);
 
 				DoFunctionList();
 			}
@@ -129,11 +119,7 @@ namespace tinyToolkit
 		 */
 		void EventLoop::Wakeup()
 		{
-		#if PLATFORM_TYPE == PLATFORM_WINDOWS
-
-
-
-		#else
+		#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_LINUX
 
 			uint64_t val{ 666 };
 

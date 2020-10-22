@@ -12,9 +12,11 @@
 
 #if PLATFORM_TYPE == PLATFORM_APPLE
 #
+#  include <cerrno>
+#
 #  include <sys/event.h>
 #
-#elif PLATFORM_TYPE != PLATFORM_WINDOWS
+#elif PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_LINUX
 #
 #  include <sys/epoll.h>
 #
@@ -133,7 +135,7 @@ namespace tinyToolkit
 
 			struct epoll_event events[32]{ };
 
-			int32_t count = ::epoll_wait(_handle, events, static_cast<int32_t>(sizeof(events) / sizeof(events[0])), timeout * 1000);
+			int32_t count = ::epoll_wait(_handle, events, static_cast<int32_t>(sizeof(events) / sizeof(events[0])), timeout);
 
 			if (count == -1)
 			{

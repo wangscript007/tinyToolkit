@@ -72,7 +72,7 @@ namespace tinyToolkit
 		{
 			Shutdown();
 
-		#if PLATFORM_TYPE != PLATFORM_WINDOWS
+		#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 
 			if (_ioChannel)
 			{
@@ -123,7 +123,7 @@ namespace tinyToolkit
 				}
 			);
 
-		#if PLATFORM_TYPE != PLATFORM_WINDOWS
+		#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 
 			if (!_ioChannel->IsListenWriting())
 			{
@@ -520,7 +520,7 @@ namespace tinyToolkit
 		{
 			_isConnect = false;
 
-		#if PLATFORM_TYPE != PLATFORM_WINDOWS
+		#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 
 			_ioChannel->Remove();
 

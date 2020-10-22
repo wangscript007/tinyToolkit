@@ -16,7 +16,7 @@
 #
 #  pragma comment( lib, "dbghelp.lib")
 #
-#else
+#elif PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 #
 #  include <memory>
 #
@@ -181,7 +181,7 @@ namespace tinyToolkit
 			::free(symbol);
 		}
 
-	#elif PLATFORM_TYPE != PLATFORM_MIPS
+	#elif PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 
 		/**
 		 *
@@ -283,7 +283,7 @@ namespace tinyToolkit
 
 			ParseSymbol(hProcess, content);
 
-		#elif PLATFORM_TYPE != PLATFORM_MIPS
+		#elif PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 
 			void * stack[1024]{ };
 

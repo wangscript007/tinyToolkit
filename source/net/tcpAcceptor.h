@@ -124,7 +124,7 @@ namespace tinyToolkit
 
 			EventLoop * _eventLoop{ nullptr };
 
-		#if PLATFORM_TYPE != PLATFORM_WINDOWS
+		#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 
 			SOCKET_HANDLE_TYPE _idleHandle{ SOCKET_HANDLE_INVALID };
 

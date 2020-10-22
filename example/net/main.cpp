@@ -95,7 +95,7 @@ static void TCP()
 				          << buffer->ReadString(buffer->ReadableBytes())
 				          << std::endl;
 
-				if (++ClientSend == TotalCount)
+				if (++ClientSend >= TotalCount)
 				{
 					session->Shutdown();
 				}
@@ -184,7 +184,7 @@ static void TCP()
 				          << buffer->ReadString(buffer->ReadableBytes())
 				          << std::endl;
 
-				if (++ServerSend == TotalCount)
+				if (++ServerSend >= TotalCount)
 				{
 					session->Shutdown();
 				}

@@ -8,7 +8,7 @@
 
 # 安装
 
-  * 如若自动编译，可运行script目录下各平台安装脚本 (脚本中会自动编译安装3rd/fmt库，如环境中已存在，可手动去除)
+  * 如若自动编译，可运行script目录下各平台安装脚本 (脚本中会自动编译安装3rd/fmt库, 如环境中已存在, 可手动去除)
   * 如若手动编译，需先安装fmtlib库 (3rd目录有中提供，也可前往官网下载最新版)
 
 # 功能
@@ -16,6 +16,12 @@
   * id  (序号处理)
     * unique  全局唯一序号生成器
     * snowflakes  分布式唯一序号生成器
+
+  * net (网络处理)
+    * buffer 数据缓存区
+    * tcpClient tcp客户端
+    * tcpServer tcp服务端
+    * tcpSession tcp会话
 
   * hash  (散列/哈希处理)
     * md5
@@ -31,8 +37,8 @@
     * hmac_sha384
     * hmac_sha512
 
-  * pool  (池化处理)
-    * taskPool  任务(线程)池
+  * pool  (池处理)
+    * taskPool  (任务/线程)池
     * objectPool  对象池
 
   * util  (实用工具)
@@ -47,17 +53,17 @@
     * filesystem  文件处理
     * application  应用信息
 
-  * debug  (崩溃信息)
-    * dump  崩溃转储 (当前仅支持windows)
+  * debug  (调试信息)
+    * dump  崩溃转储 (仅支持windows)
     * stackTrace  堆栈信息
 
   * timer  (定时器处理)
     * task  定时任务
     * timer  定时器
 
-  * crypto  (编码/解码/加解密处理)
-    * url
-    * base64
+  * crypto  (编解码/加解密处理)
+    * url  url编解码
+    * base64  base64编解码
 
   * logger  (日志处理)
     * syncLogger  同步日志

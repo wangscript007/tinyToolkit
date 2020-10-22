@@ -325,6 +325,40 @@ namespace tinyToolkit
 
 		/**
 		 *
+		 * 设置信号处理状态
+		 *
+		 * @param handle 句柄
+		 * @param on 状态
+		 *
+		 * @return 是否设置成功
+		 *
+		 */
+		bool Operation::SetSignalStatus(SOCKET_HANDLE_TYPE handle, bool on)
+		{
+		#if PLATFORM_TYPE == PLATFORM_APPLE
+
+			int32_t val = on ? 0 : 1;
+
+			return ::setsockopt(handle, SOL_SOCKET, SO_NOSIGPIPE, reinterpret_cast<const char *>(&val), static_cast<socklen_t>(sizeof(val))) == 0;
+
+		#elif PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_LINUX
+
+			int32_t val = on ? 0 : 1;
+
+			return ::setsockopt(handle, SOL_SOCKET, MSG_NOSIGNAL, reinterpret_cast<const char *>(&val), static_cast<socklen_t>(sizeof(val))) == 0;
+
+		#else
+
+			(void)on;
+			(void)handle;
+
+			return false;
+
+		#endif
+		}
+
+		/**
+		 *
 		 * 设置延时关闭状态
 		 *
 		 * @param handle 句柄
@@ -539,8 +573,6 @@ namespace tinyToolkit
 		{
 		#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-			::WSACleanup();
-
 			return ::closesocket(handle) == 0;
 
 		#else
@@ -638,7 +670,7 @@ namespace tinyToolkit
 		 */
 		int32_t Operation::Bind(SOCKET_HANDLE_TYPE handle, const struct sockaddr * address)
 		{
-			return ::bind(handle, address, static_cast<socklen_t>(sizeof(struct sockaddr_in6)));
+			return ::bind(handle, address, static_cast<socklen_t>(address->sa_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6)));
 		}
 
 		/**
@@ -676,18 +708,17 @@ namespace tinyToolkit
 
 		#else
 
+			(void)buffer;
 			(void)context;
 			(void)acceptHandle;
 
-			socklen_t length = buffer ? static_cast<socklen_t>(sizeof(struct sockaddr_in6)) : 0;
-
 			#if defined (NO_ACCEPT4)
 
-				return ::accept(handle, reinterpret_cast<struct sockaddr *>(buffer), &length);
+				return ::accept(handle, nullptr, nullptr);
 
 			#else
 
-				return ::accept4(handle, reinterpret_cast<struct sockaddr *>(buffer), &length, SOCK_NONBLOCK | SOCK_CLOEXEC);
+				return ::accept4(handle, nullptr, nullptr, SOCK_NONBLOCK | SOCK_CLOEXEC);
 
 			#endif
 
@@ -709,13 +740,13 @@ namespace tinyToolkit
 		{
 		#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-			return ConnectEx(handle, address, static_cast<socklen_t>(sizeof(struct sockaddr_in6)), reinterpret_cast<LPOVERLAPPED>(context));
+			return ConnectEx(handle, address, static_cast<socklen_t>(address->sa_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6)), reinterpret_cast<LPOVERLAPPED>(context));
 
 		#else
 
 			(void)context;
 
-			return ::connect(handle, address, static_cast<socklen_t>(sizeof(struct sockaddr_in6)));
+			return ::connect(handle, address, static_cast<socklen_t>(address->sa_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6)));
 
 		#endif
 		}
@@ -742,13 +773,13 @@ namespace tinyToolkit
 
 			(void)context;
 
-			return static_cast<int32_t>(::send(handle, buffer, length, SO_NOSIGPIPE));
+			return static_cast<int32_t>(::send(handle, buffer, length, 0));
 
 		#else
 
 			(void)context;
 
-			return static_cast<int32_t>(::send(handle, buffer, length, MSG_NOSIGNAL));
+			return static_cast<int32_t>(::send(handle, buffer, length, 0));
 
 		#endif
 		}
@@ -775,13 +806,13 @@ namespace tinyToolkit
 
 			(void)context;
 
-			return static_cast<int32_t>(::recv(handle, buffer, length, SO_NOSIGPIPE));
+			return static_cast<int32_t>(::recv(handle, buffer, length, 0));
 
 		#else
 
 			(void)context;
 
-			return static_cast<int32_t>(::recv(handle, buffer, length, MSG_NOSIGNAL));
+			return static_cast<int32_t>(::recv(handle, buffer, length, 0));
 
 		#endif
 		}
@@ -810,13 +841,13 @@ namespace tinyToolkit
 
 			(void)context;
 
-			return static_cast<int32_t>(::recvfrom(handle, buffer, length, SO_NOSIGPIPE, address, reinterpret_cast<socklen_t *>(&addressLength)));
+			return static_cast<int32_t>(::recvfrom(handle, buffer, length, 0, address, reinterpret_cast<socklen_t *>(&addressLength)));
 
 		#else
 
 			(void)context;
 
-			return static_cast<int32_t>(::recvfrom(handle, buffer, length, MSG_NOSIGNAL, address, reinterpret_cast<socklen_t *>(&addressLength)));
+			return static_cast<int32_t>(::recvfrom(handle, buffer, length, 0, address, reinterpret_cast<socklen_t *>(&addressLength)));
 
 		#endif
 		}
@@ -958,20 +989,6 @@ namespace tinyToolkit
 		{
 		#if PLATFORM_TYPE == PLATFORM_WINDOWS
 
-			WSADATA wsaData{ };
-
-			if (::WSAStartup(MAKEWORD(1, 1), &wsaData) != 0)
-			{
-				return SOCKET_HANDLE_INVALID;
-			}
-
-			if (LOBYTE(wsaData.wVersion) != 1 || HIBYTE(wsaData.wVersion) != 1)
-			{
-				::WSACleanup();
-
-				return SOCKET_HANDLE_INVALID;
-			}
-
 			return ::WSASocketW(family, SOCK_STREAM, IPPROTO_TCP, nullptr, 0, WSA_FLAG_OVERLAPPED);
 
 		#else
@@ -993,20 +1010,6 @@ namespace tinyToolkit
 		SOCKET_HANDLE_TYPE Operation::UDPSocketHandle(uint16_t family)
 		{
 		#if PLATFORM_TYPE == PLATFORM_WINDOWS
-
-			WSADATA wsaData{ };
-
-			if (::WSAStartup(MAKEWORD(1, 1), &wsaData) != 0)
-			{
-				return SOCKET_HANDLE_INVALID;
-			}
-
-			if (LOBYTE(wsaData.wVersion) != 1 || HIBYTE(wsaData.wVersion) != 1)
-			{
-				::WSACleanup();
-
-				return SOCKET_HANDLE_INVALID;
-			}
 
 			return ::WSASocketW(family, SOCK_DGRAM, IPPROTO_UDP, nullptr, 0, WSA_FLAG_OVERLAPPED);
 

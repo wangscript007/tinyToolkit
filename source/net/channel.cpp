@@ -14,7 +14,7 @@
 #
 #  include <sys/event.h>
 #
-#elif PLATFORM_TYPE != PLATFORM_WINDOWS
+#elif PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_LINUX
 #
 #  include <sys/epoll.h>
 #
@@ -333,7 +333,10 @@ namespace tinyToolkit
 				{
 					_errorCallback();
 				}
+			}
 
+			if (pollContext->flags & EV_EOF)
+			{
 				if (_closeCallback)
 				{
 					_closeCallback();
@@ -342,12 +345,12 @@ namespace tinyToolkit
 				return;
 			}
 
-			if (pollContext->filter & EVFILT_READ)
+			if (pollContext->filter == EVFILT_READ)
 			{
 				DoReceive(netContext, sysContext);
 			}
 
-			if (pollContext->filter & EVFILT_WRITE)
+			if (pollContext->filter == EVFILT_WRITE)
 			{
 				DoSend(netContext, sysContext);
 			}

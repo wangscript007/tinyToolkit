@@ -71,6 +71,20 @@ namespace tinyToolkit
 
 		/**
 		 *
+		 * 设置信号处理状态
+		 *
+		 * @param on 状态
+		 *
+		 * @return 是否设置成功
+		 *
+		 */
+		bool ISocket::SetSignalStatus(bool on) const
+		{
+			return Operation::SetSignalStatus(_handle, on);
+		}
+
+		/**
+		 *
 		 * 设置延时关闭状态
 		 *
 		 * @param timeout 超时时长

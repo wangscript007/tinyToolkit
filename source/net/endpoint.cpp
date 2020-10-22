@@ -9,7 +9,7 @@
 
 #include "endpoint.h"
 
-#if PLATFORM_TYPE != PLATFORM_WINDOWS
+#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 #
 #  include <arpa/inet.h>
 #

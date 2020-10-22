@@ -15,6 +15,10 @@
 #
 #  include <MSWSock.h>
 #
+#elif PLATFORM_TYPE == PLATFORM_APPLE
+#
+#  include <cerrno>
+#
 #endif
 
 
@@ -107,6 +111,7 @@ namespace tinyToolkit
 
 			_socket->SetBlockStatus(false);
 			_socket->SetDelayStatus(false);
+			_socket->SetSignalStatus(false);
 			_socket->SetReusePortStatus(true);
 			_socket->SetReuseAddressStatus(true);
 

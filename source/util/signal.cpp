@@ -68,7 +68,7 @@ namespace tinyToolkit
 		 */
 		void Signal::RegisterIgnore()
 		{
-		#if PLATFORM_TYPE != PLATFORM_WINDOWS
+		#if PLATFORM_TYPE == PLATFORM_MIPS || PLATFORM_TYPE == PLATFORM_APPLE || PLATFORM_TYPE == PLATFORM_LINUX
 
 			/**
 			 *
