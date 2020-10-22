@@ -67,7 +67,6 @@ IF(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 									-O2								# 优选代码空间
 									-ldl							# 支持显示加载动态库
 									-fPIC							# 告诉编译器产生与位置无关代码, 则产生的代码中, 没有绝对地址, 全部使用相对地址
-									-latomic                        # 链接原子操作库
 									-pthread						# 链接线程库
 									-rdynamic						# 通知链接器将所有符号添加到动态符号表中
 #									-fmem-report					# 显示所有的静态内存分配
@@ -132,7 +131,6 @@ ELSEIF(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	TRAVERSE_SET(CMAKE_CXX_FLAGS	-g								# 将编译时的调试信息保存到本地文件中
 									-O2								# 优选代码空间
 									-fPIC							# 告诉编译器产生与位置无关代码, 则产生的代码中, 没有绝对地址, 全部使用相对地址
-									-latomic                        # 链接原子操作库
 									-pthread						# 链接线程库
 #									-fmem-report					# 显示所有的静态内存分配
 #									-ftime-report					# 统计编译消耗的时间并显示报告
